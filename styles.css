@@ -1,0 +1,144 @@
+/* Basic Reset & Body Style */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    background-color: #f4f7f6;
+    color: #333;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 30px auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    color: #2c3e50;
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+/* Question Styling */
+.question-container {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.3s ease;
+}
+
+.question-container:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+
+.question-container h2 {
+    color: #3498db;
+    margin-bottom: 15px;
+    font-size: 1.4em;
+    border-left: 4px solid #3498db;
+    padding-left: 10px;
+}
+
+.question-text p {
+    margin-bottom: 10px;
+}
+.question-text ul {
+    margin-left: 20px;
+    margin-bottom: 10px;
+}
+
+/* Solution Block Styling */
+.solution-block {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #cccccc;
+}
+
+.toggle-button {
+    display: inline-block;
+    background-color: #3498db;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.95em;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-bottom: 15px;
+}
+
+.toggle-button:hover {
+    background-color: #2980b9;
+    transform: translateY(-1px);
+}
+
+/* Initially hidden content area */
+.solution-content {
+    background-color: #f9f9f9;
+    border: 1px solid #eeeeee;
+    border-radius: 5px;
+    padding: 0; /* Padding applied when visible */
+    max-height: 0; /* Start collapsed */
+    overflow: hidden;
+    opacity: 0; /* Start invisible */
+    transition: max-height 0.7s cubic-bezier(0.65, 0, 0.35, 1),
+                padding 0.7s ease,
+                opacity 0.5s ease-in-out;
+}
+
+/* Class added by JS to show content */
+.solution-content.visible {
+    padding: 20px; /* Add padding when expanded */
+    max-height: 2500px; /* Large enough for content */
+    opacity: 1; /* Fade in */
+}
+
+.answer {
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #e8f6fd;
+    border-left: 4px solid #3498db;
+}
+
+.answer strong {
+    color: #2980b9;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.solution strong {
+    color: #2c3e50;
+}
+
+.solution ol, .solution ul {
+    margin-left: 25px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.solution ol li, .solution ul li {
+    margin-bottom: 8px;
+}
+
+.solution p {
+    margin-bottom: 10px;
+}
+
+/* KaTeX Math Formatting adjustments (optional) */
+.katex {
+    font-size: 1.1em; /* Make math slightly larger */
+}

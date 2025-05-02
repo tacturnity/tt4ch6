@@ -63,22 +63,52 @@
         strong { font-weight: 500; color: #ffffff; } /* Removed .math-var from here */
         /* .math-var removed as MathJax handles styling */
 
-        /* Formula Container Styling (Retained for interaction/copy) */
-        .formula-container {
+                /* Formula Container Styling (Modified for Horizontal Scroll) */
+                .formula-container {
             margin: 15px 0 20px 0;
-            padding: 5px 20px 5px 20px; /* Reduced vertical padding as MathJax adds space */
+            padding: 10px 20px 10px 20px; /* Adjusted padding slightly */
             background-color: rgba(45, 45, 45, 0.9);
             border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            overflow-x: visible; /* Allow MathJax to overflow if needed */
+            overflow-x: auto;   /* Enable horizontal scroll if needed */
+            overflow-y: hidden;  /* Disable vertical scroll */
             transition: background-color 0.3s ease, border-color 0.3s ease;
             cursor: pointer; /* For copy action */
             color: #e0e0e0;
             border-left: 4px solid transparent;
             font-family: 'Roboto Mono', monospace; /* Base font */
-            position: relative; /* Needed for absolute positioning if required by MathJax */
+            position: relative;
+            white-space: nowrap; /* Prevent formula text wrapping */
         }
 
+        .formula-container:hover { background-color: rgba(60, 60, 60, 0.95); border-left-color: #a6e3a1; border-color: rgba(166, 227, 161, 0.5); }
+        .formula-container.copied { background-color: rgba(166, 227, 161, 0.2); border-color: #a6e3a1; border-left-color: #a6e3a1; }
+
+        /* Optional: Style the scrollbar for webkit browsers */
+        .formula-container::-webkit-scrollbar {
+            height: 8px; /* Height of horizontal scrollbar */
+        }
+        .formula-container::-webkit-scrollbar-track {
+            background: rgba(60, 60, 60, 0.5); /* Track color */
+            border-radius: 4px;
+        }
+        .formula-container::-webkit-scrollbar-thumb {
+            background-color: #888; /* Scroller color */
+            border-radius: 4px;
+            border: 2px solid transparent; /* Creates padding around thumb */
+            background-clip: content-box;
+        }
+        .formula-container::-webkit-scrollbar-thumb:hover {
+            background-color: #aaa; /* Scroller color on hover */
+        }
+
+        /* Styling for MathJax Display Math */
+        .formula-container mjx-container[display="true"] {
+             margin: 0.5em 0 !important; /* Adjusted vertical space */
+             text-align: left !important; /* Align left within the scrollable container */
+             display: inline-block; /* Ensures container sizes to content width */
+             vertical-align: middle; /* Align better if needed */
+        }
         .formula-container:hover { background-color: rgba(60, 60, 60, 0.95); border-left-color: #a6e3a1; border-color: rgba(166, 227, 161, 0.5); }
         .formula-container.copied { background-color: rgba(166, 227, 161, 0.2); border-color: #a6e3a1; border-left-color: #a6e3a1; }
 

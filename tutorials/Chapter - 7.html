@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en" style="--base-font-size: 10px;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 7 Q&A</title> <!-- CHANGE THIS TITLE -->
+
+    <!-- Google Fonts - Roboto Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+          tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true, tags: 'ams' },
+          options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'], ignoreHtmlClass: 'tex2jax_ignore', processHtmlClass: 'tex2jax_process' },
+          svg: { fontCache: 'global' },
+          startup: { ready: () => { console.log('MathJax ready.'); MathJax.startup.defaultReady(); MathJax.startup.promise.then(() => console.log('MathJax initial typeset complete.')); } }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* Basic Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* Keyframes */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Base Styles --- */
+        :root {
+            --accent-color: #F08080; /* Light Coral */
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --border-color: #555;
+            --header-bg: #2f2f2f;
+            --header-hover-bg: #3f3f3f;
+            --content-bg: #282828;
+            /* Indicator Colors */
+            --indicator-unvisited: transparent;
+            --indicator-answer: #f7dc6f;
+            --indicator-solution: #58d68d;
+            --indicator-visited-closed: var(--indicator-solution);
+            --anim-duration: 0.5s;
+            --anim-easing: cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        body {
+            font-family: 'Roboto Mono', monospace; color: var(--text-color); line-height: 1.7;
+            padding: 25px; background-color: var(--bg-color); min-height: 100vh;
+            font-size: var(--base-font-size); transition: font-size 0.2s ease-in-out;
+            padding-bottom: 80px; overflow-x: hidden;
+        }
+        body.no-font-transition { transition: none !important; }
+
+        /* Headings */
+        h1 {
+            font-size: 2.4em; color: var(--accent-color); font-weight: 700; padding-bottom: 12px;
+            margin: 1.5em auto; border-bottom: 3px solid var(--accent-color);
+            animation: fadeIn 0.8s ease-out both 0.1s; letter-spacing: -0.5px; text-align: center; max-width: 800px;
+        }
+
+        /* --- Accordion Styles --- */
+        .accordion { max-width: 900px; margin: 20px auto; }
+        .accordion-item {
+            border: 1px solid var(--border-color); border-radius: 8px;
+            overflow: hidden; margin-bottom: 25px; background-color: var(--content-bg);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .accordion-item:hover { border-color: #777; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); }
+        .accordion-header {
+            background-color: var(--header-bg); padding: 18px 25px; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: background-color 0.3s ease, border-color var(--anim-duration) var(--anim-easing);
+            border-bottom: 1px solid var(--border-color); position: relative; z-index: 2;
+        }
+        .accordion-item[data-state="collapsed"] .accordion-header { border-bottom-color: transparent; }
+        .accordion-header:hover { background-color: var(--header-hover-bg); }
+        .accordion-header h2 { margin: 0; font-size: 1.2em; color: var(--text-color); text-align: left; }
+
+        /* --- State Indicator --- */
+        .state-indicator {
+            width: 12px; height: 12px; border-radius: 50%;
+            background-color: var(--indicator-unvisited); display: inline-block; margin-left: 15px;
+            flex-shrink: 0; transition: background-color 0.3s ease; border: 1px solid var(--header-bg);
+        }
+        .accordion-item[data-state="state1"] .state-indicator { background-color: var(--indicator-answer); border-color: transparent; }
+        .accordion-item[data-state="state2"] .state-indicator { background-color: var(--indicator-solution); border-color: transparent; }
+        .accordion-item.visited[data-state="collapsed"] .state-indicator { background-color: var(--indicator-visited-closed); border-color: transparent; }
+
+
+        /* Content Area & Animations */
+        .accordion-content {
+            padding: 0 25px; max-height: 0; overflow: hidden;
+            transition: max-height var(--anim-duration) var(--anim-easing),
+                        padding-top var(--anim-duration) var(--anim-easing),
+                        padding-bottom var(--anim-duration) var(--anim-easing);
+            box-sizing: border-box; position: relative; z-index: 1;
+        }
+        .accordion-item:not([data-state="collapsed"]) .accordion-content { padding-top: 20px; }
+        .content-inner {
+            padding-bottom: 25px; opacity: 0; transform: translateY(10px);
+            transition: opacity 0.4s ease-out 0.15s, transform 0.4s ease-out 0.15s;
+        }
+        .accordion-item:not([data-state="collapsed"]) .content-inner { opacity: 1; transform: translateY(0); }
+
+        /* Content Blocks Structure & Styling */
+        .question-block, .final-answer-block, .solution-block {
+            margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed var(--border-color);
+        }
+        .content-inner > div:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .question-block strong, .final-answer-block strong, .solution-block strong {
+            color: var(--accent-color); display: block; margin-bottom: 8px; font-size: 1.1em;
+        }
+        p { margin-bottom: 1em; color: inherit; font-size: inherit; }
+        ul, ol { margin-left: 25px; margin-bottom: 1em; }
+        li { margin-bottom: 8px; font-size: inherit; }
+
+        /* Simplified Styling for MathJax containers */
+        mjx-container {
+            margin: 0.5em 0; /* Default vertical space around all rendered math */
+            text-align: left !important; /* Ensure left alignment */
+        }
+        mjx-container[display="true"] {
+             margin: 1em 0 !important; /* Slightly more vertical space for display math */
+        }
+
+        /* General Utility Styles */
+        .hidden { display: none !important; }
+
+        /* Footer & Font Control */
+        footer { text-align: center; margin-top: 70px; padding-bottom: 35px; font-size: 0.85em; color: #888888; animation: fadeIn 1s ease-out both 0.7s; }
+        .font-control { position: fixed; bottom: 0; left: 0; width: 100%; padding: 10px 25px; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; pointer-events: none; z-index: 10; }
+        .font-control-icon { font-size: 28px; font-weight: bold; color: #777; cursor: pointer; padding: 8px; transition: color 0.3s ease; pointer-events: auto; user-select: none; line-height: 1; display: inline-block; }
+        .font-control-icon:hover { color: var(--accent-color); }
+        #fontSizeDisplay { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); background-color: rgba(45, 45, 45, 0.9); color: #e0e0e0; padding: 6px 12px; border-radius: 5px; font-size: 13px; font-family: 'Roboto Mono', monospace; z-index: 11; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none; white-space: nowrap; }
+        #fontSizeDisplay.visible { opacity: 1; }
+
+        /* Simple Dark Theme Scrollbar for Page */
+        body::-webkit-scrollbar { width: 10px; }
+        body::-webkit-scrollbar-track { background: #2a2a2a; border-radius: 5px; }
+        body::-webkit-scrollbar-thumb { background-color: #777; border-radius: 5px; border: 2px solid #2a2a2a; background-clip: content-box; }
+        body::-webkit-scrollbar-thumb:hover { background-color: #999; }
+        html { scrollbar-width: thin; scrollbar-color: #777 #2a2a2a; }
+        @supports (scrollbar-gutter: stable) { html { scrollbar-gutter: stable; } }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Chapter 7 Q&A</h1> <!-- Updated Title -->
+    </header>
+
+    <div class="accordion">
+
+        <!-- Question 1 -->
+        <div class="accordion-item" data-state="collapsed">
+            <div class="accordion-header">
+                <h2>Question 1: Jet Engine Diffuser</h2>
+                <span class="state-indicator" title="Status Indicator"></span>
+            </div>
+            <div class="accordion-content">
+                <div class="content-inner">
+                    <div class="question-block">
+                        <strong>Question:</strong>
+                        <p>
+                            Atmospheric air at $-45$°C and $60$ kPa enters the front diffuser section of a jet engine with a velocity of $900$ km/h. The inlet frontal area is $1$ m². After passing through the adiabatic diffuser, the air velocity is reduced to $20$ m/s. Assuming the process is reversible (isentropic) and that air behaves as an ideal gas with constant specific heats, determine: <br>
+                            a) The temperature of the air at the diffuser exit ($T_2$). <br>
+                            b) The maximum possible pressure at the diffuser exit ($P_2$). <br>
+                            c) Represent the process on P-v and T-s diagrams.
+                        </p>
+                    </div>
+                    <div class="final-answer-block hidden">
+                        <strong>Final Answer:</strong>
+                        <p>
+                            a) The diffuser exit temperature is $T_2 \approx 259.1$ K ($-14.1$ °C). <br>
+                            b) The maximum possible exit pressure is $P_2 \approx 93.2$ kPa. <br>
+                            c) Diagrams are described below.
+                        </p>
+                    </div>
+                    <div class="solution-block hidden">
+                        <strong>Full Solution:</strong>
+                        <p><strong>1. Convert Units:</strong></p>
+                        <ul>
+                            <li>Inlet Temperature: $T_1 = -45$ °C $+ 273.15 = 228.15$ K</li>
+                            <li>Inlet Velocity: $V_1 = 900 \frac{\text{km}}{\text{h}} \times \frac{1000 \text{ m}}{1 \text{ km}} \times \frac{1 \text{ h}}{3600 \text{ s}} = 250$ m/s</li>
+                        </ul>
+                        <p><strong>2. Apply Steady Flow Energy Equation (SFEE):</strong></p>
+                        <p>For a steady-flow diffuser, the energy balance is:</p>
+                        $$ \dot{q} + h_1 + \frac{V_1^2}{2} = h_2 + \frac{V_2^2}{2} + \dot{w} $$
+                        <p>Assumptions:</p>
+                        <ul>
+                            <li>Adiabatic process: $\dot{q} = 0$</li>
+                            <li>No work done: $\dot{w} = 0$</li>
+                            <li>Negligible potential energy change.</li>
+                        </ul>
+                        <p>The SFEE simplifies to: $h_1 + \frac{V_1^2}{2} = h_2 + \frac{V_2^2}{2}$</p>
+                        <p>Rearranging: $h_2 - h_1 = \frac{V_1^2 - V_2^2}{2}$</p>
+                        <p>For an ideal gas with constant specific heat: $h_2 - h_1 = C_p(T_2 - T_1)$</p>
+                        <p>So, $C_p(T_2 - T_1) = \frac{V_1^2 - V_2^2}{2}$</p>
+                        <p><strong>3. Calculate Exit Temperature ($T_2$):</strong></p>
+                        <ul>
+                            <li>$V_1 = 250$ m/s</li>
+                            <li>$V_2 = 20$ m/s</li>
+                            <li>$C_p = 1.004$ kJ/kg-K $= 1004$ J/kg-K (Table A.5)</li>
+                        </ul>
+                        $$ T_2 = T_1 + \frac{V_1^2 - V_2^2}{2 C_p} $$
+                        $$ T_2 = 228.15 \text{ K} + \frac{(250 \text{ m/s})^2 - (20 \text{ m/s})^2}{2 \times 1004 \text{ J/kg-K}} $$
+                        $$ T_2 = 228.15 \text{ K} + \frac{62500 - 400}{2008} \frac{\text{m}^2/\text{s}^2}{\text{J/kg-K}} $$
+                        $$ T_2 = 228.15 \text{ K} + \frac{62100}{2008} \text{ K} $$
+                        $$ T_2 = 228.15 \text{ K} + 30.926 \text{ K} $$
+                        $$ T_2 = 259.076 \text{ K} \approx 259.1 \text{ K} $$
+                        <p><strong>4. Calculate Exit Pressure ($P_2$):</strong></p>
+                        <p>The process is reversible and adiabatic, hence isentropic ($s_2 = s_1$). For an ideal gas with constant specific heats undergoing an isentropic process:</p>
+                        $$ \frac{T_2}{T_1} = \left(\frac{P_2}{P_1}\right)^{\frac{k-1}{k}} $$
+                        <p>Rearranging for $P_2$:</p>
+                        $$ P_2 = P_1 \left(\frac{T_2}{T_1}\right)^{\frac{k}{k-1}} $$
+                        <ul>
+                            <li>$k = 1.4$ (Table A.5)</li>
+                            <li>$k/(k-1) = 1.4 / (1.4 - 1) = 1.4 / 0.4 = 3.5$</li>
+                            <li>$P_1 = 60$ kPa</li>
+                        </ul>
+                        $$ P_2 = 60 \text{ kPa} \times \left(\frac{259.076 \text{ K}}{228.15 \text{ K}}\right)^{3.5} $$
+                        $$ P_2 = 60 \text{ kPa} \times (1.13555)^{3.5} $$
+                        $$ P_2 = 60 \text{ kPa} \times 1.5538 $$
+                        $$ P_2 = 93.228 \text{ kPa} \approx 93.2 \text{ kPa} $$
+                        <p><strong>5. Process Representation:</strong></p>
+                        <ul>
+                            <li><strong>T-s Diagram:</strong> The process is isentropic, so it is represented by a vertical line segment pointing upwards (entropy $s$ is constant, temperature $T$ increases from $T_1$ to $T_2$). Lines of constant pressure would show $P_2 > P_1$.</li>
+                            <li><strong>P-v Diagram:</strong> The process follows $Pv^k = \text{constant}$. It is represented by a curve moving from low pressure ($P_1$) and high specific volume ($v_1$) to high pressure ($P_2$) and low specific volume ($v_2$).</li>
+                        </ul>
+                        <p><strong>Table Values Used Summary:</strong></p>
+                        <ul>
+                           <li>Air: $C_p = 1.004$ kJ/kg-K, $k = 1.4$ (from Table A.5)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- End Question 1 -->
+
+        <!-- Question 2 -->
+        <div class="accordion-item" data-state="collapsed">
+            <div class="accordion-header">
+                <h2>Question 2: Reversible Heat Pump Work</h2>
+                <span class="state-indicator" title="Status Indicator"></span>
+            </div>
+            <div class="accordion-content">
+                <div class="content-inner">
+                    <div class="question-block">
+                        <strong>Question:</strong>
+                        <p>
+                            A steady flow of $2$ kg/s of R-410A, initially saturated vapour at $500$ kPa, is heated at constant pressure to a final temperature of $60$°C. This heating is achieved using a heat pump that absorbs heat from the ambient surroundings at $300$ K and requires a work input. Assuming all processes are reversible, determine the rate of work input required by the heat pump.
+                        </p>
+                    </div>
+                    <div class="final-answer-block hidden">
+                        <strong>Final Answer:</strong>
+                        <p>
+                            The rate of work input required by the heat pump is $3.95$ kW.
+                        </p>
+                    </div>
+                    <div class="solution-block hidden">
+                        <strong>Full Solution:</strong>
+                        <p><strong>1. Determine State 1 Properties (Saturated Vapor at 500 kPa):</strong></p>
+                        <p>Interpolate in Table B.4.1 between $P=480.4$ kPa ($T=-15$°C) and $P=573.1$ kPa ($T=-10$°C):</p>
+                        <ul>
+                           <li>$h_1 = 273.90 + \frac{500 - 480.4}{573.1 - 480.4} \times (275.78 - 273.90) = 273.90 + 0.397 = 274.30$ kJ/kg</li>
+                           <li>$s_1 = 1.0671 + \frac{500 - 480.4}{573.1 - 480.4} \times (1.0567 - 1.0671) = 1.0671 - 0.0022 = 1.0649$ kJ/kg-K</li>
+                        </ul>
+                        <p><strong>2. Determine State 2 Properties (Superheated at 500 kPa, 60°C):</strong></p>
+                         <p>Interpolate in Table B.4.2 between $P=400$ kPa and $P=600$ kPa at $T_2=60$°C:</p>
+                        <ul>
+                           <li>$h_2 = 343.58 + \frac{500 - 400}{600 - 400} \times (341.05 - 343.58) = 343.58 - 1.265 = 342.315$ kJ/kg</li>
+                           <li>$s_2 = 1.3242 + \frac{500 - 400}{600 - 400} \times (1.2722 - 1.3242) = 1.3242 - 0.026 = 1.2982$ kJ/kg-K</li>
+                        </ul>
+                         <p><strong>3. Calculate Heat Transfer Rate to R-410A ($\dot{Q}_H$):</strong></p>
+                        <p>This is the heat output from the heat pump to the R-410A.</p>
+                        $$ \dot{Q}_H = \dot{m}(h_2 - h_1) = 2 \frac{\text{kg}}{\text{s}} \times (342.315 - 274.30) \frac{\text{kJ}}{\text{kg}} $$
+                        $$ \dot{Q}_H = 2 \times 68.015 = 136.03 \text{ kW} $$
+                         <p><strong>4. Calculate Reversible Work Input ($\dot{W}_{HP}$):</strong></p>
+                        <p>For a reversible process heating the stream from state 1 to 2 using heat from ambient $T_0=300$ K, the minimum work input is equal to the increase in the flow exergy of the stream (since exergy of heat from ambient is zero).</p>
+                        $$ \dot{W}_{HP, rev} = \dot{m}(\psi_2 - \psi_1) $$
+                        <p>Where flow exergy change $\psi_2 - \psi_1 = (h_2 - h_1) - T_0(s_2 - s_1)$.</p>
+                        $$ \dot{W}_{HP, rev} = \dot{m}[(h_2 - h_1) - T_0(s_2 - s_1)] $$
+                        $$ \dot{W}_{HP, rev} = 2 \frac{\text{kg}}{\text{s}} \times [ (342.315 - 274.30) \frac{\text{kJ}}{\text{kg}} - 300 \text{ K} \times (1.2982 - 1.0649) \frac{\text{kJ}}{\text{kg-K}} ] $$
+                        $$ \dot{W}_{HP, rev} = 2 \times [ 68.015 - 300 \times 0.2333 ] \text{ kW} $$
+                        $$ \dot{W}_{HP, rev} = 2 \times [ 68.015 - 69.99 ] \text{ kW} $$
+                        $$ \dot{W}_{HP, rev} = 2 \times [-1.975] \text{ kW} = -3.95 \text{ kW} $$
+                        <p>The negative sign indicates that this work is done *on* the system (input). Conventionally, work input is positive.</p>
+                        <p>Therefore, the rate of work input required is $\dot{W}_{HP} = 3.95$ kW.</p>
+                        <p>(Alternative check: $Q_L = T_0 \dot{m}(s_2-s_1) = 300 \times 2 \times 0.2333 = 139.98$ kW. $W = Q_H - Q_L = 136.03 - 139.98 = -3.95$ kW.)</p>
+                        <p><strong>Table Values Used Summary:</strong></p>
+                        <ul>
+                           <li>R-410A Tables B.4.1 & B.4.2 for $h_1, s_1, h_2, s_2$.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- End Question 2 -->
+
+        <!-- Question 3 -->
+        <div class="accordion-item" data-state="collapsed">
+            <div class="accordion-header">
+                <h2>Question 3: Surrounding Temperature from Exergy Change</h2>
+                <span class="state-indicator" title="Status Indicator"></span>
+            </div>
+            <div class="accordion-content">
+                <div class="content-inner">
+                    <div class="question-block">
+                        <strong>Question:</strong>
+                        <p>
+                            Consider an adiabatic steady-state process where the change in enthalpy ($\Delta h$) is $7200$ kJ/kg, the change in flow exergy ($\Delta \psi$) is $4800$ kJ/kg, and the change in entropy ($\Delta s$) is $8$ kJ/kg-K. Kinetic and potential energy changes are negligible. Determine the temperature of the surroundings ($T_0$).
+                        </p>
+                    </div>
+                    <div class="final-answer-block hidden">
+                        <strong>Final Answer:</strong>
+                        <p>
+                            The surrounding temperature ($T_0$) is $300$ K.
+                        </p>
+                    </div>
+                    <div class="solution-block hidden">
+                        <strong>Full Solution:</strong>
+                        <p>
+                            The change in specific flow exergy ($\psi$) for a steady-state process, neglecting kinetic and potential energy changes, is defined as:
+                        </p>
+                        $$ \Delta\psi = (h_2 - h_1) - T_0(s_2 - s_1) $$
+                        $$ \Delta\psi = \Delta h - T_0\Delta s $$
+                        <p>Where:</p>
+                        <ul>
+                            <li>$\Delta\psi$ is the change in specific flow exergy (kJ/kg)</li>
+                            <li>$\Delta h$ is the change in specific enthalpy (kJ/kg)</li>
+                            <li>$T_0$ is the absolute temperature of the surroundings (K)</li>
+                            <li>$\Delta s$ is the change in specific entropy (kJ/kg-K)</li>
+                        </ul>
+                        <p>Given values:</p>
+                        <ul>
+                           <li>$\Delta h = 7200$ kJ/kg</li>
+                           <li>$\Delta \psi = 4800$ kJ/kg</li>
+                           <li>$\Delta s = 8$ kJ/kg-K</li>
+                        </ul>
+                        <p>We need to find $T_0$. Rearrange the exergy equation to solve for $T_0$:</p>
+                        $$ T_0\Delta s = \Delta h - \Delta \psi $$
+                        $$ T_0 = \frac{\Delta h - \Delta \psi}{\Delta s} $$
+                        <p>Substitute the given values:</p>
+                        $$ T_0 = \frac{7200 \text{ kJ/kg} - 4800 \text{ kJ/kg}}{8 \text{ kJ/kg-K}} $$
+                        $$ T_0 = \frac{2400 \text{ kJ/kg}}{8 \text{ kJ/kg-K}} $$
+                        <p>Calculation:</p>
+                        $$ T_0 = 300 \text{ K} $$
+                        <p><strong>Calculation Check 1:</strong> $(7200 - 4800) / 8 = 2400 / 8 = 300$ K. Units: (kJ/kg) / (kJ/kg-K) = K. Correct.</p>
+                        <p><strong>Calculation Check 2:</strong> Verify the original equation: $\Delta \psi = 7200 - 300 \times 8 = 7200 - 2400 = 4800$ kJ/kg. Matches the given value.</p>
+                        <p>The surrounding temperature $T_0$ is $300$ K.</p>
+                        <p><strong>Table Values Used:</strong> None required.</p>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- End Question 3 -->
+
+        <!-- Question 4 -->
+        <div class="accordion-item" data-state="collapsed">
+             <div class="accordion-header">
+                 <h2>Question 4: Reversible Adiabatic Air Turbine with Mixing</h2>
+                 <span class="state-indicator" title="Status Indicator"></span>
+             </div>
+             <div class="accordion-content">
+                 <div class="content-inner">
+                     <div class="question-block">
+                         <strong>Question:</strong>
+                         <p>
+                             An adiabatic air turbine receives two inlet streams: Stream 1 enters at $1$ kg/s, $1500$ K, and $1.6$ MPa. Stream 2 enters at $2$ kg/s, $400$ kPa, and an unknown temperature $T_2$. The mixture exits the turbine at $100$ kPa. Assuming the entire process within the turbine is reversible and air behaves as an ideal gas (use air tables), determine the temperature $T_2$ required.
+                         </p>
+                     </div>
+                     <div class="final-answer-block hidden">
+                         <strong>Final Answer:</strong>
+                         <p>
+                             The required temperature $T_2$ is approximately $1072$ K.
+                         </p>
+                     </div>
+                     <div class="solution-block hidden">
+                         <strong>Full Solution:</strong>
+                         <p><strong>1. System Definition:</strong> Control volume is the adiabatic turbine.</p>
+                         <p><strong>2. Assumptions:</strong> Steady-state, adiabatic ($\dot{Q}=0$), reversible ($\dot{S}_{gen}=0$), air ideal gas (use Table A.7), negligible KE/PE changes.</p>
+                         <p><strong>3. Governing Equations:</strong></p>
+                         <ul>
+                            <li>Mass Balance: $\dot{m}_3 = \dot{m}_1 + \dot{m}_2 = 1 + 2 = 3$ kg/s</li>
+                            <li>Entropy Balance (Reversible, Adiabatic): $\dot{S}_{gen} = \sum \dot{m}_e s_e - \sum \dot{m}_i s_i = 0$
+                                <br>$\dot{m}_3 s_3 - (\dot{m}_1 s_1 + \dot{m}_2 s_2) = 0$
+                                <br>$3 s_3 = 1 s_1 + 2 s_2$
+                            </li>
+                         </ul>
+                         <p><strong>4. Reversible Process Condition & Interpretation:</strong></p>
+                         <p>For the overall process including mixing and expansion to be reversible, the entropy generation must be zero. If streams 1 and 2 mix at different states ($T$ or $P$), the mixing process itself is inherently irreversible. The only way for the *entire* process (mixing + expansion) to be idealized as reversible overall is if the mixing itself causes no entropy generation, which requires the streams to be at the same state before mixing, OR if the problem implies we must choose $T_2$ such that the specific entropy of stream 2 matches that of stream 1 ($s_2 = s_1$). This forces the mixed stream entering the conceptual "expansion" part to have a uniform specific entropy equal to $s_1$ (and $s_2$), allowing the subsequent expansion to $P_3$ to also be isentropic ($s_3=s_1=s_2$). We proceed with the assumption $s_2 = s_1$.</p>
+                         <p><strong>5. Calculate $s_1$:</strong></p>
+                         <p>Use ideal gas entropy relation: $s = s^\circ(T) - R \ln(P/P_{ref})$. Let $P_{ref} = 100$ kPa = $0.1$ MPa.</p>
+                         <ul>
+                            <li>$T_1 = 1500$ K. From Table A.7.1: $s^\circ(1500 \text{ K}) = 8.61208$ kJ/kg-K.</li>
+                            <li>$P_1 = 1.6$ MPa $= 1600$ kPa. $P_1/P_{ref} = 16$.</li>
+                            <li>$R_{air} = 0.287$ kJ/kg-K (Table A.5).</li>
+                         </ul>
+                         $$ s_1 = 8.61208 - 0.287 \ln(16) = 8.61208 - 0.287 \times 2.7726 $$
+                         $$ s_1 = 8.61208 - 0.7957 = 7.8164 \text{ kJ/kg-K} $$
+                         <p><strong>6. Calculate $T_2$ assuming $s_2 = s_1$:</strong></p>
+                         <ul>
+                            <li>$s_2 = s^\circ(T_2) - R \ln(P_2/P_{ref})$</li>
+                            <li>$P_2 = 400$ kPa. $P_2/P_{ref} = 4$.</li>
+                         </ul>
+                         $$ 7.8164 = s^\circ(T_2) - 0.287 \ln(4) $$
+                         $$ 7.8164 = s^\circ(T_2) - 0.287 \times 1.3863 $$
+                         $$ 7.8164 = s^\circ(T_2) - 0.3978 $$
+                         $$ s^\circ(T_2) = 7.8164 + 0.3978 = 8.2142 \text{ kJ/kg-K} $$
+                         <p><strong>7. Find $T_2$ by Interpolation (Table A.7.1):</strong></p>
+                         <p>$s^\circ(T_2) = 8.2142$ lies between $s^\circ(1050 \text{ K}) = 8.19081$ and $s^\circ(1100 \text{ K}) = 8.24449$.</p>
+                         $$ T_2 = 1050 \text{ K} + \frac{8.2142 - 8.19081}{8.24449 - 8.19081} \times (1100 \text{ K} - 1050 \text{ K}) $$
+                         $$ T_2 = 1050 + \frac{0.02339}{0.05368} \times 50 $$
+                         $$ T_2 = 1050 + 0.4357 \times 50 = 1050 + 21.79 \approx 1071.8 \text{ K} $$
+                         <p>Rounding, $T_2 \approx 1072$ K.</p>
+                         <p><strong>Table Values Used Summary:</strong></p>
+                         <ul>
+                            <li>Air: $R = 0.287$ kJ/kg-K (Table A.5). Table A.7.1 for $s^\circ$ values at $1500$ K, $1050$ K, $1100$ K.</li>
+                         </ul>
+                     </div>
+                 </div>
+             </div>
+         </div> <!-- End Question 4 -->
+
+         <!-- Question 5 -->
+         <div class="accordion-item" data-state="collapsed">
+             <div class="accordion-header">
+                 <h2>Question 5: Tank Discharge Entropy Generation</h2>
+                 <span class="state-indicator" title="Status Indicator"></span>
+             </div>
+             <div class="accordion-content">
+                 <div class="content-inner">
+                     <div class="question-block">
+                         <strong>Question:</strong>
+                         <p>
+                             A tank with a volume of $0.002$ m³ initially contains air at $300$ kPa and $400$ K. A valve is opened, allowing some air to escape to the ambient surroundings until the pressure inside the tank drops to $200$ kPa. During this process, the tank is heated such that the temperature of the air remaining inside remains constant at $400$ K. Assuming the process is internally reversible, determine the mass-averaged specific entropy of the air that escaped the tank.
+                         </p>
+                     </div>
+                     <div class="final-answer-block hidden">
+                         <strong>Final Answer:</strong>
+                         <p>
+                             The mass-averaged specific entropy of the leaving air is $s_{e,avg} \approx 6.897$ kJ/kg-K.
+                         </p>
+                     </div>
+                     <div class="solution-block hidden">
+                         <strong>Full Solution:</strong>
+                         <p><strong>1. System:</strong> Control volume enclosing the tank.</p>
+                         <p><strong>2. Process:</strong> Unsteady flow, mass leaving, heat added, constant temperature inside $T=400$ K. Internally reversible ($S_{gen}=0$).</p>
+                         <p><strong>3. States:</strong> Air is Ideal Gas.</p>
+                         <ul>
+                            <li>Initial (1): $P_1 = 300$ kPa, $T_1 = 400$ K, $V_1 = 0.002$ m³</li>
+                            <li>Final (2): $P_2 = 200$ kPa, $T_2 = 400$ K, $V_2 = 0.002$ m³</li>
+                         </ul>
+                         <p><strong>4. Mass Calculations:</strong> $m = PV / (RT)$</p>
+                         <ul>
+                            <li>$R_{air} = 0.287$ kJ/kg-K (Table A.5)</li>
+                            <li>$m_1 = \frac{300 \times 0.002}{0.287 \times 400} = \frac{0.6}{114.8} = 5.2265$ kg</li>
+                            <li>$m_2 = \frac{200 \times 0.002}{0.287 \times 400} = \frac{0.4}{114.8} = 3.4843$ kg</li>
+                            <li>Mass escaped: $m_e = m_1 - m_2 = 5.2265 - 3.4843 = 1.7422$ kg</li>
+                         </ul>
+                         <p><strong>5. Property Values at T = 400 K:</strong> (Table A.7.1)</p>
+                         <ul>
+                            <li>$u_1 = u_2 = u = 286.49$ kJ/kg</li>
+                            <li>$h_1 = h_2 = h = 401.30$ kJ/kg</li>
+                            <li>$s^\circ = 7.15926$ kJ/kg-K</li>
+                            <li>Enthalpy of escaping air $h_{e,avg} = h = 401.30$ kJ/kg (since T is constant)</li>
+                         </ul>
+                         <p>Calculate specific entropies inside: $s = s^\circ(T) - R \ln(P/P_{ref})$, $P_{ref}=100$ kPa.</p>
+                         <ul>
+                            <li>$s_1 = 7.15926 - 0.287 \ln(300/100) = 7.15926 - 0.3153 = 6.8440$ kJ/kg-K</li>
+                            <li>$s_2 = 7.15926 - 0.287 \ln(200/100) = 7.15926 - 0.1989 = 6.9604$ kJ/kg-K</li>
+                         </ul>
+                         <p><strong>6. Energy Balance (Unsteady Flow):</strong> $\Delta U_{cv} = Q_{cv} - W_{cv} - \int \dot{m}_e h_e dt$</p>
+                         <p>$U_2 - U_1 = Q_{cv} - 0 - m_e h_{e,avg}$ (W=0, E=U)</p>
+                         <p>$m_2 u_2 - m_1 u_1 = Q_{cv} - m_e h$</p>
+                         <p>Since $u_1 = u_2 = u$ and $h_{e,avg} = h$: $(m_2 - m_1)u = Q_{cv} - m_e h$</p>
+                         <p>$-m_e u = Q_{cv} - m_e h \implies Q_{cv} = m_e (h - u) = m_e (RT)$</p>
+                         $$ Q_{cv} = 1.7422 \text{ kg} \times 0.287 \frac{\text{kJ}}{\text{kg-K}} \times 400 \text{ K} = 199.98 \text{ kJ} \approx 200 \text{ kJ} $$
+                         <p><strong>7. Entropy Balance (Unsteady Flow):</strong> $\Delta S_{cv} = \int \frac{\dot{Q}_{cv}}{T_b} dt - \int \dot{m}_e s_e dt + S_{gen}$</p>
+                         <p>$S_2 - S_1 = \frac{Q_{cv}}{T} - m_e s_{e,avg} + 0$ (T_b = T = 400K, internally reversible $S_{gen}=0$)</p>
+                         <p>$m_2 s_2 - m_1 s_1 = \frac{Q_{cv}}{T} - m_e s_{e,avg}$</p>
+                         <p>Rearrange for $s_{e,avg}$:</p>
+                         $$ m_e s_{e,avg} = \frac{Q_{cv}}{T} - (m_2 s_2 - m_1 s_1) $$
+                         $$ s_{e,avg} = \frac{Q_{cv}}{m_e T} - \frac{m_2 s_2 - m_1 s_1}{m_e} $$
+                         <p>Substitute values:</p>
+                         <ul>
+                             <li>$\frac{Q_{cv}}{m_e T} = \frac{m_e R T}{m_e T} = R = 0.287$ kJ/kg-K</li>
+                             <li>$m_2 s_2 = 3.4843 \times 6.9604 = 24.2529$ kJ/K</li>
+                             <li>$m_1 s_1 = 5.2265 \times 6.8440 = 35.7695$ kJ/K</li>
+                             <li>$\frac{m_2 s_2 - m_1 s_1}{m_e} = \frac{24.2529 - 35.7695}{1.7422} = \frac{-11.5166}{1.7422} = -6.6103$ kJ/kg-K</li>
+                         </ul>
+                         $$ s_{e,avg} = 0.287 - (-6.6103) = 0.287 + 6.6103 = 6.8973 \text{ kJ/kg-K} $$
+                         <p>Rounding, $s_{e,avg} \approx 6.897$ kJ/kg-K.</p>
+                         <p><strong>Table Values Used Summary:</strong></p>
+                         <ul>
+                             <li>Air: $R=0.287$ kJ/kg-K (Table A.5). Table A.7.1 for $u, h, s^\circ$ at 400 K.</li>
+                         </ul>
+                     </div>
+                 </div>
+             </div>
+         </div> <!-- End Question 5 -->
+
+         <!-- Question 6 -->
+         <div class="accordion-item" data-state="collapsed">
+              <div class="accordion-header">
+                  <h2>Question 6: Compressor Work for Tank Charging</h2>
+                  <span class="state-indicator" title="Status Indicator"></span>
+              </div>
+              <div class="accordion-content">
+                  <div class="content-inner">
+                      <div class="question-block">
+                          <strong>Question:</strong>
+                          <p>
+                              An initially evacuated, insulated tank of $2$ m³ volume is charged with R-134a from a supply line carrying the refrigerant at $3$ MPa. The valve is closed when the pressure inside the tank reaches $3$ MPa. The supply line is fed by an insulated, reversible compressor that takes in R-134a at $5$°C with a quality of $96.5\%$ and compresses it to $3$ MPa. Calculate the total work input to the compressor required to charge the tank.
+                          </p>
+                      </div>
+                      <div class="final-answer-block hidden">
+                          <strong>Final Answer:</strong>
+                          <p>
+                              The total work input to the compressor is $W_{comp,total} \approx 11.6$ MJ.
+                          </p>
+                      </div>
+                      <div class="solution-block hidden">
+                          <strong>Full Solution:</strong>
+                          <p><strong>1. Compressor Analysis (Steady, Adiabatic, Reversible = Isentropic):</strong></p>
+                          <ul>
+                              <li>Inlet State (c1): $T_{c1} = 5$°C, $x_{c1} = 0.965$. From Table B.5.1 at 5°C ($P_{sat}=350.9$ kPa):
+                                  <br>$h_{c1} = h_f + x_{c1} h_{fg} = 206.75 + 0.965 \times 194.57 = 206.75 + 187.76 = 394.51$ kJ/kg
+                                  <br>$s_{c1} = s_f + x_{c1} s_{fg} = 1.0243 + 0.965 \times 0.6995 = 1.0243 + 0.6750 = 1.6993$ kJ/kg-K
+                              </li>
+                              <li>Outlet State (c2 / Line State): $P_{c2} = 3$ MPa $= 3000$ kPa, $s_{c2} = s_{c1} = 1.6993$ kJ/kg-K.
+                                  <br>Check Table B.5.2 at $P=3000$ kPa: $s_g = 1.6763$ kJ/kg-K. Since $s_{c2} > s_g$, it's superheated.
+                                  <br>Interpolate between $T=90$°C ($s=1.6861$) and $T=100$°C ($s=1.7141$) for $h_{c2}$:
+                                  $$ h_{c2} = 425.70 + \frac{1.6993 - 1.6861}{1.7141 - 1.6861} \times (438.56 - 425.70) $$
+                                  $$ h_{c2} = 425.70 + \frac{0.0132}{0.0280} \times 12.86 = 425.70 + 6.06 = 431.76 \text{ kJ/kg} $$
+                              </li>
+                              <li>Compressor specific work: $w_{comp} = h_{c2} - h_{c1} = 431.76 - 394.51 = 37.25$ kJ/kg</li>
+                          </ul>
+                          <p><strong>2. Tank Filling Analysis (Unsteady):</strong></p>
+                           <ul>
+                              <li>System: Tank (Control Volume). $Q=0, W=0$.</li>
+                              <li>Initial state (t1): Evacuated, $m_{t1}=0, U_{t1}=0$.</li>
+                              <li>Final state (t2): $P_{t2} = 3$ MPa.</li>
+                              <li>Mass balance: $m_{t2} - m_{t1} = m_{in} \implies m_{t2} = m_{in}$</li>
+                              <li>Energy balance: $U_{t2} - U_{t1} = m_{in} h_{line} \implies m_{t2} u_{t2} = m_{t2} h_{c2} \implies u_{t2} = h_{c2}$</li>
+                              <li>Final state in tank: $P_{t2} = 3000$ kPa, $u_{t2} = h_{c2} = 431.76$ kJ/kg.</li>
+                              <li>Find $v_{t2}$ by interpolating in Table B.5.2 at $P=3000$ kPa for $u=431.76$:
+                                  <br>Interpolate between $T=110$°C ($u=429.78, v=0.006323$) and $T=120$°C ($u=442.53, v=0.006835$):
+                                  $$ v_{t2} = 0.006323 + \frac{431.76 - 429.78}{442.53 - 429.78} \times (0.006835 - 0.006323) $$
+                                  $$ v_{t2} = 0.006323 + \frac{1.98}{12.75} \times 0.000512 = 0.006323 + 0.0000795 = 0.006403 \text{ m³/kg} $$
+                              </li>
+                              <li>Final mass in tank: $m_{t2} = V / v_{t2} = 2 \text{ m³} / 0.006403 \text{ m³/kg} = 312.35$ kg</li>
+                              <li>Total mass compressed: $m_{in} = m_{t2} = 312.35$ kg</li>
+                           </ul>
+                          <p><strong>3. Total Compressor Work:</strong></p>
+                          $$ W_{comp,total} = m_{in} \times w_{comp} = 312.35 \text{ kg} \times 37.25 \frac{\text{kJ}}{\text{kg}} $$
+                          $$ W_{comp,total} = 11635.5 \text{ kJ} \approx 11.6 \text{ MJ} $$
+                          <p><strong>Table Values Used Summary:</strong></p>
+                          <ul>
+                              <li>R-134a Tables B.5.1 & B.5.2 for $h, s, u, v$ at various states.</li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+          </div> <!-- End Question 6 -->
+
+          <!-- Question 7 -->
+          <div class="accordion-item" data-state="collapsed">
+              <div class="accordion-header">
+                  <h2>Question 7: Compressor Entropy Generation</h2>
+                  <span class="state-indicator" title="Status Indicator"></span>
+              </div>
+              <div class="accordion-content">
+                  <div class="content-inner">
+                      <div class="question-block">
+                          <strong>Question:</strong>
+                          <p>
+                              A compressor in a commercial refrigerator operates with R-410A. The refrigerant enters as saturated vapor ($x=1$) at $-25$°C. The exit conditions are $2000$ kPa and $80$°C. Neglecting kinetic energies, calculate the specific entropy generation during this process.
+                          </p>
+                      </div>
+                      <div class="final-answer-block hidden">
+                          <strong>Final Answer:</strong>
+                          <p>
+                              The specific entropy generation is $s_{gen} = 0.0480$ kJ/kg-K.
+                          </p>
+                      </div>
+                      <div class="solution-block hidden">
+                          <strong>Full Solution:</strong>
+                          <p><strong>1. Identify States:</strong></p>
+                          <ul>
+                              <li>Inlet State (1): $T_1 = -25$°C, $x_1 = 1$ (saturated vapor).</li>
+                              <li>Exit State (2): $P_2 = 2000$ kPa, $T_2 = 80$°C.</li>
+                          </ul>
+                          <p><strong>2. Find Entropy at State 1:</strong></p>
+                          <p>From Table B.4.1 for saturated R-410A at $T_1 = -25$°C:</p>
+                          <ul><li>$s_1 = s_g = 1.0893$ kJ/kg-K</li></ul>
+                          <p><strong>3. Find Entropy at State 2:</strong></p>
+                          <p>State 2 is defined by $P_2 = 2000$ kPa and $T_2 = 80$°C. Check Table B.4.2 (Superheated R-410A). At $P=2000$ kPa ($2$ MPa), $T_{sat} = 32.31$°C. Since $T_2 > T_{sat}$, the state is superheated.</p>
+                          <p>From Table B.4.2 at $P=2000$ kPa and $T=80$°C:</p>
+                          <ul><li>$s_2 = 1.1373$ kJ/kg-K</li></ul>
+                          <p><strong>4. Calculate Specific Entropy Generation:</strong></p>
+                          <p>Apply the entropy balance for a steady-flow control volume:</p>
+                          $$ \frac{dS_{cv}}{dt} = \sum (\frac{\dot{Q}}{T})_b + \sum \dot{m}_i s_i - \sum \dot{m}_e s_e + \dot{S}_{gen} $$
+                          <p>For steady state ($dS_{cv}/dt = 0$) and assuming the compressor is adiabatic ($\dot{Q}=0$):</p>
+                          $$ 0 = \dot{m}s_1 - \dot{m}s_2 + \dot{S}_{gen} $$
+                          $$ \dot{S}_{gen} = \dot{m}(s_2 - s_1) $$
+                          <p>The specific entropy generation (per unit mass) is:</p>
+                          $$ s_{gen} = \frac{\dot{S}_{gen}}{\dot{m}} = s_2 - s_1 $$
+                          $$ s_{gen} = 1.1373 \frac{\text{kJ}}{\text{kg-K}} - 1.0893 \frac{\text{kJ}}{\text{kg-K}} $$
+                          $$ s_{gen} = 0.0480 \frac{\text{kJ}}{\text{kg-K}} $$
+                          <p><strong>Table Values Used Summary:</strong></p>
+                          <ul>
+                              <li>R-410A Tables B.4.1 & B.4.2 for $s_1, s_2$.</li>
+                          </ul>
+                      </div>
+                  </div>
+              </div>
+          </div> <!-- End Question 7 -->
+
+          <!-- Question 8 -->
+          <div class="accordion-item" data-state="collapsed">
+               <div class="accordion-header">
+                   <h2>Question 8: Heat Exchanger Entropy Generation</h2>
+                   <span class="state-indicator" title="Status Indicator"></span>
+               </div>
+               <div class="accordion-content">
+                   <div class="content-inner">
+                       <div class="question-block">
+                           <strong>Question:</strong>
+                           <p>
+                               A counter-flow heat exchanger operates steadily. One line carries air ($\dot{m}_{air} = 2$ kg/s) entering at $125$ kPa, $1000$ K and leaving at $100$ kPa, $400$ K. The other line carries water ($\dot{m}_{water} = 0.5$ kg/s) entering at $200$ kPa, $20$°C and leaving at $200$ kPa. Assuming the heat exchanger is adiabatic, determine: <br>
+                               a) The exit temperature of the water ($T_{w4}$). <br>
+                               b) The total rate of entropy generation ($\dot{S}_{gen}$).
+                           </p>
+                       </div>
+                       <div class="final-answer-block hidden">
+                           <strong>Final Answer:</strong>
+                           <p>
+                               a) The water exit temperature is $T_{w4} = 120.23$ °C (saturated mixture). <br>
+                               b) The total rate of entropy generation is $\dot{S}_{gen} \approx 1.54$ kW/K.
+                           </p>
+                       </div>
+                       <div class="solution-block hidden">
+                           <strong>Full Solution:</strong>
+                           <p><strong>1. Energy Balance:</strong></p>
+                           <p>For a steady-state, adiabatic heat exchanger with no work: $\sum \dot{m}_i h_i = \sum \dot{m}_e h_e$</p>
+                           $$ \dot{m}_{air}h_{a1} + \dot{m}_{water}h_{w3} = \dot{m}_{air}h_{a2} + \dot{m}_{water}h_{w4} $$
+                           <p><strong>2. Get Properties:</strong></p>
+                           <ul>
+                               <li>Air (Table A.7.1): $h_{a1}(1000K) = 1046.22$ kJ/kg, $h_{a2}(400K) = 401.30$ kJ/kg.</li>
+                               <li>Water Inlet (w3): $P=200$ kPa, $T=20$°C. Since $T < T_{sat}(200 \text{kPa})=120.23$°C, it's compressed liquid. Approximate using saturated liquid properties at $20$°C (Table B.1.1): $h_{w3} \approx h_f(20°C) = 83.94$ kJ/kg. $s_{w3} \approx s_f(20°C) = 0.2966$ kJ/kg-K.</li>
+                           </ul>
+                            <p><strong>3. Calculate $h_{w4}$:</strong></p>
+                            $$ \dot{m}_{water}h_{w4} = \dot{m}_{air}(h_{a1} - h_{a2}) + \dot{m}_{water}h_{w3} $$
+                            $$ 0.5 \, h_{w4} = 2 \, (1046.22 - 401.30) + 0.5 \times 83.94 $$
+                            $$ 0.5 \, h_{w4} = 2 \times 644.92 + 41.97 = 1289.84 + 41.97 = 1331.81 \text{ kW} $$
+                            $$ h_{w4} = \frac{1331.81}{0.5} = 2663.62 \text{ kJ/kg} $$
+                            <p><strong>4. Determine Water Exit Temperature ($T_{w4}$):</strong></p>
+                            <p>Find state at $P_{w4}=200$ kPa, $h_{w4}=2663.62$ kJ/kg.</p>
+                            <p>From Table B.1.2 at 200 kPa: $h_f=504.68$, $h_g=2706.63$ kJ/kg.</p>
+                            <p>Since $h_f < h_{w4} < h_g$, state w4 is a saturated mixture.</p>
+                            <p>$T_{w4} = T_{sat}(200 \text{ kPa}) = 120.23$ °C.</p>
+                            <p><strong>5. Entropy Generation Rate:</strong></p>
+                            $$ \dot{S}_{gen} = \sum \dot{m}_e s_e - \sum \dot{m}_i s_i \quad (\text{Adiabatic, Steady}) $$
+                            $$ \dot{S}_{gen} = (\dot{m}_{air}s_{a2} + \dot{m}_{water}s_{w4}) - (\dot{m}_{air}s_{a1} + \dot{m}_{water}s_{w3}) $$
+                            <ul>
+                               <li>Calculate air entropies: $s = s^\circ(T) - R \ln(P/P_{ref})$, $P_{ref}=100$ kPa, $R=0.287$ kJ/kg-K.
+                                    <br>$s_{a1} = s^\circ(1000\text{K}) - R \ln(125/100) = 8.13493 - 0.287\ln(1.25) = 8.13493 - 0.0640 = 8.0709$ kJ/kg-K
+                                    <br>$s_{a2} = s^\circ(400\text{K}) - R \ln(100/100) = 7.15926 - 0 = 7.15926$ kJ/kg-K
+                               </li>
+                                <li>Calculate $s_{w4}$: Need quality $x_{w4}$.
+                                     $$ x_{w4} = \frac{h_{w4} - h_f}{h_{fg}} = \frac{2663.62 - 504.68}{2201.96} = \frac{2158.94}{2201.96} = 0.98046 $$
+                                     $$ s_{w4} = s_f + x_{w4}s_{fg} = 1.5300 + 0.98046 \times 5.5970 = 1.5300 + 5.4876 = 7.0176 \text{ kJ/kg-K} $$
+                                </li>
+                            </ul>
+                            $$ \dot{S}_{gen} = [2 \times 7.15926 + 0.5 \times 7.0176] - [2 \times 8.0709 + 0.5 \times 0.2966] $$
+                            $$ \dot{S}_{gen} = [14.3185 + 3.5088] - [16.1418 + 0.1483] $$
+                            $$ \dot{S}_{gen} = 17.8273 - 16.2901 = 1.5372 \text{ kW/K} \approx 1.54 \text{ kW/K} $$
+                           <p><strong>Table Values Used Summary:</strong></p>
+                           <ul>
+                               <li>Air Tables A.5 & A.7.1 for $R, C_p, h, s^\circ$.</li>
+                               <li>Water Tables B.1.1 & B.1.2 for $h_f, h_g, h_{fg}, s_f, s_g, s_{fg}, T_{sat}$.</li>
+                           </ul>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 8 -->
+
+          <!-- Question 9 -->
+          <div class="accordion-item" data-state="collapsed">
+               <div class="accordion-header">
+                   <h2>Question 9: R-134a Tank Filling and Warming</h2>
+                   <span class="state-indicator" title="Status Indicator"></span>
+               </div>
+               <div class="accordion-content">
+                   <div class="content-inner">
+                       <div class="question-block">
+                           <strong>Question:</strong>
+                           <p>
+                               An initially empty can with a volume of $0.002$ m³ is filled with R-134a from a supply line carrying saturated liquid R-134a at $0$°C. The filling process is rapid and assumed adiabatic. Subsequently, the can is stored and warms up to the room temperature of $20$°C. Find: <br>
+                               a) The final mass of R-134a in the can. <br>
+                               b) The total entropy generation for the entire process (filling + warming).
+                           </p>
+                       </div>
+                       <div class="final-answer-block hidden">
+                           <strong>Final Answer:</strong>
+                           <p>
+                               a) Final mass $m_2 \approx 2.32$ kg. <br>
+                               b) Total entropy generation $S_{gen,total} \approx 0.0098$ kJ/K.
+                           </p>
+                       </div>
+                       <div class="solution-block hidden">
+                           <strong>Full Solution:</strong>
+                           <p><strong>1. Filling Process (0 -> 1):</strong></p>
+                           <ul>
+                               <li>System: Tank (CV). Adiabatic ($Q=0$), $W=0$, initially empty ($m_0=0, U_0=0$).</li>
+                               <li>Inlet state (line): Saturated liquid at $T_i = 0$°C. From Table B.5.1: $h_i = h_f(0°C) = 200.00$ kJ/kg, $s_i = s_f(0°C) = 1.0000$ kJ/kg-K.</li>
+                               <li>Energy Balance (Unsteady): $U_1 - U_0 = m_1 h_i \implies m_1 u_1 = m_1 h_i \implies u_1 = h_i = 200.00$ kJ/kg.</li>
+                               <li>State 1 (end of filling): $u_1 = 200.00$ kJ/kg. Check Table B.5.1 at 0°C: $u_f=199.77$, $u_g=378.01$. Since $u_f < u_1 < u_g$, state 1 is saturated mixture at $T_1=0$°C.</li>
+                               <li>Quality $x_1$: $u_1 = u_f + x_1 u_{fg} \implies 200.00 = 199.77 + x_1 (178.24) \implies x_1 = 0.23 / 178.24 = 0.00129$.</li>
+                               <li>Specific volume $v_1$: $v_1 = v_f + x_1 v_{fg} = 0.000773 + 0.00129 (0.068417) = 0.000773 + 0.000088 = 0.000861$ m³/kg (using $v_{fg} \approx v_g$).</li>
+                               <li>Mass filled $m_1$: $m_1 = V / v_1 = 0.002 \text{ m³} / 0.000861 \text{ m³/kg} = 2.323$ kg.</li>
+                               <li>Entropy $s_1$: $s_1 = s_f + x_1 s_{fg} = 1.0000 + 0.00129 \times 0.7262 = 1.0000 + 0.0009 = 1.0009$ kJ/kg-K.</li>
+                           </ul>
+                           <p><strong>2. Warming Process (1 -> 2):</strong></p>
+                            <ul>
+                               <li>System: Closed tank (constant mass $m_2=m_1$, constant volume $V_2=V$).</li>
+                               <li>Initial state (1): From above.</li>
+                               <li>Final state (2): $T_2 = 20$°C, $v_2 = v_1 = 0.000861$ m³/kg.</li>
+                               <li>Find state 2 properties: Check Table B.5.1 at 20°C: $v_f=0.000817$, $v_g=0.03606$. Since $v_f < v_2 < v_g$, state 2 is saturated mixture at $T_2=20$°C ($P_2=572.8$ kPa).</li>
+                               <li>Quality $x_2$: $v_2 = v_f + x_2 v_{fg} \implies 0.000861 = 0.000817 + x_2 (0.035243) \implies x_2 = 0.000044 / 0.035243 = 0.00125$.</li>
+                               <li>Entropy $s_2$: $s_2 = s_f + x_2 s_{fg} = 1.0963 + 0.00125 \times 0.6220 = 1.0963 + 0.0008 = 1.0971$ kJ/kg-K.</li>
+                           </ul>
+                           <p><strong>3. Final Mass:</strong></p>
+                           <ul><li> $m_2 = m_1 = 2.323$ kg.</li></ul>
+                           <p><strong>4. Total Entropy Generation ($S_{gen,total}$):</strong></p>
+                           <p>Consider the overall process (0 -> 2). The system boundary includes the tank and the valve. The surroundings are at $T_{surr} = 20$°C $= 293.15$ K.</p>
+                           <p>Calculate $S_{gen}$ for each step:</p>
+                           <ul>
+                               <li>Step 0->1 (Filling, Adiabatic): $S_{gen,01} = \Delta S_{sys} - \sum m_i s_i + \sum m_e s_e + \int \frac{\delta Q}{T_b}$
+                               <br>$S_{gen,01} = (S_1 - S_0) - m_1 s_i + 0 + 0 = m_1 s_1 - 0 - m_1 s_i = m_1 (s_1 - s_i)$
+                               <br>$S_{gen,01} = 2.323 \text{ kg} \times (1.0009 - 1.0000) \frac{\text{kJ}}{\text{kg-K}} = 2.323 \times 0.0009 = 0.0021$ kJ/K.
+                               </li>
+                               <li>Step 1->2 (Warming, Constant Volume): $S_{gen,12} = \Delta S_{sys} - \int \frac{\delta Q}{T_b}$
+                               <br>Heat transfer $Q_{12}$ comes from surroundings at $T_{surr}$. $T_b = T_{surr} = 293.15$ K.
+                               <br>$Q_{12} = U_2 - U_1 = m_1 (u_2 - u_1)$.
+                               <br>$u_2 = u_f(20°C) + x_2 u_{fg}(20°C) = 227.03 + 0.00125 \times 162.16 = 227.03 + 0.20 = 227.23$ kJ/kg.
+                               <br>$Q_{12} = 2.323 \text{ kg} \times (227.23 - 200.00) \frac{\text{kJ}}{\text{kg}} = 2.323 \times 27.23 = 63.27$ kJ.
+                               <br>$S_{gen,12} = (S_2 - S_1) - \frac{Q_{12}}{T_{surr}} = m_1(s_2 - s_1) - \frac{Q_{12}}{T_{surr}}$
+                               <br>$S_{gen,12} = 2.323 (1.0971 - 1.0009) - \frac{63.27}{293.15} = 2.323 \times 0.0962 - 0.2158$
+                               <br>$S_{gen,12} = 0.2235 - 0.2158 = 0.0077$ kJ/K.
+                               </li>
+                           </ul>
+                           $$ S_{gen,total} = S_{gen,01} + S_{gen,12} = 0.0021 + 0.0077 = 0.0098 \text{ kJ/K} $$
+                           <p><strong>Table Values Used Summary:</strong></p>
+                           <ul>
+                              <li>R-134a Table B.5.1 for $h_f, s_f, u_f, u_{fg}, v_f, v_{fg}, s_{fg}$ at 0°C and 20°C.</li>
+                           </ul>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 9 -->
+
+           <!-- Question 10 -->
+           <div class="accordion-item" data-state="collapsed">
+               <div class="accordion-header">
+                   <h2>Question 10: Compressor Efficiency & Entropy Gen</h2>
+                   <span class="state-indicator" title="Status Indicator"></span>
+               </div>
+               <div class="accordion-content">
+                   <div class="content-inner">
+                       <div class="question-block">
+                           <strong>Question:</strong>
+                           <p>
+                               A compressor takes saturated water vapor at $1$ MPa and compresses it to $17.5$ MPa. The actual exit temperature is measured to be $650$°C. Assuming the compressor is adiabatic, find: <br>
+                               a) The isentropic efficiency of the compressor. <br>
+                               b) The specific entropy generation during the compression process. <br>
+                               c) Represent both the actual and the ideal isentropic processes on a T-s diagram.
+                           </p>
+                       </div>
+                       <div class="final-answer-block hidden">
+                           <strong>Final Answer:</strong>
+                           <p>
+                               a) Isentropic efficiency $\eta_c \approx 54.9\%$. <br>
+                               b) Specific entropy generation $s_{gen} \approx 0.466$ kJ/kg-K. <br>
+                               c) Diagram described below.
+                           </p>
+                       </div>
+                       <div class="solution-block hidden">
+                           <strong>Full Solution:</strong>
+                           <p><strong>1. Inlet State (State 1):</strong> Saturated vapor at $P_1 = 1$ MPa $= 1000$ kPa.</p>
+                           <p>From Table B.1.2:</p>
+                           <ul>
+                               <li>$h_1 = h_g = 2778.08$ kJ/kg</li>
+                               <li>$s_1 = s_g = 6.5864$ kJ/kg-K</li>
+                           </ul>
+                           <p><strong>2. Ideal Exit State (State 2s - Isentropic):</strong> $P_2 = 17.5$ MPa, $s_{2s} = s_1 = 6.5864$ kJ/kg-K.</p>
+                           <p>This state is superheated. Interpolate in Table B.1.3 at $P=17.5$ MPa for $h_{2s}$ using $s_{2s}=6.5864$.</p>
+                           <ul>
+                              <li>At 15 MPa: $s=6.5864$ corresponds to $h \approx 3251.62$ kJ/kg (interpolated between 450°C and 500°C).</li>
+                              <li>At 20 MPa: $s=6.5864$ corresponds to $h \approx 3292.26$ kJ/kg (interpolated between 500°C and 550°C).</li>
+                              <li>Interpolating between pressures:
+                                  <br>$h_{2s} = 3251.62 + \frac{17.5 - 15}{20 - 15} \times (3292.26 - 3251.62)$
+                                  <br>$h_{2s} = 3251.62 + 0.5 \times 40.64 = 3271.94$ kJ/kg
+                              </li>
+                           </ul>
+                           <p><strong>3. Actual Exit State (State 2a):</strong> $P_2 = 17.5$ MPa, $T_{2a} = 650$°C.</p>
+                           <p>This state is superheated. Interpolate in Table B.1.3 at $P=17.5$ MPa for $h_{2a}$ and $s_{2a}$ using $T_{2a}=650$°C.</p>
+                           <ul>
+                              <li>Interpolate for $h_{2a}$:
+                                 <br>$h(15 \text{MPa}, 650°C) = 3690.9$
+                                 <br>$h(20 \text{MPa}, 650°C) = 3663.1$
+                                 <br>$h_{2a} = 3690.9 + 0.5 \times (3663.1 - 3690.9) = 3690.9 - 13.9 = 3677.0$ kJ/kg
+                              </li>
+                              <li>Interpolate for $s_{2a}$:
+                                 <br>$s(15 \text{MPa}, 650°C) = 7.1042$
+                                 <br>$s(20 \text{MPa}, 650°C) = 7.0008$
+                                 <br>$s_{2a} = 7.1042 + 0.5 \times (7.0008 - 7.1042) = 7.1042 - 0.0517 = 7.0525$ kJ/kg-K
+                              </li>
+                           </ul>
+                           <p><strong>4. Isentropic Efficiency ($\eta_c$):</strong></p>
+                           $$ \eta_c = \frac{\text{Ideal work}}{\text{Actual work}} = \frac{h_{2s} - h_1}{h_{2a} - h_1} $$
+                           $$ \eta_c = \frac{3271.94 - 2778.08}{3677.0 - 2778.08} = \frac{493.86}{898.92} $$
+                           $$ \eta_c = 0.54939 \approx 54.9\% $$
+                           <p><strong>5. Specific Entropy Generation ($s_{gen}$):</strong></p>
+                           <p>For an adiabatic steady-flow process: $s_{gen} = s_{2a} - s_1$</p>
+                           $$ s_{gen} = 7.0525 - 6.5864 = 0.4661 \text{ kJ/kg-K} \approx 0.466 \text{ kJ/kg-K} $$
+                           <p><strong>6. T-s Diagram:**</p>
+                           <ul>
+                               <li>Draw constant pressure lines for $P_1=1$ MPa and $P_2=17.5$ MPa ($P_2$ line is higher).</li>
+                               <li>Locate state 1 on the saturated vapor curve (x=1) at $P_1$.</li>
+                               <li>Draw a vertical line (s=constant) from state 1 up to the $P_2$ line. This is state 2s.</li>
+                               <li>Locate state 2a on the $P_2$ line at $T=650$°C. This point will be to the right of state 2s ($s_{2a} > s_{2s}$).</li>
+                               <li>Show the isentropic process 1 -> 2s (vertical line) and the actual process 1 -> 2a (dashed or solid curve going up and to the right).</li>
+                           </ul>
+                           <p><strong>Table Values Used Summary:</strong></p>
+                           <ul>
+                              <li>Water Tables B.1.2 & B.1.3 for $h, s$ at various states.</li>
+                           </ul>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 10 -->
+
+           <!-- Question 11 -->
+           <div class="accordion-item" data-state="collapsed">
+               <div class="accordion-header">
+                   <h2>Question 11: Irrigation Pump Max Flow Rate</h2>
+                   <span class="state-indicator" title="Status Indicator"></span>
+               </div>
+               <div class="accordion-content">
+                   <div class="content-inner">
+                       <div class="question-block">
+                           <strong>Question:</strong>
+                           <p>
+                               An irrigation pump takes water from a river at $10$°C, $100$ kPa. It pumps the water to an open canal located $100$ m higher in elevation. The pipe diameter is $0.1$ m at both the inlet and outlet of the pump. The motor driving the pump supplies $5$ hp of power. Neglecting friction and kinetic energy changes across the pump, find the maximum possible mass flow rate of the water.
+                           </p>
+                       </div>
+                       <div class="final-answer-block hidden">
+                           <strong>Final Answer:</strong>
+                           <p>
+                               The maximum possible mass flow rate is approximately $3.80$ kg/s.
+                           </p>
+                       </div>
+                       <div class="solution-block hidden">
+                           <strong>Full Solution:</strong>
+                           <p><strong>1. Define System & Process:</strong> System is water from river surface (1) to canal surface (2). Max flow rate implies reversible process (no friction losses considered internal to pump or in lifting).</p>
+                           <p><strong>2. States:</strong></p>
+                           <ul>
+                               <li>State 1 (River): $T_1=10$°C, $P_1=100$ kPa, $z_1=0$ (ref), $V_1 \approx 0$.</li>
+                               <li>State 2 (Canal): $P_2=100$ kPa, $z_2=100$ m, $V_2 \approx 0$.</li>
+                               <li>Water incompressible liquid: $v \approx v_f(10°C) \approx 0.001000$ m³/kg.</li>
+                           </ul>
+                           <p><strong>3. Power Conversion:</strong></p>
+                           <ul><li>$\dot{W}_{shaft} = 5 \text{ hp} \times 0.7457 \frac{\text{kW}}{\text{hp}} = 3.7285 \text{ kW} = 3728.5 \text{ J/s}$.</li></ul>
+                           <p><strong>4. Energy Balance (Overall System 1 -> 2):</strong></p>
+                           <p>Apply SFEE between free surfaces:</p>
+                           $$ \dot{m}(h_1 + \frac{V_1^2}{2} + gz_1) + \dot{W}_{shaft} = \dot{m}(h_2 + \frac{V_2^2}{2} + gz_2) $$
+                           <p>With $V_1 \approx 0, V_2 \approx 0, z_1=0$:</p>
+                           $$ \dot{m}h_1 + \dot{W}_{shaft} = \dot{m}h_2 + \dot{m}gz_2 $$
+                           $$ \dot{W}_{shaft} = \dot{m}(h_2 - h_1 + gz_2) $$
+                           <p><strong>5. Reversible Pump Work for Incompressible Fluid:</strong></p>
+                           <p>For an incompressible fluid, the reversible specific work done by a pump in steady flow is approximately $w_{rev} = v(P_2 - P_1) + g(z_2 - z_1)$ (ignoring KE). In this overall process $P_1 = P_2$, so the only reversible work needed is to increase potential energy.</p>
+                           <p>Alternatively, for the overall process from river surface to canal surface, the minimum required shaft power (reversible process) goes entirely into increasing the potential energy, as kinetic energy changes are negligible and pressure is the same.</p>
+                           $$ \dot{W}_{shaft, rev} = \dot{m} g (z_2 - z_1) $$
+                           <p><strong>6. Calculate Maximum Mass Flow Rate:</strong></p>
+                           <p>Maximum flow occurs when all supplied shaft power is used ideally (reversibly) to lift the water.</p>
+                           $$ \dot{m}_{max} = \frac{\dot{W}_{shaft}}{g(z_2 - z_1)} $$
+                           $$ \dot{m}_{max} = \frac{3728.5 \text{ J/s}}{9.80665 \text{ m/s²} \times 100 \text{ m}} $$
+                           $$ \dot{m}_{max} = \frac{3728.5}{980.665} \frac{\text{J/s}}{\text{m²/s²}} = 3.802 \text{ kg/s} $$
+                           <p>Rounding, $\dot{m}_{max} \approx 3.80$ kg/s.</p>
+                           <p><strong>Table Values Used Summary:</strong></p>
+                           <ul>
+                               <li>$g = 9.80665$ m/s² (Table A.0a).</li>
+                               <li>$1$ hp $= 0.7457$ kW (Table A.1).</li>
+                               <li>$v_f(10°C) \approx 0.001000$ m³/kg (Table B.1.1 - for density ref).</li>
+                           </ul>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 11 -->
+
+           <!-- Question 12 -->
+           <div class="accordion-item" data-state="collapsed">
+               <div class="accordion-header">
+                   <h2>Question 12: Pipe Draining Entropy Generation</h2>
+                   <span class="state-indicator" title="Status Indicator"></span>
+               </div>
+               <div class="accordion-content">
+                   <div class="content-inner">
+                       <div class="question-block">
+                           <strong>Question:</strong>
+                           <p>
+                               A $10$ m tall pipe with a $0.1$ m diameter is initially filled with liquid water at $20$°C. The top is open to the atmosphere ($100$ kPa). A small nozzle is mounted at the bottom. Water is allowed to flow out through the nozzle, splashing onto the ground (at the same level as the nozzle exit) until the pipe is empty. Assuming the process occurs reasonably quickly but the water on the ground eventually returns to $20$°C, find: <br>
+                               a) The initial exit velocity of the water from the nozzle. <br>
+                               b) The average specific kinetic energy of the water in the exit flow. <br>
+                               c) The total entropy generation for the entire process.
+                           </p>
+                       </div>
+                       <div class="final-answer-block hidden">
+                           <strong>Final Answer:</strong>
+                           <p>
+                               a) Initial exit velocity $V_{exit,initial} \approx 14.0$ m/s. <br>
+                               b) Average specific kinetic energy $KE_{avg} \approx 49.0$ J/kg (or $0.049$ kJ/kg). <br>
+                               c) Total entropy generation $S_{gen,total} \approx 0.0131$ kJ/K.
+                           </p>
+                       </div>
+                       <div class="solution-block hidden">
+                           <strong>Full Solution:</strong>
+                           <p><strong>1. Initial State:</strong> Water column $H=10$ m, $D=0.1$ m, $T=20$°C, $P_{top}=100$ kPa. $\rho \approx 1/v_f(20°C) \approx 1/0.001002 \approx 998$ kg/m³.</p>
+                           <p><strong>2. Initial Exit Velocity ($V_{initial}$):</strong></p>
+                           <p>Apply Bernoulli's equation between top surface (1) and nozzle exit (2):</p>
+                           $$ \frac{P_1}{\rho} + \frac{V_1^2}{2} + gz_1 = \frac{P_2}{\rho} + \frac{V_2^2}{2} + gz_2 $$
+                           <p>Assume $P_1 = P_2 = P_{atm}$, $V_1 \approx 0$, $z_1=H=10$ m, $z_2=0$.</p>
+                           $$ gH = \frac{V_{initial}^2}{2} $$
+                           $$ V_{initial} = \sqrt{2gH} = \sqrt{2 \times 9.80665 \frac{\text{m}}{\text{s²}} \times 10 \text{ m}} = \sqrt{196.133} \approx 14.0 \text{ m/s} $$
+                           <p><strong>3. Average Specific Kinetic Energy ($KE_{avg}$):</strong></p>
+                           <p>The instantaneous specific KE at exit is $V^2/2 = gh$, where $h$ is instantaneous height. The average specific KE of the *exiting* fluid corresponds to the average *potential energy* of the fluid initially in the pipe, relative to the exit level.</p>
+                           <p>Total initial potential energy $PE_{total} = M g (H/2)$, where $M$ is total mass.</p>
+                           <p>Average Specific PE = $PE_{total} / M = gH/2$.</p>
+                           <p>This initial PE is converted to KE as the water exits and is then dissipated.</p>
+                           $$ KE_{avg} = \frac{gH}{2} = 9.80665 \frac{\text{m}}{\text{s²}} \times \frac{10 \text{ m}}{2} = 49.033 \frac{\text{J}}{\text{kg}} \approx 49.0 \text{ J/kg} $$
+                           <p><strong>4. Total Entropy Generation ($S_{gen,total}$):</strong></p>
+                           <p>System: Mass $M$ of water initially in the pipe.</p>
+                           <ul>
+                               <li>Initial State (sys,1): $T_1=20$°C, average height $H/2$.</li>
+                               <li>Final State (sys,2): $T_2=20$°C, height $z=0$ (on ground).</li>
+                               <li>Surroundings: $T_{surr} = 20$°C = $293.15$ K.</li>
+                           </ul>
+                           <p>Entropy Balance: $S_{gen,total} = \Delta S_{system} + \Delta S_{surroundings}$</p>
+                           <ul>
+                              <li>$\Delta S_{system} = S_2 - S_1 = M(s_2 - s_1)$. Since $T_1=T_2$ and $P_1 \approx P_2 = P_{atm}$ (liquid), $s_1 \approx s_2$, so $\Delta S_{system} \approx 0$.</li>
+                              <li>$\Delta S_{surroundings} = Q_{surr} / T_{surr}$. Heat $Q_{surr}$ is the energy dissipated from the water's initial potential energy as it comes to rest at $T_2=T_1$.</li>
+                              <li>$Q_{surr}$ (heat absorbed by surroundings) = $PE_{total}$ (initial potential energy lost by water) = $M g (H/2)$.</li>
+                           </ul>
+                           <p>Calculate Total Mass $M$:</p>
+                           $$ M = \rho \times \text{Volume} = \rho \times (\frac{\pi D^2}{4}) \times H $$
+                           $$ M \approx 998 \frac{\text{kg}}{\text{m³}} \times (\frac{\pi (0.1 \text{ m})^2}{4}) \times 10 \text{ m} \approx 78.38 \text{ kg} $$
+                           <p>Calculate Heat Transfer $Q_{surr}$:</p>
+                           $$ Q_{surr} = M \times KE_{avg} = 78.38 \text{ kg} \times 49.033 \frac{\text{J}}{\text{kg}} \approx 3843 \text{ J} = 3.843 \text{ kJ} $$
+                           <p>Calculate Total Entropy Generation:</p>
+                           $$ S_{gen,total} = \Delta S_{system} + \Delta S_{surroundings} \approx 0 + \frac{Q_{surr}}{T_{surr}} $$
+                           $$ S_{gen,total} \approx \frac{3.843 \text{ kJ}}{293.15 \text{ K}} = 0.01311 \frac{\text{kJ}}{\text{K}} \approx 0.0131 \text{ kJ/K} $$
+                           <p><strong>Table Values Used Summary:</strong></p>
+                           <ul>
+                              <li>$g = 9.80665$ m/s² (Table A.0a).</li>
+                              <li>$v_f(20°C)$ for density (Table B.1.1).</li>
+                           </ul>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 12 -->
+
+            <!-- Question 13 -->
+            <div class="accordion-item" data-state="collapsed">
+                <div class="accordion-header">
+                    <h2>Question 13: Compressor Work Reduction</h2>
+                    <span class="state-indicator" title="Status Indicator"></span>
+                </div>
+                <div class="accordion-content">
+                    <div class="content-inner">
+                        <div class="question-block">
+                            <strong>Question:</strong>
+                            <p>
+                                Consider a reversible adiabatic air compressor compressing air from $P_1 = 100$ kPa to a fixed final pressure $P_2$. Compare the specific work required if the inlet temperature is $T_{A1} = 300$ K versus $T_{B1} = 280$ K. How much is the reduction in specific work (in kJ/kg) when the inlet temperature is lowered from $300$ K to $280$ K? Assume air is an ideal gas with constant specific heats.
+                            </p>
+                        </div>
+                        <div class="final-answer-block hidden">
+                            <strong>Final Answer:</strong>
+                            <p>
+                                The reduction in specific work depends on the final pressure $P_2$. The reduction is given by $\Delta w = 20.08 \times [(\frac{P_2}{100 \text{ kPa}})^{0.2857} - 1]$ kJ/kg. If the question intended to ask for the reduction assuming the same *exit temperature* ($T_2$) was reached (which would require different $P_2$), the reduction would be $20.08$ kJ/kg.
+                            </p>
+                        </div>
+                        <div class="solution-block hidden">
+                            <strong>Full Solution:</strong>
+                            <p><strong>1. Process:</strong> Reversible adiabatic (isentropic) compression, ideal gas, constant $C_p$.</p>
+                            <p><strong>2. Specific Work:</strong> $w = h_2 - h_1 = C_p(T_2 - T_1)$.</p>
+                            <p><strong>3. Isentropic Relation:</strong> $\frac{T_2}{T_1} = (\frac{P_2}{P_1})^{\frac{k-1}{k}}$. Let pressure ratio $r_p = P_2/P_1$ (constant). Let exponent $\alpha = (k-1)/k = 0.4/1.4 \approx 0.2857$.</p>
+                            $$ T_2 = T_1 (r_p)^{\alpha} $$
+                            <p><strong>4. Work Expression:</strong> Substitute $T_2$ into work equation:</p>
+                            $$ w = C_p [T_1 (r_p)^{\alpha} - T_1] = C_p T_1 [(r_p)^{\alpha} - 1] $$
+                            <p><strong>5. Calculate Work for Both Cases:</strong> Use $C_p = 1.004$ kJ/kg-K (Table A.5).</p>
+                            <ul>
+                                <li>Case A: $T_{A1} = 300$ K. $w_A = 1.004 \times 300 \times [(r_p)^{0.2857} - 1] = 301.2 [(r_p)^{0.2857} - 1]$</li>
+                                <li>Case B: $T_{B1} = 280$ K. $w_B = 1.004 \times 280 \times [(r_p)^{0.2857} - 1] = 281.12 [(r_p)^{0.2857} - 1]$</li>
+                            </ul>
+                            <p><strong>6. Reduction in Work ($\Delta w$):</strong> $\Delta w = w_A - w_B$</p>
+                            $$ \Delta w = (301.2 - 281.12) \times [(r_p)^{0.2857} - 1] $$
+                            $$ \Delta w = 20.08 \times [(r_p)^{0.2857} - 1] \frac{\text{kJ}}{\text{kg}} $$
+                            <p><strong>7. Interpretation:</strong> The reduction $\Delta w$ depends on the pressure ratio $r_p = P_2/P_1$. Since $P_2$ is fixed but unspecified, $r_p$ is also fixed but unknown. The formula above gives the reduction in terms of $r_p$.</p>
+                            <p><strong>8. Alternative Interpretation (Assuming fixed $T_2$):</strong> If the question implies the comparison is for reaching the *same exit temperature* $T_2$ (which requires different $P_2$ values):</p>
+                            <ul>
+                                <li>$w_A = C_p(T_2 - T_{A1})$</li>
+                                <li>$w_B = C_p(T_2 - T_{B1})$</li>
+                                <li>$\Delta w = w_A - w_B = C_p T_2 - C_p T_{A1} - (C_p T_2 - C_p T_{B1}) = C_p (T_{B1} - T_{A1})$</li>
+                                <li>$\Delta w = 1.004 \frac{\text{kJ}}{\text{kg-K}} \times (280 \text{ K} - 300 \text{ K}) = 1.004 \times (-20) = -20.08$ kJ/kg</li>
+                                <li>The reduction in work (a positive value) is $20.08$ kJ/kg.</li>
+                            </ul>
+                            <p>Given the wording often used in thermodynamics problems, the fixed $T_2$ interpretation yielding $20.08$ kJ/kg might be what was intended, despite the "fixed final pressure" statement creating ambiguity.</p>
+                            <p><strong>Table Values Used Summary:</strong></p>
+                            <ul>
+                               <li>Air: $C_p = 1.004$ kJ/kg-K, $k = 1.4$ (Table A.5).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- End Question 13 -->
+
+           <!-- Question 14 -->
+           <div class="accordion-item" data-state="collapsed">
+               <div class="accordion-header">
+                   <h2>Question 14: Nozzle Inlet Conditions</h2>
+                   <span class="state-indicator" title="Status Indicator"></span>
+               </div>
+               <div class="accordion-content">
+                   <div class="content-inner">
+                       <div class="question-block">
+                           <strong>Question:</strong>
+                           <p>
+                               A nozzle needs to produce an air flow of $200$ m/s at exit conditions of $20$°C and $100$ kPa. The nozzle has an isentropic efficiency of $92\%$. Assuming the inlet kinetic energy is negligible and air behaves as an ideal gas with constant specific heats, determine the required nozzle inlet pressure ($P_1$) and temperature ($T_1$).
+                           </p>
+                       </div>
+                       <div class="final-answer-block hidden">
+                           <strong>Final Answer:</strong>
+                           <p>
+                               a) Inlet Temperature $T_1 \approx 313.1$ K ($39.9$°C). <br>
+                               b) Inlet Pressure $P_1 \approx 128$ kPa.
+                           </p>
+                       </div>
+                       <div class="solution-block hidden">
+                           <strong>Full Solution:</strong>
+                           <p><strong>1. Process:</strong> Adiabatic expansion through a nozzle.</p>
+                           <p><strong>2. States:</strong></p>
+                           <ul>
+                              <li>Inlet (1): $V_1 \approx 0$, $P_1 = ?$, $T_1 = ?$</li>
+                              <li>Actual Exit (2a): $V_{2a} = 200$ m/s, $T_{2a} = 20$°C $= 293.15$ K, $P_{2a} = 100$ kPa.</li>
+                              <li>Ideal Exit (2s): $P_{2s} = 100$ kPa, $s_{2s} = s_1$.</li>
+                           </ul>
+                           <p><strong>3. Energy Balance ($V_1 \approx 0$):</strong></p>
+                           $$ h_1 + 0 = h_{2a} + \frac{V_{2a}^2}{2} $$
+                           <p>For constant specific heats: $C_p T_1 = C_p T_{2a} + \frac{V_{2a}^2}{2}$</p>
+                           <p>Solve for $T_1$: $T_1 = T_{2a} + \frac{V_{2a}^2}{2 C_p}$. Use $C_p = 1004$ J/kg-K.</p>
+                           $$ T_1 = 293.15 \text{ K} + \frac{(200 \text{ m/s})^2}{2 \times 1004 \text{ J/kg-K}} $$
+                           $$ T_1 = 293.15 + \frac{40000}{2008} = 293.15 + 19.92 = 313.07 \text{ K} \approx 313.1 \text{ K} $$
+                           <p><strong>4. Isentropic Efficiency ($\eta_n = 0.92$):</strong></p>
+                           $$ \eta_n = \frac{\text{Actual KE change}}{\text{Isentropic KE change}} = \frac{V_{2a}^2 / 2}{V_{2s}^2 / 2} = \frac{h_1 - h_{2a}}{h_1 - h_{2s}} $$
+                           <p>We know the actual enthalpy drop from energy balance: $h_1 - h_{2a} = V_{2a}^2 / 2 = (200^2)/2 = 20000$ J/kg $= 20.0$ kJ/kg.</p>
+                           <p>Calculate the ideal enthalpy drop:</p>
+                           $$ h_1 - h_{2s} = \frac{h_1 - h_{2a}}{\eta_n} = \frac{20.0 \text{ kJ/kg}}{0.92} = 21.739 \text{ kJ/kg} $$
+                           <p><strong>5. Find Ideal Exit Temperature ($T_{2s}$):</strong></p>
+                           $$ h_1 - h_{2s} = C_p (T_1 - T_{2s}) $$
+                           $$ 21.739 \text{ kJ/kg} = 1.004 \frac{\text{kJ}}{\text{kg-K}} \times (313.07 \text{ K} - T_{2s}) $$
+                           $$ T_1 - T_{2s} = \frac{21.739}{1.004} = 21.652 \text{ K} $$
+                           $$ T_{2s} = T_1 - 21.652 = 313.07 - 21.652 = 291.42 \text{ K} $$
+                           <p><strong>6. Find Inlet Pressure ($P_1$):</strong></p>
+                           <p>Use the isentropic relation between states 1 and 2s ($s_1 = s_{2s}$):</p>
+                           $$ \frac{T_{2s}}{T_1} = \left(\frac{P_{2s}}{P_1}\right)^{\frac{k-1}{k}} $$
+                           <p>Use $P_{2s} = P_{2a} = 100$ kPa and $(k-1)/k = 0.2857$.</p>
+                           $$ \frac{291.42}{313.07} = \left(\frac{100 \text{ kPa}}{P_1}\right)^{0.2857} $$
+                           $$ 0.93084 = \left(\frac{100}{P_1}\right)^{0.2857} $$
+                           <p>Raise both sides to power $1/0.2857 \approx 3.5$:</p>
+                           $$ (0.93084)^{3.5} = \frac{100}{P_1} $$
+                           $$ 0.7817 = \frac{100}{P_1} $$
+                           $$ P_1 = \frac{100}{0.7817} = 127.93 \text{ kPa} \approx 128 \text{ kPa} $$
+                           <p><strong>Table Values Used Summary:</strong></p>
+                           <ul>
+                               <li>Air: $C_p = 1.004$ kJ/kg-K, $k = 1.4$ (Table A.5).</li>
+                           </ul>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 14 -->
+
+    </div> <!-- End Accordion Container -->
+
+
+    <footer> <!-- Optional Footer --> </footer>
+
+     <!-- Font Size Control Icons HTML -->
+     <div class="font-control">
+         <span class="font-control-icon" id="fontMinusBtn" title="Decrease font size">-</span>
+         <span class="font-control-icon" id="fontPlusBtn" title="Increase font size">+</span>
+     </div>
+     <div id="fontSizeDisplay">10px</div>
+
+    <script>
+        // --- Debounce Function ---
+        function debounce(func, wait) { let timeout; return function(...args) { const later = () => { clearTimeout(timeout); func.apply(this, args); }; clearTimeout(timeout); timeout = setTimeout(later, wait); }; }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const htmlEl = document.documentElement;
+            const bodyEl = document.body;
+
+            // --- Font Size Control & Hold ---
+            const minusBtn = document.getElementById('fontMinusBtn');
+            const plusBtn = document.getElementById('fontPlusBtn');
+            const display = document.getElementById('fontSizeDisplay');
+            let currentSize = 10; const minSize = 10; const maxSize = 28; const step = 1;
+            let displayTimeout = null; let holdTimeout = null; let holdInterval = null;
+            const initialHoldDelay = 400; const repeatInterval = 100;
+            const mathJaxDebounceDelay = 350;
+
+            const queueMathJaxTypeset = debounce(() => {
+                if (window.MathJax && MathJax.typesetPromise) {
+                    console.log("Debounced: Typesetting MathJax for body");
+                    MathJax.typesetPromise([bodyEl]).catch((err) => console.error('MathJax typesetting error:', err));
+                 }
+            }, mathJaxDebounceDelay);
+
+            const handleFontResizeEnd = debounce(() => {
+                console.log("Font resize finished.");
+                queueMathJaxTypeset();
+            }, mathJaxDebounceDelay); // Use defined variable
+
+            function updateFontSize(newSize) {
+                const oldSize = currentSize;
+                currentSize = Math.max(minSize, Math.min(maxSize, newSize));
+                if (currentSize !== oldSize) {
+                    htmlEl.style.setProperty('--base-font-size', currentSize + 'px');
+                    display.textContent = currentSize + 'px'; display.classList.add('visible');
+                    if (displayTimeout) { clearTimeout(displayTimeout); }
+                    displayTimeout = setTimeout(() => { display.classList.remove('visible'); displayTimeout = null; }, 1500);
+                    handleFontResizeEnd(); return true;
+                } return false;
+            }
+            function stopHolding() {
+                bodyEl.classList.remove('no-font-transition');
+                if (holdTimeout) { clearTimeout(holdTimeout); holdTimeout = null; }
+                if (holdInterval) { clearInterval(holdInterval); holdInterval = null; }
+                handleFontResizeEnd();
+            }
+            function startHolding(direction) {
+                bodyEl.classList.add('no-font-transition'); updateFontSize(currentSize + direction * step);
+                if (holdTimeout) clearTimeout(holdTimeout); if (holdInterval) clearInterval(holdInterval);
+                holdTimeout = setTimeout(() => { holdInterval = setInterval(() => { if (!updateFontSize(currentSize + direction * step)) { stopHolding(); } }, repeatInterval); }, initialHoldDelay);
+            }
+            if (minusBtn && plusBtn && display) {
+                minusBtn.addEventListener('mousedown', (e) => { e.preventDefault(); startHolding(-1); });
+                plusBtn.addEventListener('mousedown', (e) => { e.preventDefault(); startHolding(1); });
+                window.addEventListener('mouseup', stopHolding);
+                minusBtn.addEventListener('mouseleave', stopHolding); plusBtn.addEventListener('mouseleave', stopHolding);
+                htmlEl.style.setProperty('--base-font-size', currentSize + 'px'); display.textContent = currentSize + 'px';
+                console.log("Font control initialized. Current size:", currentSize);
+            } else { console.error("Font control elements not found!"); }
+
+
+            // --- Accordion Logic (with State Indicator & MathJax Trigger - Robust Measurement) ---
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                const content = item.querySelector('.accordion-content');
+                const innerContent = content.querySelector('.content-inner');
+                const finalAnswerBlock = innerContent.querySelector('.final-answer-block');
+                const solutionBlock = innerContent.querySelector('.solution-block');
+
+
+                header.addEventListener('click', () => {
+                    const currentState = item.getAttribute('data-state');
+                    let nextState;
+
+                    if (currentState === 'collapsed') {
+                        if (!item.classList.contains('visited')) { item.classList.add('visited'); }
+                        nextState = 'state1';
+                    } else if (currentState === 'state1') {
+                        nextState = 'state2';
+                    } else { // state2
+                        nextState = 'collapsed';
+                    }
+
+                    item.setAttribute('data-state', nextState);
+                    console.log(`Item state changed to: ${nextState}`);
+
+                    const isCollapsed = nextState === 'collapsed';
+                    const showAnswer = nextState === 'state1';
+                    const showSolution = nextState === 'state2';
+
+                    // Toggle visibility of answer/solution blocks
+                    if (finalAnswerBlock) finalAnswerBlock.classList.toggle('hidden', !showAnswer);
+                    if (solutionBlock) solutionBlock.classList.toggle('hidden', !showSolution);
+
+
+                    // --- Expansion/Collapse Logic ---
+                    if (!isCollapsed) {
+                        // --- EXPANDING ---
+                        content.style.maxHeight = 'none'; // Allow natural height measurement
+                        let mathJaxPromise = Promise.resolve();
+                        if (window.MathJax && MathJax.typesetPromise) {
+                            console.log(`Queueing MathJax for item: ${header.querySelector('h2').textContent.trim()}`);
+                            mathJaxPromise = MathJax.typesetPromise([innerContent]).catch(err => {
+                                console.error('MathJax typesetting error during expand:', err);
+                            });
+                        } else { console.warn("MathJax not available for typesetting during expand."); }
+
+                        mathJaxPromise.then(() => {
+                            console.log("MathJax finished for item. Preparing height calculation.");
+                            requestAnimationFrame(() => {
+                                requestAnimationFrame(() => { // Double rAF waits for layout calculation
+                                    const style = window.getComputedStyle(content);
+                                    const paddingTop = parseFloat(style.paddingTop) || 0;
+                                    const paddingBottom = parseFloat(style.paddingBottom) || 0;
+                                    const innerHeight = innerContent.offsetHeight;
+                                    const totalHeight = innerHeight + paddingTop + paddingBottom;
+                                    console.log(`Calculated totalHeight after MathJax & rAF: ${totalHeight}px`);
+                                    if (totalHeight <= (paddingTop + paddingBottom)) {
+                                         console.warn("Calculated height is zero or only padding! Check content visibility/rendering.");
+                                     }
+                                     content.style.maxHeight = '0px'; // Prepare for transition
+                                     requestAnimationFrame(() => { // Apply final height in next frame
+                                         content.style.maxHeight = totalHeight + 'px';
+                                         console.log(`Applied maxHeight: ${totalHeight}px`);
+                                     });
+                                 });
+                             });
+                         });
+
+                    } else {
+                        // --- COLLAPSING ---
+                        if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                           content.style.maxHeight = '0px';
+                           console.log("Collapsing: Set maxHeight to 0px");
+                        }
+                    }
+                });
+            });
+            console.log("Accordion logic (Robust Measurement) with state indicators and MathJax applied.");
+
+
+            // --- Initial MathJax Typeset on Load ---
+             if (window.MathJax) {
+                 MathJax.startup.promise.then(() => {
+                     console.log("Queueing initial MathJax typeset after load");
+                     MathJax.typesetPromise([bodyEl]).catch((err) => console.error('MathJax initial typesetting error:', err));
+                 });
+             }
+
+        }); // End DOMContentLoaded
+    </script>
+
+</body>
+</html>

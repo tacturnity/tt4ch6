@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en" style="--base-font-size: 10px;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 8 Q&A</title> <!-- UPDATED TITLE -->
+
+    <!-- Google Fonts - Roboto Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+          tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true, tags: 'ams' },
+          options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'], ignoreHtmlClass: 'tex2jax_ignore', processHtmlClass: 'tex2jax_process' },
+          svg: { fontCache: 'global' },
+          startup: { ready: () => { console.log('MathJax ready.'); MathJax.startup.defaultReady(); MathJax.startup.promise.then(() => console.log('MathJax initial typeset complete.')); } }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* Basic Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* Keyframes */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Base Styles --- */
+        :root {
+            --accent-color: #F08080; /* Light Coral */
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --border-color: #555;
+            --header-bg: #2f2f2f;
+            --header-hover-bg: #3f3f3f;
+            --content-bg: #282828;
+            /* Indicator Colors */
+            --indicator-unvisited: transparent;
+            --indicator-answer: #f7dc6f;
+            --indicator-solution: #58d68d;
+            --indicator-visited-closed: var(--indicator-solution);
+            --anim-duration: 0.5s;
+            --anim-easing: cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        body {
+            font-family: 'Roboto Mono', monospace; color: var(--text-color); line-height: 1.7;
+            padding: 25px; background-color: var(--bg-color); min-height: 100vh;
+            font-size: var(--base-font-size); transition: font-size 0.2s ease-in-out;
+            padding-bottom: 80px; overflow-x: hidden;
+        }
+        body.no-font-transition { transition: none !important; }
+
+        /* Headings */
+        h1 {
+            font-size: 2.4em; color: var(--accent-color); font-weight: 700; padding-bottom: 12px;
+            margin: 1.5em auto; border-bottom: 3px solid var(--accent-color);
+            animation: fadeIn 0.8s ease-out both 0.1s; letter-spacing: -0.5px; text-align: center; max-width: 800px;
+        }
+
+        /* --- Accordion Styles --- */
+        .accordion { max-width: 900px; margin: 20px auto; }
+        .accordion-item {
+            border: 1px solid var(--border-color); border-radius: 8px;
+            overflow: hidden; margin-bottom: 25px; background-color: var(--content-bg);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .accordion-item:hover { border-color: #777; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); }
+        .accordion-header {
+            background-color: var(--header-bg); padding: 18px 25px; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: background-color 0.3s ease, border-color var(--anim-duration) var(--anim-easing);
+            border-bottom: 1px solid var(--border-color); position: relative; z-index: 2;
+        }
+        .accordion-item[data-state="collapsed"] .accordion-header { border-bottom-color: transparent; }
+        .accordion-header:hover { background-color: var(--header-hover-bg); }
+        .accordion-header h2 { margin: 0; font-size: 1.2em; color: var(--text-color); text-align: left; }
+
+        /* --- State Indicator --- */
+        .state-indicator {
+            width: 12px; height: 12px; border-radius: 50%;
+            background-color: var(--indicator-unvisited); display: inline-block; margin-left: 15px;
+            flex-shrink: 0; transition: background-color 0.3s ease; border: 1px solid var(--header-bg);
+        }
+        .accordion-item[data-state="state1"] .state-indicator { background-color: var(--indicator-answer); border-color: transparent; }
+        .accordion-item[data-state="state2"] .state-indicator { background-color: var(--indicator-solution); border-color: transparent; }
+        .accordion-item.visited[data-state="collapsed"] .state-indicator { background-color: var(--indicator-visited-closed); border-color: transparent; }
+
+
+        /* Content Area & Animations */
+        .accordion-content {
+            padding: 0 25px; max-height: 0; overflow: hidden;
+            transition: max-height var(--anim-duration) var(--anim-easing),
+                        padding-top var(--anim-duration) var(--anim-easing),
+                        padding-bottom var(--anim-duration) var(--anim-easing);
+            box-sizing: border-box; position: relative; z-index: 1;
+        }
+        .accordion-item:not([data-state="collapsed"]) .accordion-content { padding-top: 20px; }
+        .content-inner {
+            padding-bottom: 25px; opacity: 0; transform: translateY(10px);
+            transition: opacity 0.4s ease-out 0.15s, transform 0.4s ease-out 0.15s;
+        }
+        .accordion-item:not([data-state="collapsed"]) .content-inner { opacity: 1; transform: translateY(0); }
+
+        /* Content Blocks Structure & Styling */
+        .question-block, .final-answer-block, .solution-block {
+            margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed var(--border-color);
+        }
+        .content-inner > div:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .question-block strong, .final-answer-block strong, .solution-block strong {
+            color: var(--accent-color); display: block; margin-bottom: 8px; font-size: 1.1em;
+        }
+        p { margin-bottom: 1em; color: inherit; font-size: inherit; }
+        ul, ol { margin-left: 25px; margin-bottom: 1em; }
+        li { margin-bottom: 8px; font-size: inherit; }
+
+        /* Simplified Styling for MathJax containers */
+        mjx-container {
+            margin: 0.5em 0; /* Default vertical space around all rendered math */
+            text-align: left !important; /* Ensure left alignment */
+        }
+        mjx-container[display="true"] {
+             margin: 1em 0 !important; /* Slightly more vertical space for display math */
+        }
+
+        /* General Utility Styles */
+        .hidden { display: none !important; }
+
+        /* Footer & Font Control */
+        footer { text-align: center; margin-top: 70px; padding-bottom: 35px; font-size: 0.85em; color: #888888; animation: fadeIn 1s ease-out both 0.7s; }
+        .font-control { position: fixed; bottom: 0; left: 0; width: 100%; padding: 10px 25px; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; pointer-events: none; z-index: 10; }
+        .font-control-icon { font-size: 28px; font-weight: bold; color: #777; cursor: pointer; padding: 8px; transition: color 0.3s ease; pointer-events: auto; user-select: none; line-height: 1; display: inline-block; }
+        .font-control-icon:hover { color: var(--accent-color); }
+        #fontSizeDisplay { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); background-color: rgba(45, 45, 45, 0.9); color: #e0e0e0; padding: 6px 12px; border-radius: 5px; font-size: 13px; font-family: 'Roboto Mono', monospace; z-index: 11; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none; white-space: nowrap; }
+        #fontSizeDisplay.visible { opacity: 1; }
+
+        /* Simple Dark Theme Scrollbar for Page */
+        body::-webkit-scrollbar { width: 10px; }
+        body::-webkit-scrollbar-track { background: #2a2a2a; border-radius: 5px; }
+        body::-webkit-scrollbar-thumb { background-color: #777; border-radius: 5px; border: 2px solid #2a2a2a; background-clip: content-box; }
+        body::-webkit-scrollbar-thumb:hover { background-color: #999; }
+        html { scrollbar-width: thin; scrollbar-color: #777 #2a2a2a; }
+        @supports (scrollbar-gutter: stable) { html { scrollbar-gutter: stable; } }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Chapter 8 Q&A</h1> <!-- Updated -->
+    </header>
+
+    <div class="accordion">
+
+        <!-- Question 1 -->
+        <div class="accordion-item" data-state="collapsed">
+            <div class="accordion-header">
+                <h2>Question 1: Exergy of Heat Transfer</h2>
+                <span class="state-indicator" title="Status Indicator"></span>
+            </div>
+            <div class="accordion-content">
+                <div class="content-inner">
+                    <div class="question-block">
+                        <strong>Question:</strong>
+                        <p>
+                            Find the exergy (also known as availability or available work) associated with $200$ kW of heat transfer occurring at a constant temperature of $600$ K when the surrounding ambient temperature is $298$ K.
+                        </p>
+                    </div>
+                    <div class="final-answer-block hidden">
+                        <strong>Final Answer:</strong>
+                        <p>
+                            The exergy of the heat transfer is $100.67$ kW.
+                        </p>
+                    </div>
+                    <div class="solution-block hidden">
+                        <strong>Full Solution:</strong>
+                        <p>
+                           The exergy associated with a heat transfer $Q$ occurring at a constant temperature $T$, with surroundings at temperature $T_0$, is given by the formula:
+                        </p>
+                        $$ \Psi_Q = (1 - \frac{T_0}{T}) Q $$
+                        <p>Where:</p>
+                        <ul>
+                            <li>$\Psi_Q$ is the exergy of the heat transfer (in kW)</li>
+                            <li>$T_0$ is the absolute temperature of the surroundings (in K)</li>
+                            <li>$T$ is the absolute temperature at which the heat transfer occurs (in K)</li>
+                            <li>$Q$ is the rate of heat transfer (in kW)</li>
+                        </ul>
+                        <p>Given values:</p>
+                        <ul>
+                           <li>$Q = 200$ kW</li>
+                           <li>$T = 600$ K</li>
+                           <li>$T_0 = 298$ K</li>
+                        </ul>
+                        <p>Substitute the values into the formula:</p>
+                        $$ \Psi_Q = (1 - \frac{298 \text{ K}}{600 \text{ K}}) \times 200 \text{ kW} $$
+                        <p>Calculation:</p>
+                        <ol>
+                           <li>Calculate the temperature ratio: $T_0/T = 298 / 600 \approx 0.496667$</li>
+                           <li>Calculate the Carnot factor: $(1 - T_0/T) = 1 - 0.496667 = 0.503333$</li>
+                           <li>Calculate the exergy: $\Psi_Q = 0.503333 \times 200 \text{ kW} = 100.6667$ kW</li>
+                        </ol>
+                        <p><strong>Calculation Check 1:</strong> $(1 - 298/600) \times 200 = (1 - 0.496667) \times 200 = 0.503333 \times 200 = 100.6667$ kW.</p>
+                        <p><strong>Calculation Check 2:</strong> $( (600 - 298) / 600 ) \times 200 = (302 / 600) \times 200 = 0.503333 \times 200 = 100.6667$ kW.</p>
+                        <p>Rounding to two decimal places, the exergy of the heat transfer is $100.67$ kW.</p>
+                        <p><strong>Table Values Used:</strong> No specific values from thermodynamic tables were required for this calculation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 2 -->
+        <div class="accordion-item" data-state="collapsed">
+            <div class="accordion-header">
+                <h2>Question 2: Refrigerator Minimum Power</h2>
+                <span class="state-indicator" title="Status Indicator"></span>
+            </div>
+            <div class="accordion-content">
+                <div class="content-inner">
+                    <div class="question-block">
+                        <strong>Question:</strong>
+                        <p>
+                           A refrigerator removes heat at a rate of $1.5$ kW from a cold space maintained at $-10$ °C. It rejects heat to the kitchen environment which is at $25$ °C. Determine the minimum (reversible) power input required to operate this refrigerator.
+                        </p>
+                    </div>
+                    <div class="final-answer-block hidden">
+                        <strong>Final Answer:</strong>
+                        <p>
+                            The reversible work required is $0.198$ kW.
+                        </p>
+                    </div>
+                    <div class="solution-block hidden">
+                        <strong>Full Solution:</strong>
+                        <p>
+                            The minimum power input required corresponds to the power needed for a reversible refrigerator operating between the given temperature limits. This is related to the Coefficient of Performance (COP) of a reversible refrigerator (Carnot refrigerator).
+                        </p>
+                        <p>First, convert the temperatures to Kelvin:</p>
+                        <ul>
+                            <li>Temperature of the cold space ($T_L$) = $-10$ °C = $-10 + 273.15 = 263.15$ K</li>
+                            <li>Temperature of the kitchen (ambient, $T_H$) = $25$ °C = $25 + 273.15 = 298.15$ K</li>
+                        </ul>
+                        <p>The rate of heat removal from the cold space (cooling load) is given as:</p>
+                        <ul>
+                           <li>$\dot{Q}_L = 1.5$ kW</li>
+                        </ul>
+                        <p>The COP of a reversible refrigerator ($COP_{R,rev}$) is given by:</p>
+                        $$ COP_{R,rev} = \frac{T_L}{T_H - T_L} $$
+                        <p>Calculate the $COP_{R,rev}$:</p>
+                        $$ COP_{R,rev} = \frac{263.15 \text{ K}}{298.15 \text{ K} - 263.15 \text{ K}} $$
+                        $$ COP_{R,rev} = \frac{263.15 \text{ K}}{35 \text{ K}} $$
+                        $$ COP_{R,rev} = 7.51857 $$
+                        <p>The COP of a refrigerator is also defined as the ratio of the desired effect (heat removed) to the required input (work):</p>
+                        $$ COP_R = \frac{\dot{Q}_L}{\dot{W}_{in}} $$
+                        <p>For a reversible process, the work input is the minimum possible work, $\dot{W}_{rev}$:</p>
+                        $$ COP_{R,rev} = \frac{\dot{Q}_L}{\dot{W}_{rev}} $$
+                        <p>Rearranging to find the reversible work (minimum power input):</p>
+                        $$ \dot{W}_{rev} = \frac{\dot{Q}_L}{COP_{R,rev}} $$
+                        <p>Substitute the values:</p>
+                        $$ \dot{W}_{rev} = \frac{1.5 \text{ kW}}{7.51857} $$
+                        <p>Calculation:</p>
+                        $$ \dot{W}_{rev} = 0.19950 \text{ kW} $$
+                        <p><strong>Calculation Check 1:</strong> $T_L = 263.15$ K, $T_H = 298.15$ K. $T_H - T_L = 35$ K. $COP_{R,rev} = 263.15 / 35 \approx 7.51857$. $\dot{W}_{rev} = 1.5 / 7.51857 \approx 0.19950$ kW.</p>
+                        <p><strong>Calculation Check 2:</strong> $\dot{W}_{rev} = \dot{Q}_L \frac{T_H - T_L}{T_L} = 1.5 \times \frac{35}{263.15} = \frac{52.5}{263.15} \approx 0.19950$ kW.</p>
+                        <p>Rounding to three decimal places, the reversible work required is $0.198$ kW.</p>
+                        <p><strong>Table Values Used:</strong> No specific values from thermodynamic tables were required.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 3 -->
+        <div class="accordion-item" data-state="collapsed">
+            <div class="accordion-header">
+                <h2>Question 3: Surrounding Temperature from Exergy</h2>
+                <span class="state-indicator" title="Status Indicator"></span>
+            </div>
+            <div class="accordion-content">
+                <div class="content-inner">
+                    <div class="question-block">
+                        <strong>Question:</strong>
+                        <p>
+                            Consider an adiabatic steady-state process where the change in enthalpy ($\Delta h$) is $7200$ kJ/kg, the change in flow exergy ($\Delta \psi$) is $4800$ kJ/kg, and the change in entropy ($\Delta s$) is $8$ kJ/kg-K. Kinetic and potential energy changes are negligible. Determine the temperature of the surroundings ($T_0$).
+                        </p>
+                    </div>
+                    <div class="final-answer-block hidden">
+                        <strong>Final Answer:</strong>
+                        <p>
+                            The surrounding temperature ($T_0$) is $300$ K.
+                        </p>
+                    </div>
+                    <div class="solution-block hidden">
+                        <strong>Full Solution:</strong>
+                        <p>
+                            The change in specific flow exergy ($\psi$) for a steady-state process, neglecting kinetic and potential energy changes, is defined as:
+                        </p>
+                        $$ \Delta\psi = (h_2 - h_1) - T_0(s_2 - s_1) $$
+                        $$ \Delta\psi = \Delta h - T_0\Delta s $$
+                        <p>Where:</p>
+                        <ul>
+                            <li>$\Delta\psi$ is the change in specific flow exergy (kJ/kg)</li>
+                            <li>$\Delta h$ is the change in specific enthalpy (kJ/kg)</li>
+                            <li>$T_0$ is the absolute temperature of the surroundings (K)</li>
+                            <li>$\Delta s$ is the change in specific entropy (kJ/kg-K)</li>
+                        </ul>
+                        <p>Given values:</p>
+                        <ul>
+                           <li>$\Delta h = 7200$ kJ/kg</li>
+                           <li>$\Delta \psi = 4800$ kJ/kg</li>
+                           <li>$\Delta s = 8$ kJ/kg-K</li>
+                        </ul>
+                        <p>We need to find $T_0$. Rearrange the exergy equation to solve for $T_0$:</p>
+                        $$ T_0\Delta s = \Delta h - \Delta \psi $$
+                        $$ T_0 = \frac{\Delta h - \Delta \psi}{\Delta s} $$
+                        <p>Substitute the given values:</p>
+                        $$ T_0 = \frac{7200 \text{ kJ/kg} - 4800 \text{ kJ/kg}}{8 \text{ kJ/kg-K}} $$
+                        $$ T_0 = \frac{2400 \text{ kJ/kg}}{8 \text{ kJ/kg-K}} $$
+                        <p>Calculation:</p>
+                        $$ T_0 = 300 \text{ K} $$
+                        <p><strong>Calculation Check 1:</strong> $(7200 - 4800) / 8 = 2400 / 8 = 300$ K. Units: (kJ/kg) / (kJ/kg-K) = K. Correct.</p>
+                        <p><strong>Calculation Check 2:</strong> Verify the original equation: $\Delta \psi = 7200 - 300 \times 8 = 7200 - 2400 = 4800$ kJ/kg. Matches the given value.</p>
+                        <p>The surrounding temperature $T_0$ is $300$ K.</p>
+                        <p><strong>Table Values Used:</strong> No specific values from thermodynamic tables were required.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add more accordion-item blocks here for more questions -->
+
+    </div> <!-- End Accordion Container -->
+
+
+    <footer> <!-- Optional Footer --> </footer>
+
+     <!-- Font Size Control Icons HTML -->
+     <div class="font-control">
+         <span class="font-control-icon" id="fontMinusBtn" title="Decrease font size">-</span>
+         <span class="font-control-icon" id="fontPlusBtn" title="Increase font size">+</span>
+     </div>
+     <div id="fontSizeDisplay">10px</div>
+
+    <script>
+        // --- Debounce Function ---
+        function debounce(func, wait) { let timeout; return function(...args) { const later = () => { clearTimeout(timeout); func.apply(this, args); }; clearTimeout(timeout); timeout = setTimeout(later, wait); }; }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const htmlEl = document.documentElement;
+            const bodyEl = document.body;
+
+            // --- Font Size Control & Hold ---
+            const minusBtn = document.getElementById('fontMinusBtn');
+            const plusBtn = document.getElementById('fontPlusBtn');
+            const display = document.getElementById('fontSizeDisplay');
+            let currentSize = 10; const minSize = 10; const maxSize = 28; const step = 1;
+            let displayTimeout = null; let holdTimeout = null; let holdInterval = null;
+            const initialHoldDelay = 400; const repeatInterval = 100;
+            const mathJaxDebounceDelay = 350;
+
+            const queueMathJaxTypeset = debounce(() => {
+                if (window.MathJax && MathJax.typesetPromise) {
+                    console.log("Debounced: Typesetting MathJax for body");
+                    MathJax.typesetPromise([bodyEl]).catch((err) => console.error('MathJax typesetting error:', err));
+                 }
+            }, mathJaxDebounceDelay);
+
+            const handleFontResizeEnd = debounce(() => {
+                console.log("Font resize finished.");
+                queueMathJaxTypeset();
+            }, mathJaxDebounceDelay);
+
+            function updateFontSize(newSize) {
+                const oldSize = currentSize;
+                currentSize = Math.max(minSize, Math.min(maxSize, newSize));
+                if (currentSize !== oldSize) {
+                    htmlEl.style.setProperty('--base-font-size', currentSize + 'px');
+                    display.textContent = currentSize + 'px'; display.classList.add('visible');
+                    if (displayTimeout) { clearTimeout(displayTimeout); }
+                    displayTimeout = setTimeout(() => { display.classList.remove('visible'); displayTimeout = null; }, 1500);
+                    handleFontResizeEnd(); return true;
+                } return false;
+            }
+            function stopHolding() {
+                bodyEl.classList.remove('no-font-transition');
+                if (holdTimeout) { clearTimeout(holdTimeout); holdTimeout = null; }
+                if (holdInterval) { clearInterval(holdInterval); holdInterval = null; }
+                handleFontResizeEnd();
+            }
+            function startHolding(direction) {
+                bodyEl.classList.add('no-font-transition'); updateFontSize(currentSize + direction * step);
+                if (holdTimeout) clearTimeout(holdTimeout); if (holdInterval) clearInterval(holdInterval);
+                holdTimeout = setTimeout(() => { holdInterval = setInterval(() => { if (!updateFontSize(currentSize + direction * step)) { stopHolding(); } }, repeatInterval); }, initialHoldDelay);
+            }
+            if (minusBtn && plusBtn && display) {
+                minusBtn.addEventListener('mousedown', (e) => { e.preventDefault(); startHolding(-1); });
+                plusBtn.addEventListener('mousedown', (e) => { e.preventDefault(); startHolding(1); });
+                window.addEventListener('mouseup', stopHolding);
+                minusBtn.addEventListener('mouseleave', stopHolding); plusBtn.addEventListener('mouseleave', stopHolding);
+                htmlEl.style.setProperty('--base-font-size', currentSize + 'px'); display.textContent = currentSize + 'px';
+                console.log("Font control initialized. Current size:", currentSize);
+            } else { console.error("Font control elements not found!"); }
+
+
+            // --- Accordion Logic (with State Indicator & MathJax Trigger - Robust Measurement) ---
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                const content = item.querySelector('.accordion-content');
+                const innerContent = content.querySelector('.content-inner');
+                const finalAnswerBlock = innerContent.querySelector('.final-answer-block');
+                const solutionBlock = innerContent.querySelector('.solution-block');
+
+
+                header.addEventListener('click', () => {
+                    const currentState = item.getAttribute('data-state');
+                    let nextState;
+
+                    if (currentState === 'collapsed') {
+                        if (!item.classList.contains('visited')) { item.classList.add('visited'); }
+                        nextState = 'state1';
+                    } else if (currentState === 'state1') {
+                        nextState = 'state2';
+                    } else { // state2
+                        nextState = 'collapsed';
+                    }
+
+                    item.setAttribute('data-state', nextState);
+                    console.log(`Item state changed to: ${nextState}`);
+
+                    const isCollapsed = nextState === 'collapsed';
+                    const showAnswer = nextState === 'state1';
+                    const showSolution = nextState === 'state2';
+
+                    // Toggle visibility of answer/solution blocks
+                    if (finalAnswerBlock) finalAnswerBlock.classList.toggle('hidden', !showAnswer);
+                    if (solutionBlock) solutionBlock.classList.toggle('hidden', !showSolution);
+
+
+                    // --- Expansion/Collapse Logic ---
+                    if (!isCollapsed) {
+                        // --- EXPANDING ---
+                        content.style.maxHeight = 'none'; // Allow natural height measurement
+                        let mathJaxPromise = Promise.resolve();
+                        if (window.MathJax && MathJax.typesetPromise) {
+                            console.log(`Queueing MathJax for item: ${header.querySelector('h2').textContent.trim()}`);
+                            mathJaxPromise = MathJax.typesetPromise([innerContent]).catch(err => {
+                                console.error('MathJax typesetting error during expand:', err);
+                            });
+                        } else { console.warn("MathJax not available for typesetting during expand."); }
+
+                        mathJaxPromise.then(() => {
+                            console.log("MathJax finished for item. Preparing height calculation.");
+                            requestAnimationFrame(() => {
+                                requestAnimationFrame(() => { // Double rAF waits for layout calculation
+                                    const style = window.getComputedStyle(content);
+                                    const paddingTop = parseFloat(style.paddingTop) || 0;
+                                    const paddingBottom = parseFloat(style.paddingBottom) || 0;
+                                    const innerHeight = innerContent.offsetHeight;
+                                    const totalHeight = innerHeight + paddingTop + paddingBottom;
+                                    console.log(`Calculated totalHeight after MathJax & rAF: ${totalHeight}px`);
+                                    if (totalHeight <= (paddingTop + paddingBottom)) {
+                                         console.warn("Calculated height is zero or only padding! Check content visibility/rendering.");
+                                     }
+                                     content.style.maxHeight = '0px'; // Prepare for transition
+                                     requestAnimationFrame(() => { // Apply final height in next frame
+                                         content.style.maxHeight = totalHeight + 'px';
+                                         console.log(`Applied maxHeight: ${totalHeight}px`);
+                                     });
+                                 });
+                             });
+                         });
+
+                    } else {
+                        // --- COLLAPSING ---
+                        if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                           content.style.maxHeight = '0px';
+                           console.log("Collapsing: Set maxHeight to 0px");
+                        }
+                    }
+                });
+            });
+            console.log("Accordion logic (Robust Measurement) with state indicators and MathJax applied.");
+
+
+            // --- Initial MathJax Typeset on Load ---
+             if (window.MathJax) {
+                 MathJax.startup.promise.then(() => {
+                     console.log("Queueing initial MathJax typeset after load");
+                     MathJax.typesetPromise([bodyEl]).catch((err) => console.error('MathJax initial typesetting error:', err));
+                 });
+             }
+
+        }); // End DOMContentLoaded
+    </script>
+
+</body>
+</html>

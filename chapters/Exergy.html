@@ -128,58 +128,40 @@
         #fontSizeDisplay { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); background-color: rgba(45, 45, 45, 0.9); color: #e0e0e0; padding: 6px 12px; border-radius: 5px; font-size: 13px; font-family: 'Roboto Mono', monospace; z-index: 11; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none; white-space: nowrap; }
         #fontSizeDisplay.visible { opacity: 1; }
 
-                /* --- START: Main Page Scrollbar Styling (Floating Style - Robust Targeting) --- */
+                /* --- START: Main Page Scrollbar Styling (Simple Dark Theme) --- */
 
         /* WebKit Browsers (Chrome, Safari, Edge, etc.) */
-        /* Apply to both html and body for maximum coverage */
-        html::-webkit-scrollbar,
         body::-webkit-scrollbar {
-            width: 8px; /* Width of the scrollbar */
-            background-color: rgba(0,0,0,0); /* Force transparent background */
+            width: 10px; /* Adjust width as desired */
         }
 
-        html::-webkit-scrollbar-track,
         body::-webkit-scrollbar-track {
-            background-color: rgba(0,0,0,0); /* Force transparent track */
-            border: none;
-             margin: 2px 0; /* Adjust margin if needed */
+            background: #2a2a2a; /* Slightly lighter than body background */
+            border-radius: 5px;
         }
 
-        html::-webkit-scrollbar-thumb,
         body::-webkit-scrollbar-thumb {
-            background-color: #ffffff; /* White thumb */
-            border-radius: 4px;
-            /* No border */
+            background-color: #777; /* Medium grey thumb */
+            border-radius: 5px;
+            border: 2px solid #2a2a2a; /* Use track color for border */
+            background-clip: content-box;
         }
 
-        html::-webkit-scrollbar-thumb:hover,
         body::-webkit-scrollbar-thumb:hover {
-            background-color: #cccccc; /* Lighter grey on hover */
+            background-color: #999; /* Lighter grey on hover */
         }
 
-        /* Attempt to hide the scrollbar buttons (arrows) forcefully */
-        html::-webkit-scrollbar-button:start:decrement,
-        html::-webkit-scrollbar-button:end:increment,
-        body::-webkit-scrollbar-button:start:decrement,
-        body::-webkit-scrollbar-button:end:increment {
-            display: none;
-            height: 0;
-            width: 0;
-            background-color: rgba(0,0,0,0); /* Ensure transparent */
-        }
-
-        /* Firefox Scrollbar Styling (Remains the same - best effort) */
+        /* Firefox Scrollbar Styling */
         html {
-            scrollbar-width: thin;
-            scrollbar-color: #ffffff #333; /* White thumb, dark grey track */
+            scrollbar-width: thin;          /* Or 'auto' */
+            scrollbar-color: #777 #2a2a2a;   /* thumb color track color */
         }
         @supports (scrollbar-gutter: stable) {
             html {
                 scrollbar-gutter: stable;
             }
         }
-
-        /* --- END: Main Page Scrollbar Styling (Floating Style - Robust Targeting) --- */
+        /* --- END: Main Page Scrollbar Styling (Simple Dark Theme) --- */
     </style>
 </head>
 <body>
@@ -824,21 +806,25 @@
             });
         }
 
-        // Font Size Control Icons JS
-        document.addEventListener('DOMContentLoaded', () => {
+                // Font Size Control Icons JS (with Hold Functionality)
+                document.addEventListener('DOMContentLoaded', () => {
             const minusBtn = document.getElementById('fontMinusBtn');
             const plusBtn = document.getElementById('fontPlusBtn');
             const display = document.getElementById('fontSizeDisplay');
             const htmlEl = document.documentElement;
 
-            let currentSize = 10; // Initial size
+            // Configuration
+            let currentSize = 10; // Initial size set to 10px
             const minSize = 10;
-            const maxSize = 28;
+            const maxSize = 28; // Adjust max size if needed
             const step = 1;
             let displayTimeout = null;
-            let mathjaxTypesetTimeout = null; // For debouncing MathJax
+            let holdTimeout = null; // Timeout before repeating starts
+            let holdInterval = null; // Interval for repeated action
+            const initialHoldDelay = 400; // milliseconds before repeat starts
+            const repeatInterval = 100; // milliseconds between repeats
 
-            // Debounce function
+            // --- Debounce Function (for MathJax) ---
             function debounce(func, wait) {
                 let timeout;
                 return function executedFunction(...args) {
@@ -851,41 +837,106 @@
                 };
             }
 
-            // Debounced MathJax typesetting function
+            // --- Debounced MathJax Typesetting ---
             const queueMathJaxTypeset = debounce(() => {
                 if (window.MathJax && MathJax.typesetPromise) {
                     console.log("Debounced: Typesetting MathJax");
-                    MathJax.typesetPromise();
-                }
-            }, 250); // 250ms delay
+                    // Ensure MathJax operates on the whole document body
+                    // if content isn't restricted to a specific container
+                    MathJax.typesetPromise([document.body]).catch((err) => console.error('MathJax typesetting error:', err));
+                 }
+            }, 350); // Slightly longer delay after stopping hold
 
+            // --- Update Font Size and Display ---
             function updateFontSize(newSize) {
+                const oldSize = currentSize;
                 currentSize = Math.max(minSize, Math.min(maxSize, newSize));
-                htmlEl.style.setProperty('--base-font-size', currentSize + 'px');
-                display.textContent = currentSize + 'px';
-                display.classList.add('visible');
 
-                // Queue MathJax update after font size change
-                queueMathJaxTypeset();
+                // Only update if the size actually changed
+                if (currentSize !== oldSize) {
+                    htmlEl.style.setProperty('--base-font-size', currentSize + 'px');
+                    display.textContent = currentSize + 'px';
 
-                if (displayTimeout) { clearTimeout(displayTimeout); }
-                displayTimeout = setTimeout(() => {
-                    display.classList.remove('visible');
-                    displayTimeout = null;
-                }, 1500);
+                     // Show display immediately
+                     display.classList.add('visible');
+                     if (displayTimeout) { clearTimeout(displayTimeout); }
+                     displayTimeout = setTimeout(() => {
+                         display.classList.remove('visible');
+                         displayTimeout = null;
+                     }, 1500); // Hide after 1.5s
+
+                    // Queue MathJax update AFTER the size change is applied
+                    queueMathJaxTypeset();
+                }
+                return currentSize !== oldSize; // Return true if size changed
             }
 
+            // --- Stop Holding Action ---
+            function stopHolding() {
+                if (holdTimeout) {
+                    clearTimeout(holdTimeout);
+                    holdTimeout = null;
+                }
+                if (holdInterval) {
+                    clearInterval(holdInterval);
+                    holdInterval = null;
+                }
+                 // When holding stops, ensure MathJax gets a chance to run
+                 queueMathJaxTypeset();
+            }
+
+            // --- Start Holding Action ---
+            function startHolding(direction) {
+                 // Initial action on mousedown
+                updateFontSize(currentSize + direction * step);
+
+                 // Clear any previous timers
+                 stopHolding();
+
+                 // Set timeout to start repeating
+                 holdTimeout = setTimeout(() => {
+                     holdInterval = setInterval(() => {
+                         // Continue updating and check if size limit reached
+                         if (!updateFontSize(currentSize + direction * step)) {
+                             // If size didn't change (hit limit), stop repeating
+                             stopHolding();
+                         }
+                     }, repeatInterval);
+                 }, initialHoldDelay);
+            }
+
+
+            // --- Event Listeners ---
             if (minusBtn && plusBtn && display) {
-                minusBtn.addEventListener('click', (e) => {
-                    e.stopPropagation(); updateFontSize(currentSize - step);
-                });
-                plusBtn.addEventListener('click', (e) => {
-                     e.stopPropagation(); updateFontSize(currentSize + step);
+                // Minus Button
+                minusBtn.addEventListener('mousedown', (e) => {
+                    e.preventDefault(); // Prevent text selection/drag
+                    startHolding(-1); // Start holding with direction -1
                 });
 
-                htmlEl.style.setProperty('--base-font-size', currentSize + 'px');
-                display.textContent = currentSize + 'px';
-                console.log("Font control initialized. Current size:", currentSize);
+                // Plus Button
+                plusBtn.addEventListener('mousedown', (e) => {
+                    e.preventDefault(); // Prevent text selection/drag
+                    startHolding(1); // Start holding with direction +1
+                });
+
+                // Stop holding when mouse button is released anywhere
+                window.addEventListener('mouseup', stopHolding);
+
+                 // Also stop holding if mouse leaves the button while pressed
+                 minusBtn.addEventListener('mouseleave', stopHolding);
+                 plusBtn.addEventListener('mouseleave', stopHolding);
+
+
+                // Set initial state based on JS variable
+                 htmlEl.style.setProperty('--base-font-size', currentSize + 'px');
+                 display.textContent = currentSize + 'px';
+                 console.log("Font control initialized. Current size:", currentSize);
+                 // Initial MathJax typeset on load
+                 if (window.MathJax) {
+                     MathJax.startup.promise.then(() => queueMathJaxTypeset());
+                 }
+
             } else {
                 console.error("Font control elements not found!");
             }

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 8: Exergy</title> <!-- CHANGED TITLE -->
+    <title>Chapter 8: Exergy</title> <!-- Corrected Title -->
 
     <!-- Google Fonts - Roboto Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,150 +12,29 @@
 
     <style>
         /* Basic Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         /* Keyframes for Animations (FadeIn) */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         /* Fonts & Base Styling */
-        body {
-            font-family: 'Roboto Mono', monospace;
-            color: #e0e0e0;
-            line-height: 1.7;
-            padding: 25px;
-            background-color: #1a1a1a;
-            min-height: 100vh;
-            font-size: var(--base-font-size); /* Controlled by JS */
-            transition: font-size 0.2s ease-in-out;
-            padding-bottom: 80px; /* Space for controls */
-            overflow-x: hidden;
-        }
-
+        body { font-family: 'Roboto Mono', monospace; color: #e0e0e0; line-height: 1.7; padding: 25px; background-color: #1a1a1a; min-height: 100vh; font-size: var(--base-font-size); transition: font-size 0.2s ease-in-out; padding-bottom: 80px; overflow-x: hidden; }
         /* Headings */
-        h1, h2 {
-            font-family: 'Roboto Mono', monospace;
-            text-align: center;
-            margin-bottom: 1.5em;
-        }
-
-        h1 {
-            font-size: 2.4em;
-            color: #ffffff;
-            font-weight: 700;
-            padding-bottom: 12px;
-            margin-top: 1.5em;
-            margin-bottom: 1.5em;
-            border-bottom: 2px solid #ffffff;
-            animation: fadeIn 0.8s ease-out both;
-            animation-delay: 0.1s;
-            letter-spacing: -0.5px;
-        }
-
-        h2 {
-            font-size: 1.6em;
-            color: #cccccc;
-            font-weight: 500;
-            margin-top: 30px;
-            margin-bottom: 1.5em;
-            border-bottom: 1px solid #555555;
-            padding-bottom: 5px;
-            animation: fadeIn 0.8s ease-out both;
-            animation-delay: 0.3s;
-        }
-
-        h3 { /* Added basic h3 styling */
-            font-size: 1.2em;
-            color: #bdbdbd;
-            font-weight: 500;
-            margin-top: 1.8em;
-            margin-bottom: 0.8em;
-            padding-bottom: 3px;
-            border-bottom: 1px dotted #444;
-         }
-
+        h1, h2 { font-family: 'Roboto Mono', monospace; text-align: center; margin-bottom: 1.5em; }
+        h1 { font-size: 2.4em; color: #ffffff; font-weight: 700; padding-bottom: 12px; margin-top: 1.5em; margin-bottom: 1.5em; border-bottom: 2px solid #ffffff; animation: fadeIn 0.8s ease-out both; animation-delay: 0.1s; letter-spacing: -0.5px; }
+        h2 { font-size: 1.6em; color: #cccccc; font-weight: 500; margin-top: 30px; margin-bottom: 1.5em; border-bottom: 1px solid #555555; padding-bottom: 5px; animation: fadeIn 0.8s ease-out both; animation-delay: 0.3s; }
+        h3 { font-size: 1.2em; color: #bdbdbd; font-weight: 500; margin-top: 1.8em; margin-bottom: 0.8em; padding-bottom: 3px; border-bottom: 1px dotted #444; }
         /* Main Content Area */
-        main {
-            max-width: 800px;
-            margin: 40px auto;
-            background-color: rgba(30, 30, 30, 0.85);
-            padding: 35px 45px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: fadeIn 0.8s ease-out both;
-            animation-delay: 0.2s;
-        }
-
+        main { max-width: 800px; margin: 40px auto; background-color: rgba(30, 30, 30, 0.85); padding: 35px 45px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7); backdrop-filter: blur(6px); border: 1px solid rgba(255, 255, 255, 0.1); animation: fadeIn 0.8s ease-out both; animation-delay: 0.2s; }
         /* Paragraph and List styling */
-        p {
-            margin-bottom: 1em;
-            color: inherit;
-            font-size: inherit;
-        }
-
-        ul {
-            margin-left: 25px;
-            list-style: disc;
-            margin-bottom: 1em;
-        }
-        /* Added ol styling */
-        ol {
-            margin-left: 25px;
-            list-style: decimal;
-            margin-bottom: 1em;
-        }
-
-        li {
-            margin-bottom: 8px;
-            font-size: inherit;
-        }
-
-        strong, .math-var {
-            font-weight: 500;
-            color: #ffffff;
-        }
-        .math-var {
-             font-style: italic;
-             margin: 0 2px;
-        }
-
+        p { margin-bottom: 1em; color: inherit; font-size: inherit; }
+        ul, ol { margin-left: 25px; list-style: disc; margin-bottom: 1em; }
+        ol { list-style: decimal; }
+        li { margin-bottom: 8px; font-size: inherit; }
+        strong, .math-var { font-weight: 500; color: #ffffff; }
+        .math-var { font-style: italic; margin: 0 2px; }
         /* Formula Container Styling */
-        .formula-container {
-            margin: 15px 0 20px 0;
-            padding: 15px 20px;
-            background-color: rgba(45, 45, 45, 0.9);
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            overflow-x: auto;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
-            cursor: pointer; /* For copy action */
-            font-size: 1.1em; /* Relative size */
-            line-height: 1.5;
-            color: #e0e0e0;
-            border-left: 4px solid transparent;
-            font-family: 'Roboto Mono', monospace;
-        }
-
-        .formula-container:hover {
-            background-color: rgba(60, 60, 60, 0.95);
-            border-left-color: #a6e3a1;
-            border-color: rgba(166, 227, 161, 0.5);
-        }
-
-        .formula-container.copied {
-            background-color: rgba(166, 227, 161, 0.2);
-            border-color: #a6e3a1;
-            border-left-color: #a6e3a1;
-        }
-
+        .formula-container { margin: 15px 0 20px 0; padding: 15px 20px; background-color: rgba(45, 45, 45, 0.9); border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1); overflow-x: auto; transition: background-color 0.3s ease, border-color 0.3s ease; cursor: pointer; font-size: 1.1em; line-height: 1.5; color: #e0e0e0; border-left: 4px solid transparent; font-family: 'Roboto Mono', monospace; }
+        .formula-container:hover { background-color: rgba(60, 60, 60, 0.95); border-left-color: #a6e3a1; border-color: rgba(166, 227, 161, 0.5); }
+        .formula-container.copied { background-color: rgba(166, 227, 161, 0.2); border-color: #a6e3a1; border-left-color: #a6e3a1; }
         /* Style for math elements within formula containers */
         .formula-container i { font-style: italic; margin: 0 1px; }
         .formula-container sub, .formula-container sup { line-height: 0; font-size: 0.75em; position: relative; top: -0.2em; }
@@ -164,78 +43,26 @@
         .formula-container .numerator { display: block; border-bottom: 1px solid #cccccc; padding-bottom: 2px; line-height: 1.1; }
         .formula-container .denominator { display: block; padding-top: 2px; line-height: 1.1; }
         .formula-container .summation { font-size: 1.4em; vertical-align: middle; margin: 0 0.1em; }
-        /* Added styling for dot accent */
         .formula-container .overdot { position: relative; }
         .formula-container .overdot::after { content: '\02d9'; position: absolute; left: 45%; top: -0.6em; transform: translateX(-50%); font-size: 1em; }
-
-
         /* Footer Styling */
-        footer {
-            text-align: center;
-            margin-top: 70px;
-            padding-bottom: 35px;
-            font-size: 0.85em;
-            color: #888888;
-            animation: fadeIn 1s ease-out both;
-            animation-delay: 0.7s;
-        }
-
+        footer { text-align: center; margin-top: 70px; padding-bottom: 35px; font-size: 0.85em; color: #888888; animation: fadeIn 1s ease-out both; animation-delay: 0.7s; }
         /* Font Control Icons CSS */
-        .font-control {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 10px 25px;
-            box-sizing: border-box;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            pointer-events: none;
-            z-index: 10;
-        }
-        .font-control-icon {
-            font-size: 28px; /* Fixed size */
-            font-weight: bold;
-            color: #777;
-            cursor: pointer;
-            padding: 8px;
-            transition: color 0.3s ease;
-            pointer-events: auto;
-            user-select: none;
-            line-height: 1;
-            display: inline-block;
-        }
+        .font-control { position: fixed; bottom: 0; left: 0; width: 100%; padding: 10px 25px; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; pointer-events: none; z-index: 10; }
+        .font-control-icon { font-size: 28px; font-weight: bold; color: #777; cursor: pointer; padding: 8px; transition: color 0.3s ease; pointer-events: auto; user-select: none; line-height: 1; display: inline-block; }
         .font-control-icon:hover { color: #a6e3a1; }
-        #fontSizeDisplay {
-            position: fixed;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(45, 45, 45, 0.9);
-            color: #e0e0e0;
-            padding: 6px 12px;
-            border-radius: 5px;
-            font-size: 13px; /* Fixed size */
-            font-family: 'Roboto Mono', monospace;
-            z-index: 11;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-            pointer-events: none;
-            white-space: nowrap;
-        }
+        #fontSizeDisplay { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); background-color: rgba(45, 45, 45, 0.9); color: #e0e0e0; padding: 6px 12px; border-radius: 5px; font-size: 13px; font-family: 'Roboto Mono', monospace; z-index: 11; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none; white-space: nowrap; }
         #fontSizeDisplay.visible { opacity: 1; }
-
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Chapter 8: Exergy</h1> <!-- EDITED -->
+        <h1>Chapter 8: Exergy</h1> <!-- Title updated -->
     </header>
 
     <main>
-        <!-- CONTENT PASTED AND FORMATTED -->
+        <!-- Exergy Content pasted and formatted according to revised instructions -->
         <p>
             This chapter builds significantly on the energy and entropy concepts from previous chapters, introducing a powerful way to assess the quality of energy and the true potential for work.
         </p>
@@ -271,11 +98,17 @@
                     <li>Solving for <span class="math-var">Q₀</span>: <span class="math-var">Q₀ = Q * (T₀ / T)</span>.</li>
                     <li>Substituting <span class="math-var">Q₀</span> into the energy balance gives the maximum reversible work, which is the <strong>exergy of the heat <span class="math-var">Q</span></strong>:</li>
                 </ul>
-                <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\Phi_{QT} = W_{rev HE} = Q - Q * (T_0 / T)}')", data-latex="\Phi_{QT} = W_{rev HE} = Q - Q * (T_0 / T)" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\Phi_{QT} = W_{rev HE} = Q - Q * (T_0 / T)}')""
+                      data-latex="\Phi_{QT} = W_{rev HE} = Q - Q * (T_0 / T)"
+                      title="Click to copy LaTeX">
                      <i>Φ</i><sub>QT</sub> = <i>W</i><sub>rev HE</sub> = <i>Q</i> - <i>Q</i> * (<i>T</i>₀ / <i>T</i>)
-                </div>
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\Phi_{QT} = Q * (1 - T_0 / T) \\quad (Eq 8.1)}')", data-latex="\Phi_{QT} = Q * (1 - T_0 / T) \quad (Eq 8.1)" title="Click to copy LaTeX">
-                      <i>Φ</i><sub>QT</sub> = <i>Q</i> * (1 - <i>T</i>₀ / <i>T</i>) &nbsp;&nbsp;&nbsp;(Eq 8.1)
+                 </div>
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\Phi_{QT} = Q * (1 - T_0 / T)}')""
+                      data-latex="\Phi_{QT} = Q * (1 - T_0 / T) \quad (Eq 8.1)"
+                      title="Click to copy LaTeX">
+                     <i>Φ</i><sub>QT</sub> = <i>Q</i> * (1 - <i>T</i>₀ / <i>T</i>) &nbsp;&nbsp;&nbsp;(Eq 8.1)
                  </div>
                  <ul>
                     <li><strong>Interpretation (Figure 8.2):</strong> On a T-S diagram, the heat <span class="math-var">Q</span> transferred at constant T is represented by the area of a rectangle with height <span class="math-var">T</span> and width <span class="math-var">ΔS = Q/T</span>. The exergy <span class="math-var">Φ<sub>QT</sub></span> is the portion of this area *above* the ambient temperature <span class="math-var">T₀</span>. The area below <span class="math-var">T₀</span> (which is <span class="math-var">T₀ * ΔS = T₀ * (Q/T) = Q₀</span>) represents the heat that *must* be rejected to the environment even by the best possible engine and is therefore <strong>unavailable energy</strong>. Exergy represents the <strong>available energy</strong> portion of the heat transfer <span class="math-var">Q</span>. Only the fraction <span class="math-var">(1 - T₀/T)</span> (which is the Carnot efficiency) of the heat <span class="math-var">Q</span> can be converted to work.</li>
@@ -290,13 +123,19 @@
                     <li>If the process transferring the heat <span class="math-var">δQ</span> is reversible, <span class="math-var">δQ/T = dS</span>, where <span class="math-var">dS</span> is the entropy change *of the source*.</li>
                     <li>So, <span class="math-var">Q₀ = ∫ T₀ dS = T₀ ∫ dS = T₀ ΔS</span> (where <span class="math-var">ΔS</span> is the total entropy change *of the source* providing the heat <span class="math-var">Q</span>). (Equation 8.2, note <span class="math-var">ΔS = ∫ δQ<sub>rev</sub> / T</span>).</li>
                 </ul>
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{Q_0 = T_0 \\Delta S \\quad (Eq 8.2)}')", data-latex="Q_0 = T_0 \Delta S \quad (Eq 8.2)" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{Q_0 = T_0 \\Delta S}')""
+                      data-latex="Q_0 = T_0 \Delta S \quad (Eq 8.2)"
+                      title="Click to copy LaTeX">
                      <i>Q</i>₀ = <i>T</i>₀ <i>ΔS</i> &nbsp;&nbsp;&nbsp;(Eq 8.2)
                  </div>
                  <ul>
                     <li>The total work is again <span class="math-var">W<sub>rev HE</sub> = Q - Q₀</span>. Therefore, the exergy of the heat <span class="math-var">Q</span> from a changing-temperature source is:</li>
                 </ul>
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\Phi_{QT} = W_{rev HE} = Q - T_0 \\Delta S \\quad (Eq 8.3)}')", data-latex="\Phi_{QT} = W_{rev HE} = Q - T_0 \Delta S \quad (Eq 8.3)" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\Phi_{QT} = W_{rev HE} = Q - T_0 \\Delta S}')""
+                      data-latex="\Phi_{QT} = W_{rev HE} = Q - T_0 \Delta S \quad (Eq 8.3)"
+                      title="Click to copy LaTeX">
                      <i>Φ</i><sub>QT</sub> = <i>W</i><sub>rev HE</sub> = <i>Q</i> - <i>T</i>₀ <i>ΔS</i> &nbsp;&nbsp;&nbsp;(Eq 8.3)
                  </div>
                  <ul>
@@ -311,13 +150,22 @@
         <ul>
             <li>
                 <strong>Actual Process:</strong> Governed by standard conservation laws (Fig 8.4).
-                <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\frac{dm_{cv}}{dt} = \\sum \\dot{m}_i - \\sum \\dot{m}_e \\quad (Eq 8.4)}')", data-latex="\frac{dm_{cv}}{dt} = \sum \dot{m}_i - \sum \dot{m}_e \quad (Eq 8.4)" title="Click to copy LaTeX">
+                <div class="formula-container"
+                     onclick="copyFormulaLatex(this, '\\color{white}{\\frac{dm_{cv}}{dt} = \\sum \\dot{m}_i - \\sum \\dot{m}_e}')""
+                     data-latex="\frac{dm_{cv}}{dt} = \sum \dot{m}_i - \sum \dot{m}_e \quad (Eq 8.4)"
+                     title="Click to copy LaTeX">
                     <span class="fraction"><span class="numerator">d<i>m</i><sub>cv</sub></span><span class="denominator">dt</span></span> = <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>i</sub> - <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>e</sub> &nbsp;&nbsp;&nbsp;(Eq 8.4)
                 </div>
-                <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\frac{dE_{cv}}{dt} = \\sum \\dot{Q}_j + \\sum \\dot{m}_i h_{tot,i} - \\sum \\dot{m}_e h_{tot,e} - \\dot{W}_{cv,ac} \\quad (Eq 8.5)}')", data-latex="\frac{dE_{cv}}{dt} = \sum \dot{Q}_j + \sum \dot{m}_i h_{tot,i} - \sum \dot{m}_e h_{tot,e} - \dot{W}_{cv,ac} \quad (Eq 8.5)" title="Click to copy LaTeX">
+                <div class="formula-container"
+                     onclick="copyFormulaLatex(this, '\\color{white}{\\frac{dE_{cv}}{dt} = \\sum \\dot{Q}_j + \\sum \\dot{m}_i h_{tot,i} - \\sum \\dot{m}_e h_{tot,e} - \\dot{W}_{cv,ac}}')""
+                     data-latex="\frac{dE_{cv}}{dt} = \sum \dot{Q}_j + \sum \dot{m}_i h_{tot,i} - \sum \dot{m}_e h_{tot,e} - \dot{W}_{cv,ac} \quad (Eq 8.5)"
+                     title="Click to copy LaTeX">
                     <span class="fraction"><span class="numerator">d<i>E</i><sub>cv</sub></span><span class="denominator">dt</span></span> = <span class="summation">∑</span> <span class="overdot"><i>Q</i></span><sub>j</sub> + <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>i</sub> <i>h</i><sub>tot,i</sub> - <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>e</sub> <i>h</i><sub>tot,e</sub> - <span class="overdot"><i>W</i></span><sub>cv,ac</sub> &nbsp;&nbsp;&nbsp;(Eq 8.5)
                 </div>
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\frac{dS_{cv}}{dt} = \\sum \\frac{\\dot{Q}_j}{T_j} + \\sum \\dot{m}_i s_i - \\sum \\dot{m}_e s_e + \\dot{S}_{gen,ac} \\quad (Eq 8.6)}')", data-latex="\frac{dS_{cv}}{dt} = \sum \frac{\dot{Q}_j}{T_j} + \sum \dot{m}_i s_i - \sum \dot{m}_e s_e + \dot{S}_{gen,ac} \quad (Eq 8.6)" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\frac{dS_{cv}}{dt} = \\sum \\frac{\\dot{Q}_j}{T_j} + \\sum \\dot{m}_i s_i - \\sum \\dot{m}_e s_e + \\dot{S}_{gen,ac}}')""
+                      data-latex="\frac{dS_{cv}}{dt} = \sum \frac{\dot{Q}_j}{T_j} + \sum \dot{m}_i s_i - \sum \dot{m}_e s_e + \dot{S}_{gen,ac} \quad (Eq 8.6)"
+                      title="Click to copy LaTeX">
                      <span class="fraction"><span class="numerator">d<i>S</i><sub>cv</sub></span><span class="denominator">dt</span></span> = <span class="summation">∑</span> <span class="fraction"><span class="numerator"><span class="overdot"><i>Q</i></span><sub>j</sub></span><span class="denominator"><i>T</i><sub>j</sub></span></span> + <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>i</sub> <i>s</i><sub>i</sub> - <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>e</sub> <i>s</i><sub>e</sub> + <span class="overdot"><i>S</i></span><sub>gen,ac</sub> &nbsp;&nbsp;&nbsp;(Eq 8.6)
                  </div>
                  Note <span class="math-var">Ẇ<sub>cv,ac</sub></span> is the actual work rate, <span class="math-var">Ṡ<sub>gen,ac</sub></span> is the actual entropy generation rate (which is <span class="math-var">≥ 0</span>).
@@ -337,12 +185,18 @@
         </p>
         <ol>
             <li>Look at the entropy equation (8.6) for the actual process. Solve for <span class="math-var">Ṡ<sub>gen,ac</sub></span>:
-                <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\dot{S}_{gen,ac} = \\frac{dS_{cv}}{dt} - \\sum \\frac{\\dot{Q}_j}{T_j} - \\sum \\dot{m}_i s_i + \\sum \\dot{m}_e s_e}')", data-latex="\dot{S}_{gen,ac} = \frac{dS_{cv}}{dt} - \sum \frac{\dot{Q}_j}{T_j} - \sum \dot{m}_i s_i + \sum \dot{m}_e s_e" title="Click to copy LaTeX">
+                <div class="formula-container"
+                     onclick="copyFormulaLatex(this, '\\color{white}{\\dot{S}_{gen,ac} = \\frac{dS_{cv}}{dt} - \\sum \\frac{\\dot{Q}_j}{T_j} - \\sum \\dot{m}_i s_i + \\sum \\dot{m}_e s_e}')""
+                     data-latex="\dot{S}_{gen,ac} = \frac{dS_{cv}}{dt} - \sum \frac{\dot{Q}_j}{T_j} - \sum \dot{m}_i s_i + \sum \dot{m}_e s_e"
+                     title="Click to copy LaTeX">
                      <span class="overdot"><i>S</i></span><sub>gen,ac</sub> = <span class="fraction"><span class="numerator">d<i>S</i><sub>cv</sub></span><span class="denominator">dt</span></span> - <span class="summation">∑</span> <span class="fraction"><span class="numerator"><span class="overdot"><i>Q</i></span><sub>j</sub></span><span class="denominator"><i>T</i><sub>j</sub></span></span> - <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>i</sub> <i>s</i><sub>i</sub> + <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>e</sub> <i>s</i><sub>e</sub>
                 </div>
             </li>
             <li>In the *ideal* reversible process, instead of generating <span class="math-var">Ṡ<sub>gen,ac</sub></span>, this same amount of entropy must be transferred *out* reversibly to the environment at <span class="math-var">T₀</span>. So, the necessary heat transfer *from* the environment (at T₀) *to* the ideal CV is:
-                <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\dot{Q}_0^{rev} = T_0 \\dot{S}_{gen,ac} \\quad (from Eq 8.7/8.9)}')", data-latex="\dot{Q}_0^{rev} = T_0 \dot{S}_{gen,ac} \quad (from Eq 8.7/8.9)" title="Click to copy LaTeX">
+                <div class="formula-container"
+                     onclick="copyFormulaLatex(this, '\\color{white}{\\dot{Q}_0^{rev} = T_0 \\dot{S}_{gen,ac}}')""
+                     data-latex="\dot{Q}_0^{rev} = T_0 \dot{S}_{gen,ac} \quad (from Eq 8.7/8.9)"
+                     title="Click to copy LaTeX">
                      <span class="overdot"><i>Q</i></span>₀<sup>rev</sup> = <i>T</i>₀ <span class="overdot"><i>S</i></span><sub>gen,ac</sub> &nbsp;&nbsp;&nbsp;(from Eq 8.7/8.9)
                 </div>
                 <strong>Important Note:</strong> If the actual process is adiabatic (<span class="math-var">Q̇ⱼ=0</span>) but irreversible (<span class="math-var">Ṡ<sub>gen,ac</sub>>0</span>), the corresponding *reversible* process needs heat transfer *from* the environment (<span class="math-var">Q̇₀<sup>rev</sup> > 0</span>) to maintain the same state changes and flows reversibly. If the actual process is reversible (<span class="math-var">Ṡ<sub>gen,ac</sub>=0</span>), then <span class="math-var">Q̇₀<sup>rev</sup> = 0</span>.
@@ -350,25 +204,37 @@
             <li>The *total* work rate term in the ideal reversible process energy equation must replace the actual work <span class="math-var">-Ẇ<sub>cv,ac</sub></span>. Comparing terms from the actual and ideal last parts (Eq 8.8): <span class="math-var">-Ẇ<sub>cv,ac</sub></span> is replaced by <span class="math-var">(Q̇₀<sup>rev</sup> - Ẇ<sub>rev</sub>)</span>.
             </li>
              <li>Solving for <span class="math-var">Ẇ<sub>rev</sub></span>:
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\dot{W}_{cv,ac} + \\dot{Q}_0^{rev} \\quad (Eq 8.10)}')", data-latex="\dot{W}_{rev} = \dot{W}_{cv,ac} + \dot{Q}_0^{rev} \quad (Eq 8.10)" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\dot{W}_{cv,ac} + \\dot{Q}_0^{rev}}')""
+                      data-latex="\dot{W}_{rev} = \dot{W}_{cv,ac} + \dot{Q}_0^{rev} \quad (Eq 8.10)"
+                      title="Click to copy LaTeX">
                      <span class="overdot"><i>W</i></span><sub>rev</sub> = <span class="overdot"><i>W</i></span><sub>cv,ac</sub> + <span class="overdot"><i>Q</i></span>₀<sup>rev</sup> &nbsp;&nbsp;&nbsp;(Eq 8.10)
                  </div>
             </li>
              <li>Now substitute <span class="math-var">Q̇₀<sup>rev</sup> = T₀ Ṡ<sub>gen,ac</sub></span>: <span class="math-var">Ẇ<sub>rev</sub> = Ẇ<sub>cv,ac</sub> + T₀ Ṡ<sub>gen,ac</sub></span>.
             </li>
              <li>Next, substitute the expression for <span class="math-var">Ṡ<sub>gen,ac</sub></span> (from step 1) into this equation:
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\dot{W}_{cv,ac} + T_0 \\left[ \\frac{dS_{cv}}{dt} - \\sum\\frac{\\dot{Q}_j}{T_j} - \\sum\\dot{m}_i s_i + \\sum\\dot{m}_e s_e \\right]}')", data-latex="\dot{W}_{rev} = \dot{W}_{cv,ac} + T_0 \left[ \frac{dS_{cv}}{dt} - \sum\frac{\dot{Q}_j}{T_j} - \sum\dot{m}_i s_i + \sum\dot{m}_e s_e \right]" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\dot{W}_{cv,ac} + T_0 \\left[ \\frac{dS_{cv}}{dt} - \\sum\\frac{\\dot{Q}_j}{T_j} - \\sum\\dot{m}_i s_i + \\sum\\dot{m}_e s_e \\right]}')""
+                      data-latex="\dot{W}_{rev} = \dot{W}_{cv,ac} + T_0 \left[ \frac{dS_{cv}}{dt} - \sum\frac{\dot{Q}_j}{T_j} - \sum\dot{m}_i s_i + \sum\dot{m}_e s_e \right]"
+                      title="Click to copy LaTeX">
                      <span class="overdot"><i>W</i></span><sub>rev</sub> = <span class="overdot"><i>W</i></span><sub>cv,ac</sub> + <i>T</i>₀ [ <span class="fraction"><span class="numerator">d<i>S</i><sub>cv</sub></span><span class="denominator">dt</span></span> - <span class="summation">∑</span><span class="fraction"><span class="numerator"><span class="overdot"><i>Q</i></span><sub>j</sub></span><span class="denominator"><i>T</i><sub>j</sub></span></span> - <span class="summation">∑</span><span class="overdot"><i>m</i></span><sub>i</sub> <i>s</i><sub>i</sub> + <span class="summation">∑</span><span class="overdot"><i>m</i></span><sub>e</sub> <i>s</i><sub>e</sub> ]
                  </div>
             </li>
              <li>Now, replace <span class="math-var">Ẇ<sub>cv,ac</sub></span> using the energy equation (8.5) solved for <span class="math-var">Ẇ<sub>cv,ac</sub></span>:
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{cv,ac} = \\sum\\dot{Q}_j + \\sum\\dot{m}_i h_{tot,i} - \\sum\\dot{m}_e h_{tot,e} - \\frac{dE_{cv}}{dt}}')", data-latex="\dot{W}_{cv,ac} = \sum\dot{Q}_j + \sum\dot{m}_i h_{tot,i} - \sum\dot{m}_e h_{tot,e} - \frac{dE_{cv}}{dt}" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{cv,ac} = \\sum\\dot{Q}_j + \\sum\\dot{m}_i h_{tot,i} - \\sum\\dot{m}_e h_{tot,e} - \\frac{dE_{cv}}{dt}}')""
+                      data-latex="\dot{W}_{cv,ac} = \sum\dot{Q}_j + \sum\dot{m}_i h_{tot,i} - \sum\dot{m}_e h_{tot,e} - \frac{dE_{cv}}{dt}"
+                      title="Click to copy LaTeX">
                      <span class="overdot"><i>W</i></span><sub>cv,ac</sub> = <span class="summation">∑</span><span class="overdot"><i>Q</i></span><sub>j</sub> + <span class="summation">∑</span><span class="overdot"><i>m</i></span><sub>i</sub> <i>h</i><sub>tot,i</sub> - <span class="summation">∑</span><span class="overdot"><i>m</i></span><sub>e</sub> <i>h</i><sub>tot,e</sub> - <span class="fraction"><span class="numerator">d<i>E</i><sub>cv</sub></span><span class="denominator">dt</span></span>
                  </div>
             </li>
              <li>Plug this into the equation from step 6 (results in a long expression).</li>
             <li>Finally, group terms by heat transfer, mass flows, and storage:</li>
-                <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\sum \\dot{Q}_j(1 - T_0/T_j) + \\sum \\dot{m}_i(h_{tot,i} - T_0 s_i) - \\sum \\dot{m}_e(h_{tot,e} - T_0 s_e) - \\left( \\frac{dE_{cv}}{dt} - T_0 \\frac{dS_{cv}}{dt} \\right) \\quad (Eq 8.11)}')", data-latex="\dot{W}_{rev} = \sum \dot{Q}_j(1 - T_0/T_j) + \sum \dot{m}_i(h_{tot,i} - T_0 s_i) - \sum \dot{m}_e(h_{tot,e} - T_0 s_e) - \left( \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} \right) \quad (Eq 8.11)" title="Click to copy LaTeX">
+                <div class="formula-container"
+                     onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\sum \\dot{Q}_j(1 - T_0/T_j) + \\sum \\dot{m}_i(h_{tot,i} - T_0 s_i) - \\sum \\dot{m}_e(h_{tot,e} - T_0 s_e) - \\left( \\frac{dE_{cv}}{dt} - T_0 \\frac{dS_{cv}}{dt} \\right)}')""
+                     data-latex="\dot{W}_{rev} = \sum \dot{Q}_j(1 - T_0/T_j) + \sum \dot{m}_i(h_{tot,i} - T_0 s_i) - \sum \dot{m}_e(h_{tot,e} - T_0 s_e) - \left( \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} \right) \quad (Eq 8.11)"
+                     title="Click to copy LaTeX">
                      <span class="overdot"><i>W</i></span><sub>rev</sub> = <span class="summation">∑</span> <span class="overdot"><i>Q</i></span><sub>j</sub>(1 - <i>T</i>₀/<i>T</i><sub>j</sub>) + <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>i</sub>(<i>h</i><sub>tot,i</sub> - <i>T</i>₀<i>s</i><sub>i</sub>) - <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>e</sub>(<i>h</i><sub>tot,e</sub> - <i>T</i>₀<i>s</i><sub>e</sub>) - ( <span class="fraction"><span class="numerator">d<i>E</i><sub>cv</sub></span><span class="denominator">dt</span></span> - <i>T</i>₀<span class="fraction"><span class="numerator">d<i>S</i><sub>cv</sub></span><span class="denominator">dt</span></span> ) &nbsp;&nbsp;&nbsp;(Eq 8.11)
                  </div>
                 This equation gives the maximum theoretical (reversible) work rate obtainable from the given control volume process, considering its interactions with heat sources, mass flows, and internal storage changes, all relative to the ambient temperature <span class="math-var">T₀</span>.
@@ -379,14 +245,20 @@
         </p>
          <ul>
             <li>The difference between the best possible work (<span class="math-var">Ẇ<sub>rev</sub></span>) and the actual work produced (<span class="math-var">Ẇ<sub>cv,ac</sub></span>) is called the <strong>irreversibility rate</strong> (<span class="math-var">İ</span>).
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\dot{I} = \\dot{W}_{rev} - \\dot{W}_{cv,ac} \\quad (Eq 8.12)}')", data-latex="\dot{I} = \dot{W}_{rev} - \dot{W}_{cv,ac} \quad (Eq 8.12)" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{I} = \\dot{W}_{rev} - \\dot{W}_{cv,ac}}')""
+                      data-latex="\dot{I} = \dot{W}_{rev} - \dot{W}_{cv,ac} \quad (Eq 8.12)"
+                      title="Click to copy LaTeX">
                      <span class="overdot"><i>I</i></span> = <span class="overdot"><i>W</i></span><sub>rev</sub> - <span class="overdot"><i>W</i></span><sub>cv,ac</sub> &nbsp;&nbsp;&nbsp;(Eq 8.12)
                  </div>
             </li>
             <li>From Eq 8.10, we also know <span class="math-var">Ẇ<sub>rev</sub> - Ẇ<sub>cv,ac</sub> = Q̇₀<sup>rev</sup></span>.</li>
             <li>From Eq 8.9 (related), we also know <span class="math-var">Q̇₀<sup>rev</sup> = T₀ Ṡ<sub>gen,ac</sub></span>.</li>
              <li>Therefore:
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\dot{I} = \\dot{Q}_0^{rev} = T_0 \\dot{S}_{gen,ac} \\quad (Eq 8.13)}')", data-latex="\dot{I} = \dot{Q}_0^{rev} = T_0 \dot{S}_{gen,ac} \quad (Eq 8.13)" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{I} = \\dot{Q}_0^{rev} = T_0 \\dot{S}_{gen,ac}}')""
+                      data-latex="\dot{I} = \dot{Q}_0^{rev} = T_0 \dot{S}_{gen,ac} \quad (Eq 8.13)"
+                      title="Click to copy LaTeX">
                      <span class="overdot"><i>I</i></span> = <span class="overdot"><i>Q</i></span>₀<sup>rev</sup> = <i>T</i>₀ <span class="overdot"><i>S</i></span><sub>gen,ac</sub> &nbsp;&nbsp;&nbsp;(Eq 8.13)
                  </div>
             </li>
@@ -402,7 +274,10 @@
              <li>For single inlet/outlet, <span class="math-var">Σṁᵢ(...)</span> becomes <span class="math-var">ṁ(h<sub>totᵢ</sub> - T₀sᵢ)</span> and <span class="math-var">Σṁₑ(...)</span> becomes <span class="math-var">ṁ(h<sub>totₑ</sub> - T₀sₑ)</span>.</li>
              <li>The reversible work rate is <span class="math-var">Ẇ<sub>rev</sub> = ṁ [ Σqⱼ(1-T₀/Tⱼ) + (h<sub>totᵢ</sub> - T₀sᵢ) - (h<sub>totₑ</sub> - T₀sₑ) ]</span>.</li>
              <li>Specific reversible work <span class="math-var">w<sub>rev</sub> = Ẇ<sub>rev</sub> / ṁ</span>:
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{w_{rev} = \\sum q_j(1 - T_0/T_j) + (h_{tot,i} - T_0 s_i) - (h_{tot,e} - T_0 s_e) \\quad (Eq 8.14)}')", data-latex="w_{rev} = \sum q_j(1 - T_0/T_j) + (h_{tot,i} - T_0 s_i) - (h_{tot,e} - T_0 s_e) \quad (Eq 8.14)" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{w_{rev} = \\sum q_j(1 - T_0/T_j) + (h_{tot,i} - T_0 s_i) - (h_{tot,e} - T_0 s_e)}')""
+                      data-latex="w_{rev} = \sum q_j(1 - T_0/T_j) + (h_{tot,i} - T_0 s_i) - (h_{tot,e} - T_0 s_e) \quad (Eq 8.14)"
+                      title="Click to copy LaTeX">
                      <i>w</i><sub>rev</sub> = <span class="summation">∑</span><i>q</i><sub>j</sub>(1 - <i>T</i>₀/<i>T</i><sub>j</sub>) + (<i>h</i><sub>tot,i</sub> - <i>T</i>₀<i>s</i><sub>i</sub>) - (<i>h</i><sub>tot,e</sub> - <i>T</i>₀<i>s</i><sub>e</sub>) &nbsp;&nbsp;&nbsp;(Eq 8.14)
                  </div>
              </li>
@@ -410,7 +285,10 @@
                  <br><span class="math-var">i = w<sub>rev</sub> - w<sub>ac</sub></span>
                  <br><span class="math-var">i = T₀ s<sub>gen,ac</sub></span> (where <span class="math-var">s<sub>gen,ac</sub> = Ṡ<sub>gen,ac</sub> / ṁ</span>)
                  <br>From entropy balance <span class="math-var">sₑ = sᵢ + Σqⱼ/Tⱼ + s<sub>gen</sub></span>, so <span class="math-var">s<sub>gen</sub> = sₑ - sᵢ - Σqⱼ/Tⱼ</span>.
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{i = T_0 \\left[ s_e - s_i - \\sum \\frac{q_j}{T_j} \\right] \\quad (Eq 8.15)}')", data-latex="i = T_0 \left[ s_e - s_i - \sum \frac{q_j}{T_j} \right] \quad (Eq 8.15)" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{i = T_0 \\left[ s_e - s_i - \\sum \\frac{q_j}{T_j} \\right]}')""
+                      data-latex="i = T_0 \left[ s_e - s_i - \sum \frac{q_j}{T_j} \right] \quad (Eq 8.15)"
+                      title="Click to copy LaTeX">
                      <i>i</i> = <i>T</i>₀ [ <i>s</i><sub>e</sub> - <i>s</i><sub>i</sub> - <span class="summation">∑</span>(<span class="fraction"><span class="numerator"><i>q</i><sub>j</sub></span><span class="denominator"><i>T</i><sub>j</sub></span></span>) ] &nbsp;&nbsp;&nbsp;(Eq 8.15)
                  </div>
              </li>
@@ -431,25 +309,37 @@
         </p>
         <ul>
             <li>No mass flows (<span class="math-var">ṁᵢ=ṁₑ=0</span>). Eq 8.11 simplifies to:
-                <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\sum \\dot{Q}_j(1 - T_0/T_j) - \\left( \\frac{dE_{cv}}{dt} - T_0 \\frac{dS_{cv}}{dt} \\right) \\quad (Eq 8.16)}')", data-latex="\dot{W}_{rev} = \sum \dot{Q}_j(1 - T_0/T_j) - \left( \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} \right) \quad (Eq 8.16)" title="Click to copy LaTeX">
+                <div class="formula-container"
+                     onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\sum \\dot{Q}_j(1 - T_0/T_j) - \\left( \\frac{dE_{cv}}{dt} - T_0 \\frac{dS_{cv}}{dt} \\right)}')""
+                     data-latex="\dot{W}_{rev} = \sum \dot{Q}_j(1 - T_0/T_j) - \left( \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} \right) \quad (Eq 8.16)"
+                     title="Click to copy LaTeX">
                      <span class="overdot"><i>W</i></span><sub>rev</sub> = <span class="summation">∑</span> <span class="overdot"><i>Q</i></span><sub>j</sub>(1 - <i>T</i>₀/<i>T</i><sub>j</sub>) - ( <span class="fraction"><span class="numerator">d<i>E</i><sub>cv</sub></span><span class="denominator">dt</span></span> - <i>T</i>₀<span class="fraction"><span class="numerator">d<i>S</i><sub>cv</sub></span><span class="denominator">dt</span></span> ) &nbsp;&nbsp;&nbsp;(Eq 8.16 rate form)
                 </div>
             </li>
             <li>Integrate over time for a process from state 1 to 2:
                 <br><span class="math-var">₁W₂<sup>rev</sup> = Σ ∫Q̇ⱼ(1 - T₀/Tⱼ)dt - [(E₂ - E₁) - T₀(S₂ - S₁)]</span>.
                 <br>If heat <span class="math-var">₁Q₂ⱼ</span> comes from a reservoir at <span class="math-var">Tⱼ</span>, <span class="math-var">∫ Q̇ⱼ dt = ₁Q₂ⱼ</span>:
-                <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{{_1W_2^{rev}} = \\sum {_1Q_{2j}}(1 - T_0/T_j) - \\left[ (E_2 - E_1) - T_0(S_2 - S_1) \\right] \\quad (Eq 8.17)}')", data-latex="{_1W_2^{rev}} = \sum {_1Q_{2j}}(1 - T_0/T_j) - \left[ (E_2 - E_1) - T_0(S_2 - S_1) \right] \quad (Eq 8.17)" title="Click to copy LaTeX">
+                <div class="formula-container"
+                     onclick="copyFormulaLatex(this, '\\color{white}{{_1W_2^{rev}} = \\sum {_1Q_{2j}}(1 - T_0/T_j) - \\left[ (E_2 - E_1) - T_0(S_2 - S_1) \\right]}')""
+                     data-latex="{_1W_2^{rev}} = \sum {_1Q_{2j}}(1 - T_0/T_j) - \left[ (E_2 - E_1) - T_0(S_2 - S_1) \right] \quad (Eq 8.17)"
+                     title="Click to copy LaTeX">
                     ₁<i>W</i>₂<sup>rev</sup> = <span class="summation">∑</span> ₁<i>Q</i>₂ⱼ(1 - <i>T</i>₀/<i>T</i><sub>j</sub>) - [ (<i>E</i>₂ - <i>E</i>₁) - <i>T</i>₀(<i>S</i>₂ - <i>S</i>₁) ] &nbsp;&nbsp;&nbsp;(Eq 8.17)
                 </div>
             </li>
             <li>Irreversibility for the process <span class="math-var">₁I₂</span>:
                 <br><span class="math-var">₁I₂ = ₁W₂<sup>rev</sup> - ₁W₂<sup>ac</sup></span>
-                <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{{_1I_2} = T_0 \\cdot {_1S_{2,gen,ac}} \\quad (Eq 8.18, part 1)}')", data-latex="{_1I_2} = T_0 \cdot {_1S_{2,gen,ac}} \quad (Eq 8.18, part 1)" title="Click to copy LaTeX">
+                <div class="formula-container"
+                     onclick="copyFormulaLatex(this, '\\color{white}{{_1I_2} = T_0 \\cdot {_1S_{2,gen,ac}}}')""
+                     data-latex="{_1I_2} = T_0 \cdot {_1S_{2,gen,ac}} \quad (Eq 8.18, part 1)"
+                     title="Click to copy LaTeX">
                      ₁<i>I</i>₂ = <i>T</i>₀ · ₁<i>S</i>₂,gen,ac &nbsp;&nbsp;&nbsp;(Eq 8.18, first part)
                  </div>
                  Substitute entropy generation from integrated entropy balance <span class="math-var">S₂ - S₁ = Σ ∫(Q̇ⱼ/Tⱼ) dt + ₁S₂,gen</span>. Assume <span class="math-var">₁Q₂ⱼ</span> comes from <span class="math-var">Tⱼ</span>.
                 <br><span class="math-var">S₂ - S₁ = Σ (₁Q₂ⱼ / Tⱼ) + ₁S₂,gen</span> => <span class="math-var">₁S₂,gen = (S₂ - S₁) - Σ (₁Q₂ⱼ / Tⱼ)</span>.
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{{_1I_2} = T_0 \\left[ (S_2 - S_1) - \\sum \\frac{{_1Q_{2j}}}{T_j} \\right] \\quad (Eq 8.18, part 2)}')", data-latex="{_1I_2} = T_0 \left[ (S_2 - S_1) - \sum \frac{{_1Q_{2j}}}{T_j} \right] \quad (Eq 8.18, part 2)" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{{_1I_2} = T_0 \\left[ (S_2 - S_1) - \\sum \\frac{{_1Q_{2j}}}{T_j} \\right]}')""
+                      data-latex="{_1I_2} = T_0 \left[ (S_2 - S_1) - \sum \frac{{_1Q_{2j}}}{T_j} \right] \quad (Eq 8.18, part 2)"
+                      title="Click to copy LaTeX">
                      ₁<i>I</i>₂ = <i>T</i>₀ [ (<i>S</i>₂ - <i>S</i>₁) - <span class="summation">∑</span> (<span class="fraction"><span class="numerator">₁<i>Q</i>₂ⱼ</span><span class="denominator"><i>T</i><sub>j</sub></span></span>) ] &nbsp;&nbsp;&nbsp;(Eq 8.18, second part)
                  </div>
             </li>
@@ -466,7 +356,10 @@
         </p>
         <ul>
              <li>Integrate Eq 8.11 over time <span class="math-var">t</span>:
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{{_1W_2^{rev}} = \\sum \\int \\dot{Q}_j(1-T_0/T_j)dt + \\sum \\int \\dot{m}_i(h_{tot,i} - T_0 s_i)dt - \\sum \\int \\dot{m}_e(h_{tot,e} - T_0 s_e)dt - [(E_2-E_1) - T_0(S_2-S_1)]_{cv} \\quad (Eq 8.19)}')", data-latex="{_1W_2^{rev}} = \sum \int \dot{Q}_j(1-T_0/T_j)dt + \sum \int \dot{m}_i(h_{tot,i} - T_0 s_i)dt - \sum \int \dot{m}_e(h_{tot,e} - T_0 s_e)dt - [(E_2-E_1) - T_0(S_2-S_1)]_{cv} \quad (Eq 8.19)" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{{_1W_2^{rev}} = \\sum \\int \\dot{Q}_j(1-T_0/T_j)dt + \\sum \\int \\dot{m}_i(h_{tot,i} - T_0 s_i)dt - \\sum \\int \\dot{m}_e(h_{tot,e} - T_0 s_e)dt - [(E_2-E_1) - T_0(S_2-S_1)]_{cv}}')""
+                      data-latex="{_1W_2^{rev}} = \sum \int \dot{Q}_j(1-T_0/T_j)dt + \sum \int \dot{m}_i(h_{tot,i} - T_0 s_i)dt - \sum \int \dot{m}_e(h_{tot,e} - T_0 s_e)dt - [(E_2-E_1) - T_0(S_2-S_1)]_{cv} \quad (Eq 8.19)"
+                      title="Click to copy LaTeX">
                      ₁<i>W</i>₂<sup>rev</sup> = <span class="summation">∑</span>∫<span class="overdot"><i>Q</i></span><sub>j</sub>(1-<i>T</i>₀/<i>T</i><sub>j</sub>)dt + <span class="summation">∑</span>∫<span class="overdot"><i>m</i></span><sub>i</sub>(<i>h</i><sub>tot,i</sub> - <i>T</i>₀<i>s</i><sub>i</sub>)dt - <span class="summation">∑</span>∫<span class="overdot"><i>m</i></span><sub>e</sub>(<i>h</i><sub>tot,e</sub> - <i>T</i>₀<i>s</i><sub>e</sub>)dt - [(<i>E</i>₂-<i>E</i>₁) - <i>T</i>₀(<i>S</i>₂-<i>S</i>₁)]<sub>cv</sub> &nbsp;&nbsp;&nbsp;(Eq 8.19 generalized)
                  </div>
              </li>
@@ -474,7 +367,10 @@
                 <br><span class="math-var">₁W₂<sup>rev</sup> = Σ ₁Q₂ⱼ(1-T₀/Tⱼ) + Σ mᵢ(h<sub>totᵢ</sub> - T₀sᵢ) - Σ mₑ(h<sub>totₑ</sub> - T₀sₑ) - [(E₂-E₁) - T₀(S₂-S₁)]<sub>cv</sub></span>
             </li>
             <li>Irreversibility <span class="math-var">₁I₂</span>:
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{{_1I_2} = {_1W_2^{rev}} - {_1W_2^{ac}} = T_0 \\cdot {_1S_{2,gen,ac}} \\quad (Eq 8.20)}')", data-latex="{_1I_2} = {_1W_2^{rev}} - {_1W_2^{ac}} = T_0 \cdot {_1S_{2,gen,ac}} \quad (Eq 8.20)" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{{_1I_2} = {_1W_2^{rev}} - {_1W_2^{ac}} = T_0 \\cdot {_1S_{2,gen,ac}}}')""
+                      data-latex="{_1I_2} = {_1W_2^{rev}} - {_1W_2^{ac}} = T_0 \cdot {_1S_{2,gen,ac}} \quad (Eq 8.20)"
+                      title="Click to copy LaTeX">
                      ₁<i>I</i>₂ = ₁<i>W</i>₂<sup>rev</sup> - ₁<i>W</i>₂<sup>ac</sup> = <i>T</i>₀ · ₁<i>S</i>₂,gen,ac &nbsp;&nbsp;&nbsp;(Eq 8.20)
                  </div>
             </li>
@@ -496,7 +392,10 @@
                 <strong>Exergy Components:</strong> We re-examine the terms in the reversible work equation (Eq 8.11) and identify them as different forms of exergy transfer or change, all measured relative to the dead state <span class="math-var">P₀, T₀</span>.
                 <ol>
                     <li><strong>Exergy Transfer with Heat (<span class="math-var">Φ̇<sub>q</sub></span>):</strong>
-                        <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\dot{\\Phi}_q = \\sum \\dot{Q}_j (1 - T_0/T_j) \\quad (Eq 8.21)}')", data-latex="\dot{\Phi}_q = \sum \dot{Q}_j (1 - T_0/T_j) \quad (Eq 8.21)" title="Click to copy LaTeX">
+                        <div class="formula-container"
+                             onclick="copyFormulaLatex(this, '\\color{white}{\\dot{\\Phi}_q = \\sum \\dot{Q}_j (1 - T_0/T_j)}')""
+                             data-latex="\dot{\Phi}_q = \sum \dot{Q}_j (1 - T_0/T_j) \quad (Eq 8.21)"
+                             title="Click to copy LaTeX">
                             <span class="overdot"><i>Φ</i></span><sub>q</sub> = <span class="summation">∑</span> <span class="overdot"><i>Q</i></span><sub>j</sub> (1 - <i>T</i>₀/<i>T</i><sub>j</sub>) &nbsp;&nbsp;&nbsp;(Eq 8.21)
                         </div>
                         This is the work potential of heat <span class="math-var">Q̇ⱼ</span> coming from temperature <span class="math-var">Tⱼ</span>. It's the portion of heat that *could* be converted to work by a Carnot engine operating between <span class="math-var">Tⱼ</span> and <span class="math-var">T₀</span>. Higher <span class="math-var">Tⱼ</span> means higher quality (higher exergy content) heat. Heat at <span class="math-var">T₀</span> has zero exergy.
@@ -505,12 +404,18 @@
                         <br><span class="math-var">w<sub>rev</sub> = (h<sub>tot</sub> - T₀s) - (h<sub>tot₀</sub> - T₀s₀)</span>. This reversible work *is* the flow exergy <span class="math-var">ψ</span>.
                         <br><span class="math-var">ψ = (h - T₀s + V²/2 + gZ) - (h₀ - T₀s₀ + V₀²/2 + gZ₀)</span>
                         <br>Since <span class="math-var">V₀=0</span>, <span class="math-var">Z₀=0</span> (by convention):
-                         <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\psi = (h - h_0) - T_0(s - s_0) + V^2/2 + gZ \\quad (Eq 8.22)}')", data-latex="\psi = (h - h_0) - T_0(s - s_0) + V^2/2 + gZ \quad (Eq 8.22)" title="Click to copy LaTeX">
+                         <div class="formula-container"
+                              onclick="copyFormulaLatex(this, '\\color{white}{\\psi = (h - h_0) - T_0(s - s_0) + V^2/2 + gZ}')""
+                              data-latex="\psi = (h - h_0) - T_0(s - s_0) + V^2/2 + gZ \quad (Eq 8.22)"
+                              title="Click to copy LaTeX">
                              <i>ψ</i> = (<i>h</i> - <i>h</i>₀) - <i>T</i>₀(<i>s</i> - <i>s</i>₀) + <i>V</i>²/2 + <i>gZ</i> &nbsp;&nbsp;&nbsp;(Eq 8.22 generalized form)
                          </div>
                          Difference in flow exergy between inlet <span class="math-var">i</span> and exit <span class="math-var">e</span>:
                          <br><span class="math-var">ψᵢ - ψₑ = [(h<sub>totᵢ</sub> - T₀sᵢ) - (h<sub>tot₀</sub> - T₀s₀)] - [(h<sub>totₑ</sub> - T₀sₑ) - (h<sub>tot₀</sub> - T₀s₀)]</span>
-                         <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\psi_i - \\psi_e = (h_{tot,i} - T_0 s_i) - (h_{tot,e} - T_0 s_e) \\quad (Eq 8.23)}')", data-latex="\psi_i - \psi_e = (h_{tot,i} - T_0 s_i) - (h_{tot,e} - T_0 s_e) \quad (Eq 8.23)" title="Click to copy LaTeX">
+                         <div class="formula-container"
+                              onclick="copyFormulaLatex(this, '\\color{white}{\\psi_i - \\psi_e = (h_{tot,i} - T_0 s_i) - (h_{tot,e} - T_0 s_e)}')""
+                              data-latex="\psi_i - \psi_e = (h_{tot,i} - T_0 s_i) - (h_{tot,e} - T_0 s_e) \quad (Eq 8.23)"
+                              title="Click to copy LaTeX">
                              <i>ψ</i><sub>i</sub> - <i>ψ</i><sub>e</sub> = (<i>h</i><sub>tot,i</sub> - <i>T</i>₀<i>s</i><sub>i</sub>) - (<i>h</i><sub>tot,e</sub> - <i>T</i>₀<i>s</i><sub>e</sub>) &nbsp;&nbsp;&nbsp;(Eq 8.23)
                          </div>
                          The constant dead state terms cancel. This matches the flow terms in the specific reversible work equation (8.14).
@@ -520,12 +425,18 @@
                             <li>From Eq 8.11, the storage term contribution to *rate* of reversible work is <span class="math-var">-(dE<sub>cv</sub>/dt - T₀ dS<sub>cv</sub>/dt)</span>.</li>
                             <li>However, we must account for work done *on the surroundings* at <span class="math-var">P₀</span> if the CV volume changes (<span class="math-var">V</span>). <span class="math-var">Ẇ<sub>surr</sub> = P₀ (dV<sub>cv</sub>/dt)</span>. This isn't useful work.</li>
                              <li>The maximum *available* work rate from storage changes is:
-                                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{avail}^{max} = - \\left( \\frac{dE_{cv}}{dt} - T_0 \\frac{dS_{cv}}{dt} \\right) - P_0 \\frac{dV_{cv}}{dt} \\quad (Eq 8.25 mod)}')", data-latex="\dot{W}_{avail}^{max} = - \left( \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} \right) - P_0 \frac{dV_{cv}}{dt} \quad (Eq 8.25 mod)" title="Click to copy LaTeX">
+                                 <div class="formula-container"
+                                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{avail}^{max} = - \\left( \\frac{dE_{cv}}{dt} - T_0 \\frac{dS_{cv}}{dt} \\right) - P_0 \\frac{dV_{cv}}{dt}}')""
+                                      data-latex="\dot{W}_{avail}^{max} = - \left( \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} \right) - P_0 \frac{dV_{cv}}{dt} \quad (Eq 8.25 mod)"
+                                      title="Click to copy LaTeX">
                                     <span class="overdot"><i>W</i></span><sub>avail</sub><sup>max</sup> = - ( <span class="fraction"><span class="numerator">d<i>E</i><sub>cv</sub></span><span class="denominator">dt</span></span> - <i>T</i>₀<span class="fraction"><span class="numerator">d<i>S</i><sub>cv</sub></span><span class="denominator">dt</span></span> ) - <i>P</i>₀<span class="fraction"><span class="numerator">d<i>V</i><sub>cv</sub></span><span class="denominator">dt</span></span> &nbsp;&nbsp;&nbsp;(Eq 8.25 modified)
                                  </div>
                              </li>
                             <li>Define the <strong>rate of change of stored exergy <span class="math-var">Φ̇<sub>cv</sub></span></strong> such that <span class="math-var">Ẇ<sub>avail</sub><sup>max</sup> = -Φ̇<sub>cv</sub></span>.
-                                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\dot{\\Phi}_{cv} = \\frac{dE_{cv}}{dt} - T_0 \\frac{dS_{cv}}{dt} + P_0 \\frac{dV_{cv}}{dt} \\quad (Eq 8.26)}')", data-latex="\dot{\Phi}_{cv} = \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} + P_0 \frac{dV_{cv}}{dt} \quad (Eq 8.26)" title="Click to copy LaTeX">
+                                 <div class="formula-container"
+                                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{\\Phi}_{cv} = \\frac{dE_{cv}}{dt} - T_0 \\frac{dS_{cv}}{dt} + P_0 \\frac{dV_{cv}}{dt}}')""
+                                      data-latex="\dot{\Phi}_{cv} = \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} + P_0 \frac{dV_{cv}}{dt} \quad (Eq 8.26)"
+                                      title="Click to copy LaTeX">
                                      <span class="overdot"><i>Φ</i></span><sub>cv</sub> = <span class="fraction"><span class="numerator">d<i>E</i><sub>cv</sub></span><span class="denominator">dt</span></span> - <i>T</i>₀ <span class="fraction"><span class="numerator">d<i>S</i><sub>cv</sub></span><span class="denominator">dt</span></span> + <i>P</i>₀ <span class="fraction"><span class="numerator">d<i>V</i><sub>cv</sub></span><span class="denominator">dt</span></span> &nbsp;&nbsp;&nbsp;(Eq 8.26)
                                  </div>
                             </li>
@@ -533,12 +444,18 @@
                                  <br><span class="math-var">Φ = (E - E₀) - T₀(S - S₀) + P₀(V - V₀)</span>
                             </li>
                             <li><strong>Specific stored exergy (<span class="math-var">φ</span> for control mass):</strong> Divide by mass <span class="math-var">m</span>, let <span class="math-var">E = U + KE + PE</span>. Assume KE=PE=0 initially and at dead state. <span class="math-var">e = u</span>.
-                                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\phi = (u - u_0) - T_0(s - s_0) + P_0(v - v_0) \\quad (Eq 8.27)}')", data-latex="\phi = (u - u_0) - T_0(s - s_0) + P_0(v - v_0) \quad (Eq 8.27)" title="Click to copy LaTeX">
+                                 <div class="formula-container"
+                                      onclick="copyFormulaLatex(this, '\\color{white}{\\phi = (u - u_0) - T_0(s - s_0) + P_0(v - v_0)}')""
+                                      data-latex="\phi = (u - u_0) - T_0(s - s_0) + P_0(v - v_0) \quad (Eq 8.27)"
+                                      title="Click to copy LaTeX">
                                      <i>φ</i> = (<i>u</i> - <i>u</i>₀) - <i>T</i>₀(<i>s</i> - <i>s</i>₀) + <i>P</i>₀(<i>v</i> - <i>v</i>₀) &nbsp;&nbsp;&nbsp;(Eq 8.27 generalized)
                                  </div>
                             </li>
                             <li>Difference between two states:
-                                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\phi_2 - \\phi_1 = (u_2 - u_1) - T_0(s_2 - s_1) + P_0(v_2 - v_1) \\quad (Eq 8.28)}')", data-latex="\phi_2 - \phi_1 = (u_2 - u_1) - T_0(s_2 - s_1) + P_0(v_2 - v_1) \quad (Eq 8.28)" title="Click to copy LaTeX">
+                                 <div class="formula-container"
+                                      onclick="copyFormulaLatex(this, '\\color{white}{\\phi_2 - \\phi_1 = (u_2 - u_1) - T_0(s_2 - s_1) + P_0(v_2 - v_1)}')""
+                                      data-latex="\phi_2 - \phi_1 = (u_2 - u_1) - T_0(s_2 - s_1) + P_0(v_2 - v_1) \quad (Eq 8.28)"
+                                      title="Click to copy LaTeX">
                                      <i>φ</i>₂ - <i>φ</i>₁ = (<i>u</i>₂ - <i>u</i>₁) - <i>T</i>₀(<i>s</i>₂ - <i>s</i>₁) + <i>P</i>₀(<i>v</i>₂ - <i>v</i>₁) &nbsp;&nbsp;&nbsp;(Eq 8.28)
                                  </div>
                                  The dead state terms cancel.
@@ -548,7 +465,10 @@
                 </ol>
              </li>
              <li><strong>Rewriting Reversible Work Rate using Exergy:</strong> Substitute the definitions <span class="math-var">Φ̇<sub>q</sub></span>, <span class="math-var">ψᵢ</span>, <span class="math-var">ψₑ</span>, and <span class="math-var">-Φ̇<sub>cv</sub> + P₀V̇</span> into Eq 8.11:
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\dot{\\Phi}_q + \\sum \\dot{m}_i \\psi_i - \\sum \\dot{m}_e \\psi_e - \\dot{\\Phi}_{cv} + P_0 \\dot{V} \\quad (Eq 8.29)}')", data-latex="\dot{W}_{rev} = \dot{\Phi}_q + \sum \dot{m}_i \psi_i - \sum \dot{m}_e \psi_e - \dot{\Phi}_{cv} + P_0 \dot{V} \quad (Eq 8.29)" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\dot{\\Phi}_q + \\sum \\dot{m}_i \\psi_i - \\sum \\dot{m}_e \\psi_e - \\dot{\\Phi}_{cv} + P_0 \\dot{V}}')""
+                      data-latex="\dot{W}_{rev} = \dot{\Phi}_q + \sum \dot{m}_i \psi_i - \sum \dot{m}_e \psi_e - \dot{\Phi}_{cv} + P_0 \dot{V} \quad (Eq 8.29)"
+                      title="Click to copy LaTeX">
                      <span class="overdot"><i>W</i></span><sub>rev</sub> = <span class="overdot"><i>Φ</i></span><sub>q</sub> + <span class="summation">∑</span><span class="overdot"><i>m</i></span><sub>i</sub><i>ψ</i><sub>i</sub> - <span class="summation">∑</span><span class="overdot"><i>m</i></span><sub>e</sub><i>ψ</i><sub>e</sub> - <span class="overdot"><i>Φ</i></span><sub>cv</sub> + <i>P</i>₀<span class="overdot"><i>V</i></span> &nbsp;&nbsp;&nbsp;(Eq 8.29)
                  </div>
                  (Here <span class="math-var">P₀V̇ = P₀ dV/dt</span>)
@@ -563,7 +483,10 @@
                          <br>(Recognize <span class="math-var">Ẇ<sub>useful</sub> = Ẇ<sub>ac</sub> - P₀V̇</span> as shaft/boundary work excluding work against atmosphere).
                      </li>
                       <li>Rewriting the <span class="math-var">Φ̇<sub>cv</sub></span> term (<span class="math-var">dΦ<sub>cv</sub>/dt</span>) and exergy flow with heat <span class="math-var">Φ̇<sub>q</sub> = ΣQ̇ⱼ(1-T₀/Tⱼ)</span>:
-                         <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\frac{d\\Phi_{cv}}{dt} = \\sum \\dot{Q}_j(1-T_0/T_j) + \\sum \\dot{m}_i \\psi_i - \\sum \\dot{m}_e \\psi_e - (\\dot{W}_{cv} - P_0 \\frac{dV}{dt}) - T_0 \\dot{S}_{gen} \\quad (Eq 8.31)}')", data-latex="\frac{d\Phi_{cv}}{dt} = \sum \dot{Q}_j(1-T_0/T_j) + \sum \dot{m}_i \psi_i - \sum \dot{m}_e \psi_e - (\dot{W}_{cv} - P_0 \frac{dV}{dt}) - T_0 \dot{S}_{gen} \quad (Eq 8.31)" title="Click to copy LaTeX">
+                         <div class="formula-container"
+                              onclick="copyFormulaLatex(this, '\\color{white}{\\frac{d\\Phi_{cv}}{dt} = \\sum \\dot{Q}_j(1-T_0/T_j) + \\sum \\dot{m}_i \\psi_i - \\sum \\dot{m}_e \\psi_e - (\\dot{W}_{cv} - P_0 \\frac{dV}{dt}) - T_0 \\dot{S}_{gen}}')""
+                              data-latex="\frac{d\Phi_{cv}}{dt} = \sum \dot{Q}_j(1-T_0/T_j) + \sum \dot{m}_i \psi_i - \sum \dot{m}_e \psi_e - (\dot{W}_{cv} - P_0 \frac{dV}{dt}) - T_0 \dot{S}_{gen} \quad (Eq 8.31)"
+                              title="Click to copy LaTeX">
                             <span class="fraction"><span class="numerator">d<i>Φ</i><sub>cv</sub></span><span class="denominator">dt</span></span> = <span class="summation">∑</span><span class="overdot"><i>Q</i></span><sub>j</sub>(1-<i>T</i>₀/<i>T</i><sub>j</sub>) + <span class="summation">∑</span><span class="overdot"><i>m</i></span><sub>i</sub><i>ψ</i><sub>i</sub> - <span class="summation">∑</span><span class="overdot"><i>m</i></span><sub>e</sub><i>ψ</i><sub>e</sub> - (<span class="overdot"><i>W</i></span><sub>cv</sub> - <i>P</i>₀ <span class="fraction"><span class="numerator">d<i>V</i></span><span class="denominator">dt</span></span>) - <i>T</i>₀<span class="overdot"><i>S</i></span><sub>gen</sub> &nbsp;&nbsp;&nbsp;(Eq 8.31)
                          </div>
                       </li>
@@ -603,7 +526,10 @@
                      <li><strong>Turbine:</strong>
                          <br>Wanted output: Actual work <span class="math-var">Ẇ<sub>ac</sub></span>. Exergy of work is work itself.
                          <br>Exergy used: The decrease in flow exergy from inlet to exit: <span class="math-var">ṁ(ψᵢ - ψₑ)</span>. This equals the reversible work <span class="math-var">Ẇ<sub>rev</sub></span> *for the actual process end states*.
-                         <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\eta_2 = \\frac{\\dot{W}_{ac}}{\\dot{m}(\\psi_i - \\psi_e)} = \\frac{\\dot{W}_{ac}}{\\dot{W}_{rev}} \\quad (Eq 8.32)}')", data-latex="\eta_2 = \frac{\dot{W}_{ac}}{\dot{m}(\psi_i - \psi_e)} = \frac{\dot{W}_{ac}}{\dot{W}_{rev}} \quad (Eq 8.32)" title="Click to copy LaTeX">
+                         <div class="formula-container"
+                              onclick="copyFormulaLatex(this, '\\color{white}{\\eta_2 = \\frac{\\dot{W}_{ac}}{\\dot{m}(\\psi_i - \\psi_e)} = \\frac{\\dot{W}_{ac}}{\\dot{W}_{rev}}}')""
+                              data-latex="\eta_2 = \frac{\dot{W}_{ac}}{\dot{m}(\psi_i - \psi_e)} = \frac{\dot{W}_{ac}}{\dot{W}_{rev}} \quad (Eq 8.32)"
+                              title="Click to copy LaTeX">
                              <i>η</i>₂ = <span class="fraction"><span class="numerator"><span class="overdot"><i>W</i></span><sub>ac</sub></span><span class="denominator"><span class="overdot"><i>m</i></span>(<i>ψ</i><sub>i</sub> - <i>ψ</i><sub>e</sub>)</span></span> = <span class="fraction"><span class="numerator"><span class="overdot"><i>W</i></span><sub>ac</sub></span><span class="denominator"><span class="overdot"><i>W</i></span><sub>rev</sub></span></span> &nbsp;&nbsp;&nbsp;(Eq 8.32)
                          </div>
                          Note: This uses the actual exit state <span class="math-var">e</span>, unlike <span class="math-var">η₁</span> which used ideal state <span class="math-var">es</span>. See Fig 8.12.
@@ -618,18 +544,27 @@
             <li><strong>Heat Exchanger Efficiency (Fig 8.13):</strong>
                  <br>Exergy wanted: Increase in exergy of the cold stream <span class="math-var">ṁ<sub>cold</sub>(ψ₂ - ψ₁)</span>.
                  <br>Exergy used: Decrease in exergy of the hot stream <span class="math-var">ṁ<sub>hot</sub>(ψ₃ - ψ₄)</span>.
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\eta_2 = \\frac{\\dot{m}_{cold}(\\psi_2 - \\psi_1)}{\\dot{m}_{hot}(\\psi_3 - \\psi_4)} \\quad (Eq 8.33)}')", data-latex="\eta_2 = \frac{\dot{m}_{cold}(\psi_2 - \psi_1)}{\dot{m}_{hot}(\psi_3 - \psi_4)} \quad (Eq 8.33)" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\eta_2 = \\frac{\\dot{m}_{cold}(\\psi_2 - \\psi_1)}{\\dot{m}_{hot}(\\psi_3 - \\psi_4)}}')""
+                      data-latex="\eta_2 = \frac{\dot{m}_{cold}(\psi_2 - \psi_1)}{\dot{m}_{hot}(\psi_3 - \psi_4)} \quad (Eq 8.33)"
+                      title="Click to copy LaTeX">
                      <i>η</i>₂ = <span class="fraction"><span class="numerator"><span class="overdot"><i>m</i></span><sub>cold</sub>(<i>ψ</i>₂ - <i>ψ</i>₁)</span><span class="denominator"><span class="overdot"><i>m</i></span><sub>hot</sub>(<i>ψ</i>₃ - <i>ψ</i>₄)</span></span> &nbsp;&nbsp;&nbsp;(Eq 8.33)
                  </div>
             </li>
             <li><strong>General Formulation (using Exergy Destruction <span class="math-var">İ</span>):</strong>
                  <br><span class="math-var">Φ<sub>source</sub></span> = Total rate of exergy input (from flows, heat, work).
                  <br><span class="math-var">Ẇ<sub>ac</sub></span> (or <span class="math-var">Φ<sub>wanted</sub></span>) = Useful exergy output/effect.
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{ac} = \\Phi_{source} - \\dot{I}_{cv} \\quad (Eq 8.34)}')", data-latex="\dot{W}_{ac} = \Phi_{source} - \dot{I}_{cv} \quad (Eq 8.34)" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{ac} = \\Phi_{source} - \\dot{I}_{cv}}')""
+                      data-latex="\dot{W}_{ac} = \Phi_{source} - \dot{I}_{cv} \quad (Eq 8.34)"
+                      title="Click to copy LaTeX">
                      <span class="overdot"><i>W</i></span><sub>ac</sub> = <i>Φ</i><sub>source</sub> - <span class="overdot"><i>I</i></span><sub>cv</sub> &nbsp;&nbsp;&nbsp;(Eq 8.34)
                  </div>
                  General Efficiency: <span class="math-var">η₂ = Φ<sub>wanted</sub> / Φ<sub>source</sub></span>
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\eta_2 = \\frac{\\Phi_{source} - \\dot{I}_{cv}}{\\Phi_{source}} = 1 - \\frac{\\dot{I}_{cv}}{\\Phi_{source}} \\quad (Eq 8.35)}')", data-latex="\eta_2 = \frac{\Phi_{source} - \dot{I}_{cv}}{\Phi_{source}} = 1 - \frac{\dot{I}_{cv}}{\Phi_{source}} \quad (Eq 8.35)" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\eta_2 = \\frac{\\Phi_{source} - \\dot{I}_{cv}}{\\Phi_{source}} = 1 - \\frac{\\dot{I}_{cv}}{\\Phi_{source}}}')""
+                      data-latex="\eta_2 = \frac{\Phi_{source} - \dot{I}_{cv}}{\Phi_{source}} = 1 - \frac{\dot{I}_{cv}}{\Phi_{source}} \quad (Eq 8.35)"
+                      title="Click to copy LaTeX">
                      <i>η</i>₂ = <span class="fraction"><span class="numerator"><i>Φ</i><sub>source</sub> - <span class="overdot"><i>I</i></span><sub>cv</sub></span><span class="denominator"><i>Φ</i><sub>source</sub></span></span> = 1 - <span class="fraction"><span class="numerator"><span class="overdot"><i>I</i></span><sub>cv</sub></span><span class="denominator"><i>Φ</i><sub>source</sub></span></span> &nbsp;&nbsp;&nbsp;(Eq 8.35)
                  </div>
                 Efficiency is reduced from 100% directly by the ratio of exergy destroyed to exergy supplied.
@@ -640,7 +575,10 @@
                      <li><strong>Heat Engine:</strong>
                          <br>Work output <span class="math-var">WHE</span> is the desired exergy output.
                          <br>Exergy input is from the heat source <span class="math-var">QH</span> at <span class="math-var">TH</span>: <span class="math-var">ΦH = QH (1 - T₀/TH)</span>.
-                         <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\eta_{2,HE} = \\frac{W_{HE}}{\\Phi_H} = \\frac{W_{HE}}{Q_H (1 - T_0/T_H)} \\quad (Eq 8.36)}')", data-latex="\eta_{2,HE} = \frac{W_{HE}}{\Phi_H} = \frac{W_{HE}}{Q_H (1 - T_0/T_H)} \quad (Eq 8.36)" title="Click to copy LaTeX">
+                         <div class="formula-container"
+                              onclick="copyFormulaLatex(this, '\\color{white}{\\eta_{2,HE} = \\frac{W_{HE}}{\\Phi_H} = \\frac{W_{HE}}{Q_H (1 - T_0/T_H)}}')""
+                              data-latex="\eta_{2,HE} = \frac{W_{HE}}{\Phi_H} = \frac{W_{HE}}{Q_H (1 - T_0/T_H)} \quad (Eq 8.36)"
+                              title="Click to copy LaTeX">
                              <i>η</i><sub>2,HE</sub> = <span class="fraction"><span class="numerator"><i>W</i><sub>HE</sub></span><span class="denominator"><i>Φ</i><sub>H</sub></span></span> = <span class="fraction"><span class="numerator"><i>W</i><sub>HE</sub></span><span class="denominator"><i>Q</i><sub>H</sub> (1 - <i>T</i>₀/<i>T</i><sub>H</sub>)</span></span> &nbsp;&nbsp;&nbsp;(Eq 8.36)
                          </div>
                          Relationship to <span class="math-var">η₁ = WHE / QH</span>: <span class="math-var">η₂ = η₁ / (1 - T₀/TH) = η₁ / η<sub>Carnot</sub>(TH,T₀)</span>. <span class="math-var">η₂</span> is always ≥ <span class="math-var">η₁</span>. It measures how well the engine performs compared to the best *possible* engine operating with that heat source relative to ambient.
@@ -648,7 +586,10 @@
                      <li><strong>Heat Pump:</strong>
                          <br>Desired exergy output (heating): The exergy value of the heat delivered <span class="math-var">QH</span> at house temperature <span class="math-var">T<sub>H</sub></span>. <span class="math-var">ΦH = QH (1 - T₀/T<sub>H</sub>)</span>.
                          <br>Exergy input: Work input <span class="math-var">WHP</span> (which is pure exergy).
-                         <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\eta_{2,HP} = \\frac{\\Phi_H}{W_{HP}} = \\frac{Q_H (1 - T_0/T_H)}{W_{HP}} \\quad (Eq 8.37)}')", data-latex="\eta_{2,HP} = \frac{\Phi_H}{W_{HP}} = \frac{Q_H (1 - T_0/T_H)}{W_{HP}} \quad (Eq 8.37)" title="Click to copy LaTeX">
+                         <div class="formula-container"
+                              onclick="copyFormulaLatex(this, '\\color{white}{\\eta_{2,HP} = \\frac{\\Phi_H}{W_{HP}} = \\frac{Q_H (1 - T_0/T_H)}{W_{HP}}}')""
+                              data-latex="\eta_{2,HP} = \frac{\Phi_H}{W_{HP}} = \frac{Q_H (1 - T_0/T_H)}{W_{HP}} \quad (Eq 8.37)"
+                              title="Click to copy LaTeX">
                             <i>η</i><sub>2,HP</sub> = <span class="fraction"><span class="numerator"><i>Φ</i><sub>H</sub></span><span class="denominator"><i>W</i><sub>HP</sub></span></span> = <span class="fraction"><span class="numerator"><i>Q</i><sub>H</sub> (1 - <i>T</i>₀/<i>T</i><sub>H</sub>)</span><span class="denominator"><i>W</i><sub>HP</sub></span></span> &nbsp;&nbsp;&nbsp;(Eq 8.37)
                          </div>
                          Relates to <span class="math-var">COP = QH / WHP</span>: <span class="math-var">η₂ = COP * (1 - T₀/T<sub>H</sub>)</span>.
@@ -705,11 +646,17 @@
             <li><strong>l. In Eq 8.36, ΦH was written for heat transfer. What if source is hot gas being cooled?</strong>
                 <p>Eq 8.36: <span class="math-var">W<sub>HE</sub> = η₂ * Φ<sub>H</sub> = η₂ * [Q<sub>H</sub> (1 - T₀/T<sub>H</sub>)]</span>.</p>
                 <p>If the source is a hot gas stream (<span class="math-var">ṁ<sub>gas</sub></span>) cooling from state 3 to state 4 to provide the energy <span class="math-var">Q̇<sub>H</sub> = ṁ<sub>gas</sub>(h₃ - h₄)</span> to the heat engine cycle, the exergy *input* is the decrease in the *flow exergy* of the gas:</p>
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\Phi_{source} = \\dot{m}_{gas}(\\psi_3 - \\psi_4) = \\dot{m}_{gas}[(h_3 - h_4) - T_0(s_3 - s_4)]}')", data-latex="\Phi_{source} = \dot{m}_{gas}(\psi_3 - \psi_4) = \dot{m}_{gas}[(h_3 - h_4) - T_0(s_3 - s_4)]" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\Phi_{source} = \\dot{m}_{gas}(\\psi_3 - \\psi_4) = \\dot{m}_{gas}[(h_3 - h_4) - T_0(s_3 - s_4)]}')""
+                      data-latex="\Phi_{source} = \dot{m}_{gas}(\psi_3 - \psi_4) = \dot{m}_{gas}[(h_3 - h_4) - T_0(s_3 - s_4)]"
+                      title="Click to copy LaTeX">
                      <i>Φ</i><sub>source</sub> = <span class="overdot"><i>m</i></span><sub>gas</sub>(<i>ψ</i>₃ - <i>ψ</i>₄) = <span class="overdot"><i>m</i></span><sub>gas</sub>[(<i>h</i>₃ - <i>h</i>₄) - <i>T</i>₀(<i>s</i>₃ - <i>s</i>₄)]
                  </div>
                  <p>The second law efficiency would then be:</p>
-                 <div class="formula-container" onclick="copyFormulaLatex(this, '\\color{white}{\\eta_2 = \\frac{W_{HE}}{\\dot{m}_{gas}(\\psi_3 - \\psi_4)}}')", data-latex="\eta_2 = \frac{W_{HE}}{\dot{m}_{gas}(\psi_3 - \psi_4)}" title="Click to copy LaTeX">
+                 <div class="formula-container"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\eta_2 = \\frac{W_{HE}}{\\dot{m}_{gas}(\\psi_3 - \\psi_4)}}')""
+                      data-latex="\eta_2 = \frac{W_{HE}}{\dot{m}_{gas}(\psi_3 - \psi_4)}"
+                      title="Click to copy LaTeX">
                      <i>η</i>₂ = <span class="fraction"><span class="numerator"><i>W</i><sub>HE</sub></span><span class="denominator"><span class="overdot"><i>m</i></span><sub>gas</sub>(<i>ψ</i>₃ - <i>ψ</i>₄)</span></span>
                  </div>
              </li>
@@ -728,13 +675,13 @@
          <span class="font-control-icon" id="fontMinusBtn" title="Decrease font size">-</span>
          <span class="font-control-icon" id="fontPlusBtn" title="Increase font size">+</span>
      </div>
-     <div id="fontSizeDisplay">10px</div> <!-- Default size shown initially if needed, JS updates -->
+     <div id="fontSizeDisplay">10px</div> <!-- Shows 10px based on JS variable -->
 
     <script>
-        // Formula Copy Function
+        // Formula Copy Function (Copies the colored LaTeX string passed as 2nd arg)
         function copyFormulaLatex(element, latexStringWithColor) {
             if (!latexStringWithColor) {
-                console.error('No LaTeX data found for this element.');
+                console.error('No LaTeX data found passed to copy function.');
                 return;
             }
             navigator.clipboard.writeText(latexStringWithColor).then(() => {
@@ -788,9 +735,9 @@
                     updateFontSize(currentSize + step);
                 });
 
-                // Set initial CSS var based on JS variable
+                // Set initial state based on JS variable
                  htmlEl.style.setProperty('--base-font-size', currentSize + 'px');
-                 display.textContent = currentSize + 'px'; // Ensure display matches initial JS size
+                 display.textContent = currentSize + 'px'; // Update display text
                  console.log("Font control initialized. Current size:", currentSize);
             } else {
                 console.error("Font control elements not found!");

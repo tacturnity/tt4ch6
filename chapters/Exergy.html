@@ -1,14 +1,45 @@
 <!DOCTYPE html>
-<html lang="en" style="--base-font-size: 10px;"> <!-- Default font size set to 10px -->
+<html lang="en" style="--base-font-size: 10px;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 8: Exergy</title> <!-- Corrected Title -->
+    <title>Chapter 8: Exergy</title>
 
     <!-- Google Fonts - Roboto Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+          tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']], // Standard delimiters for inline math
+            displayMath: [['$$', '$$'], ['\\[', '\\]']], // Standard delimiters for display math
+            processEscapes: true, // Allows using \$ for literal dollar signs
+             tags: 'ams' // Enables AMS-style equation numbering (optional)
+          },
+          options: {
+            skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'], // Don't process math in these tags
+            ignoreHtmlClass: 'tex2jax_ignore', // Ignore elements with this class
+            processHtmlClass: 'tex2jax_process' // Process elements with this class (if needed)
+          },
+          svg: {
+            fontCache: 'global' // Improve rendering speed
+          },
+          startup: {
+            ready: () => {
+              console.log('MathJax is ready to start processing');
+              MathJax.startup.defaultReady();
+              MathJax.startup.promise.then(() => {
+                console.log('MathJax initial typesetting complete');
+              });
+            }
+          }
+        };
+        </script>
+        <!-- Load MathJax -->
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
     <style>
         /* Basic Reset */
@@ -29,22 +60,35 @@
         ul, ol { margin-left: 25px; list-style: disc; margin-bottom: 1em; }
         ol { list-style: decimal; }
         li { margin-bottom: 8px; font-size: inherit; }
-        strong, .math-var { font-weight: 500; color: #ffffff; }
-        .math-var { font-style: italic; margin: 0 2px; }
-        /* Formula Container Styling */
-        .formula-container { margin: 15px 0 20px 0; padding: 15px 20px; background-color: rgba(45, 45, 45, 0.9); border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1); overflow-x: auto; transition: background-color 0.3s ease, border-color 0.3s ease; cursor: pointer; font-size: 1.1em; line-height: 1.5; color: #e0e0e0; border-left: 4px solid transparent; font-family: 'Roboto Mono', monospace; }
+        strong { font-weight: 500; color: #ffffff; } /* Removed .math-var from here */
+        /* .math-var removed as MathJax handles styling */
+
+        /* Formula Container Styling (Retained for interaction/copy) */
+        .formula-container {
+            margin: 15px 0 20px 0;
+            padding: 5px 20px 5px 20px; /* Reduced vertical padding as MathJax adds space */
+            background-color: rgba(45, 45, 45, 0.9);
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-x: visible; /* Allow MathJax to overflow if needed */
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            cursor: pointer; /* For copy action */
+            color: #e0e0e0;
+            border-left: 4px solid transparent;
+            font-family: 'Roboto Mono', monospace; /* Base font */
+            position: relative; /* Needed for absolute positioning if required by MathJax */
+        }
+
         .formula-container:hover { background-color: rgba(60, 60, 60, 0.95); border-left-color: #a6e3a1; border-color: rgba(166, 227, 161, 0.5); }
         .formula-container.copied { background-color: rgba(166, 227, 161, 0.2); border-color: #a6e3a1; border-left-color: #a6e3a1; }
-        /* Style for math elements within formula containers */
-        .formula-container i { font-style: italic; margin: 0 1px; }
-        .formula-container sub, .formula-container sup { line-height: 0; font-size: 0.75em; position: relative; top: -0.2em; }
-        .formula-container sub { top: 0.2em; }
-        .formula-container .fraction { display: inline-block; text-align: center; vertical-align: middle; margin: 0 0.2em; }
-        .formula-container .numerator { display: block; border-bottom: 1px solid #cccccc; padding-bottom: 2px; line-height: 1.1; }
-        .formula-container .denominator { display: block; padding-top: 2px; line-height: 1.1; }
-        .formula-container .summation { font-size: 1.4em; vertical-align: middle; margin: 0 0.1em; }
-        .formula-container .overdot { position: relative; }
-        .formula-container .overdot::after { content: '\02d9'; position: absolute; left: 45%; top: -0.6em; transform: translateX(-50%); font-size: 1em; }
+
+        /* Styling for MathJax Display Math - Centered by default, adjust if needed */
+        .formula-container mjx-container[display="true"] {
+             margin: 1em 0 !important; /* Add vertical space around display math */
+             font-size: 1.1em; /* Adjust relative size if needed */
+             text-align: center !important; /* Force center align if needed */
+        }
+
         /* Footer Styling */
         footer { text-align: center; margin-top: 70px; padding-bottom: 35px; font-size: 0.85em; color: #888888; animation: fadeIn 1s ease-out both; animation-delay: 0.7s; }
         /* Font Control Icons CSS */
@@ -58,11 +102,11 @@
 <body>
 
     <header>
-        <h1>Chapter 8: Exergy</h1> <!-- Title updated -->
+        <h1>Chapter 8: Exergy</h1>
     </header>
 
     <main>
-        <!-- Exergy Content pasted and formatted according to revised instructions -->
+        <!-- Content with MathJax delimiters -->
         <p>
             This chapter builds significantly on the energy and entropy concepts from previous chapters, introducing a powerful way to assess the quality of energy and the true potential for work.
         </p>
@@ -70,76 +114,76 @@
         <h2>8.1 EXERGY, REVERSIBLE WORK, AND IRREVERSIBILITY</h2>
 
         <p>
-            <strong>Motivation:</strong> We've previously looked at efficiencies (like turbine or compressor efficiency) which compare an actual device to an <em>idealized reversible version</em> operating between specific pressures. However, we want a more general concept to evaluate the maximum possible work we can get from <em>any</em> system or process, considering its interaction with the surrounding environment. This leads us to <strong>Exergy</strong>.
+            <strong>Motivation:</strong> We've previously looked at efficiencies (like turbine or compressor efficiency) which compare an actual device to an <strong>idealized reversible version</strong> operating between specific pressures. However, we want a more general concept to evaluate the maximum possible work we can get from <strong>any</strong> system or process, considering its interaction with the surrounding environment. This leads us to <strong>Exergy</strong>.
         </p>
         <p>
             <strong>What is Exergy?</strong>
         </p>
         <ul>
             <li>Verbally: Exergy is the <strong>maximum theoretical useful work</strong> (shaft work or electrical work) obtainable from a system as it interacts with the environment and comes into complete equilibrium with it.</li>
-            <li>The Environment: The environment is typically considered a large body at a constant pressure <span class="math-var">P₀</span> and temperature <span class="math-var">T₀</span> (often called the "dead state"). It acts as an infinite source/sink for heat and can absorb any volume changes without changing its own state.</li>
-            <li>Symbol: Exergy is often denoted by <span class="math-var">Φ</span> (for total exergy) or <span class="math-var">φ</span> (for specific exergy).</li>
-            <li>Initial Definition: <span class="math-var">Φ = W<sub>out</sub></span> given an ambient <span class="math-var">P₀</span>, <span class="math-var">T₀</span>.</li>
-            <li>Relationship to Reversible Work: Exergy is very closely related to the <em>reversible work</em> (<span class="math-var">W<sub>rev</sub></span>) we discussed earlier. Reversible work is the maximum work obtainable during a process between <em>specific start and end states</em>, possibly interacting with heat reservoirs. Exergy is the specific case where the final state is the dead state (<span class="math-var">P₀</span>, <span class="math-var">T₀</span>).</li>
+            <li>The Environment: The environment is typically considered a large body at a constant pressure $P_0$ and temperature $T_0$ (often called the "dead state"). It acts as an infinite source/sink for heat and can absorb any volume changes without changing its own state.</li>
+            <li>Symbol: Exergy is often denoted by $\Phi$ (for total exergy) or $\phi$ (for specific exergy).</li>
+            <li>Initial Definition: $\Phi = W_{out}$ given an ambient $P_0$, $T_0$.</li>
+            <li>Relationship to Reversible Work: Exergy is very closely related to the <em>reversible work</em> ($W_{rev}$) we discussed earlier. Reversible work is the maximum work obtainable during a process between <strong>specific start and end states</strong>, possibly interacting with heat reservoirs. Exergy is the specific case where the final state is the dead state ($P_0$, $T_0$).</li>
         </ul>
         <p>
-            <strong>Maximum Work from a Heat Source <span class="math-var">Q</span></strong>
+            <strong>Maximum Work from a Heat Source $Q$</strong>
         </p>
         <ol>
             <li>
-                <strong>Constant Temperature Reservoir at <span class="math-var">T</span> (Figure 8.1):</strong>
+                <strong>Constant Temperature Reservoir at $T$ (Figure 8.1):</strong>
                 <ul>
-                    <li>How can we get work from a heat source <span class="math-var">Q</span> coming from a reservoir at temperature <span class="math-var">T</span>? We use a heat engine.</li>
-                    <li>To get the <em>maximum</em> work, the heat engine must be <strong>reversible</strong>.</li>
-                    <li>Since the engine must interact with the heat source <span class="math-var">T</span> and also the <strong>ambient environment</strong> at <span class="math-var">T₀</span> (our reference), the ideal engine operates between these two temperatures.</li>
+                    <li>How can we get work from a heat source $Q$ coming from a reservoir at temperature $T$? We use a heat engine.</li>
+                    <li>To get the <strong>maximum</strong> work, the heat engine must be <strong>reversible</strong>.</li>
+                    <li>Since the engine must interact with the heat source $T$ and also the <strong>ambient environment</strong> at $T_0$ (our reference), the ideal engine operates between these two temperatures.</li>
                     <li>A reversible engine operating between two constant temperatures is a <strong>Carnot heat engine</strong>.</li>
-                    <li>Energy Balance for Carnot HE: <span class="math-var">W<sub>rev HE</sub> = Q<sub>H</sub> - Q<sub>L</sub> = Q - Q₀</span> (using <span class="math-var">Q<sub>H</sub> = Q</span>).</li>
-                    <li>Entropy Balance for Reversible Cycle: <span class="math-var">∮ δQ/T = 0</span>, so <span class="math-var">Q<sub>H</sub>/T<sub>H</sub> - Q<sub>L</sub>/T<sub>L</sub> = 0</span>. In our case, <span class="math-var">Q/T - Q₀/T₀ = 0</span>.</li>
-                    <li>Solving for <span class="math-var">Q₀</span>: <span class="math-var">Q₀ = Q * (T₀ / T)</span>.</li>
-                    <li>Substituting <span class="math-var">Q₀</span> into the energy balance gives the maximum reversible work, which is the <strong>exergy of the heat <span class="math-var">Q</span></strong>:</li>
+                    <li>Energy Balance for Carnot HE: $W_{rev HE} = Q_H - Q_L = Q - Q_0$ (using $Q_H = Q$).</li>
+                    <li>Entropy Balance for Reversible Cycle: $\oint \delta Q/T = 0$, so $Q_H/T_H - Q_L/T_L = 0$. In our case, $Q/T - Q_0/T_0 = 0$.</li>
+                    <li>Solving for $Q_0$: $Q_0 = Q \frac{T_0}{T}$.</li>
+                    <li>Substituting $Q_0$ into the energy balance gives the maximum reversible work, which is the <strong>exergy of the heat $Q$</strong>:</li>
                 </ul>
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{\\Phi_{QT} = W_{rev HE} = Q - Q * (T_0 / T)}')""
-                      data-latex="\Phi_{QT} = W_{rev HE} = Q - Q * (T_0 / T)"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\Phi_{QT} = W_{rev HE} = Q - Q \\frac{T_0}{T}}')"
+                      data-latex="\Phi_{QT} = W_{rev HE} = Q - Q \frac{T_0}{T}"
                       title="Click to copy LaTeX">
-                     <i>Φ</i><sub>QT</sub> = <i>W</i><sub>rev HE</sub> = <i>Q</i> - <i>Q</i> * (<i>T</i>₀ / <i>T</i>)
+                      $$ \Phi_{QT} = W_{rev HE} = Q - Q \frac{T_0}{T} $$
                  </div>
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{\\Phi_{QT} = Q * (1 - T_0 / T)}')""
-                      data-latex="\Phi_{QT} = Q * (1 - T_0 / T) \quad (Eq 8.1)"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\Phi_{QT} = Q (1 - \\frac{T_0}{T})}')"
+                      data-latex="\Phi_{QT} = Q (1 - \frac{T_0}{T}) \quad (Eq 8.1)"
                       title="Click to copy LaTeX">
-                     <i>Φ</i><sub>QT</sub> = <i>Q</i> * (1 - <i>T</i>₀ / <i>T</i>) &nbsp;&nbsp;&nbsp;(Eq 8.1)
+                      $$ \Phi_{QT} = Q (1 - \frac{T_0}{T}) \quad (Eq 8.1) $$
                  </div>
                  <ul>
-                    <li><strong>Interpretation (Figure 8.2):</strong> On a T-S diagram, the heat <span class="math-var">Q</span> transferred at constant T is represented by the area of a rectangle with height <span class="math-var">T</span> and width <span class="math-var">ΔS = Q/T</span>. The exergy <span class="math-var">Φ<sub>QT</sub></span> is the portion of this area *above* the ambient temperature <span class="math-var">T₀</span>. The area below <span class="math-var">T₀</span> (which is <span class="math-var">T₀ * ΔS = T₀ * (Q/T) = Q₀</span>) represents the heat that *must* be rejected to the environment even by the best possible engine and is therefore <strong>unavailable energy</strong>. Exergy represents the <strong>available energy</strong> portion of the heat transfer <span class="math-var">Q</span>. Only the fraction <span class="math-var">(1 - T₀/T)</span> (which is the Carnot efficiency) of the heat <span class="math-var">Q</span> can be converted to work.</li>
+                    <li><strong>Interpretation (Figure 8.2):</strong> On a T-S diagram, the heat $Q$ transferred at constant T is represented by the area of a rectangle with height $T$ and width $\Delta S = Q/T$. The exergy $\Phi_{QT}$ is the portion of this area <strong>above</strong> the ambient temperature $T_0$. The area below $T_0$ (which is $T_0 \Delta S = T_0 (Q/T) = Q_0$) represents the heat that <strong>must</strong> be rejected to the environment even by the best possible engine and is therefore <strong>unavailable energy</strong>. Exergy represents the <strong>available energy</strong> portion of the heat transfer $Q$. Only the fraction $(1 - T_0/T)$ (which is the Carnot efficiency) of the heat $Q$ can be converted to work.</li>
                 </ul>
             </li>
             <li>
                 <strong>Changing Temperature Source (Figure 8.3):</strong>
                  <ul>
-                    <li>What if the heat <span class="math-var">Q</span> comes from a source whose temperature changes (like hot gas cooling down in a heat exchanger)?</li>
-                    <li>We can imagine using a series of infinitesimally small Carnot engines operating between the changing source temperature <span class="math-var">T</span> and the ambient <span class="math-var">T₀</span>.</li>
-                    <li>The total heat rejected to the ambient is now an integral: <span class="math-var">Q₀ = ∫ δQ₀ = ∫ T₀ (δQ / T)</span> (from <span class="math-var">δQ/T - δQ₀/T₀ = 0</span> for each tiny engine).</li>
-                    <li>If the process transferring the heat <span class="math-var">δQ</span> is reversible, <span class="math-var">δQ/T = dS</span>, where <span class="math-var">dS</span> is the entropy change *of the source*.</li>
-                    <li>So, <span class="math-var">Q₀ = ∫ T₀ dS = T₀ ∫ dS = T₀ ΔS</span> (where <span class="math-var">ΔS</span> is the total entropy change *of the source* providing the heat <span class="math-var">Q</span>). (Equation 8.2, note <span class="math-var">ΔS = ∫ δQ<sub>rev</sub> / T</span>).</li>
+                    <li>What if the heat $Q$ comes from a source whose temperature changes (like hot gas cooling down in a heat exchanger)?</li>
+                    <li>We can imagine using a series of infinitesimally small Carnot engines operating between the changing source temperature $T$ and the ambient $T_0$.</li>
+                    <li>The total heat rejected to the ambient is now an integral: $Q_0 = \int \delta Q_0 = \int T_0 (\delta Q / T)$ (from $\delta Q/T - \delta Q_0/T_0 = 0$ for each tiny engine).</li>
+                    <li>If the process transferring the heat $\delta Q$ is reversible, $\delta Q/T = dS$, where $dS$ is the entropy change <strong>of the source</strong>.</li>
+                    <li>So, $Q_0 = \int T_0 dS = T_0 \int dS = T_0 \Delta S$ (where $\Delta S$ is the total entropy change <strong>of the source</strong> providing the heat $Q$). (Equation 8.2, note $\Delta S = \int \delta Q_{rev} / T$).</li>
                 </ul>
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{Q_0 = T_0 \\Delta S}')""
+                      onclick="copyFormulaLatex(this, '\\color{white}{Q_0 = T_0 \\Delta S}')"
                       data-latex="Q_0 = T_0 \Delta S \quad (Eq 8.2)"
                       title="Click to copy LaTeX">
-                     <i>Q</i>₀ = <i>T</i>₀ <i>ΔS</i> &nbsp;&nbsp;&nbsp;(Eq 8.2)
+                      $$ Q_0 = T_0 \Delta S \quad (Eq 8.2) $$
                  </div>
                  <ul>
-                    <li>The total work is again <span class="math-var">W<sub>rev HE</sub> = Q - Q₀</span>. Therefore, the exergy of the heat <span class="math-var">Q</span> from a changing-temperature source is:</li>
+                    <li>The total work is again $W_{rev HE} = Q - Q_0$. Therefore, the exergy of the heat $Q$ from a changing-temperature source is:</li>
                 </ul>
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{\\Phi_{QT} = W_{rev HE} = Q - T_0 \\Delta S}')""
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\Phi_{QT} = W_{rev HE} = Q - T_0 \\Delta S}')"
                       data-latex="\Phi_{QT} = W_{rev HE} = Q - T_0 \Delta S \quad (Eq 8.3)"
                       title="Click to copy LaTeX">
-                     <i>Φ</i><sub>QT</sub> = <i>W</i><sub>rev HE</sub> = <i>Q</i> - <i>T</i>₀ <i>ΔS</i> &nbsp;&nbsp;&nbsp;(Eq 8.3)
+                      $$ \Phi_{QT} = W_{rev HE} = Q - T_0 \Delta S \quad (Eq 8.3) $$
                  </div>
                  <ul>
-                    <li><strong>Interpretation (Figure 8.3b):</strong> On a T-S diagram for the source fluid, <span class="math-var">Q</span> is the total area under the process curve. <span class="math-var">T₀ ΔS</span> is the area of the rectangle below <span class="math-var">T₀</span>. <span class="math-var">Φ<sub>QT</sub></span> (the available energy) is the area under the curve *above* <span class="math-var">T₀</span>.</li>
+                    <li><strong>Interpretation (Figure 8.3b):</strong> On a T-S diagram for the source fluid, $Q$ is the total area under the process curve. $T_0 \Delta S$ is the area of the rectangle below $T_0$. $\Phi_{QT}$ (the available energy) is the area under the curve <strong>above</strong> $T_0$.</li>
                  </ul>
             </li>
         </ol>
@@ -151,234 +195,234 @@
             <li>
                 <strong>Actual Process:</strong> Governed by standard conservation laws (Fig 8.4).
                 <div class="formula-container"
-                     onclick="copyFormulaLatex(this, '\\color{white}{\\frac{dm_{cv}}{dt} = \\sum \\dot{m}_i - \\sum \\dot{m}_e}')""
+                     onclick="copyFormulaLatex(this, '\\color{white}{\\frac{dm_{cv}}{dt} = \\sum \\dot{m}_i - \\sum \\dot{m}_e}')"
                      data-latex="\frac{dm_{cv}}{dt} = \sum \dot{m}_i - \sum \dot{m}_e \quad (Eq 8.4)"
                      title="Click to copy LaTeX">
-                    <span class="fraction"><span class="numerator">d<i>m</i><sub>cv</sub></span><span class="denominator">dt</span></span> = <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>i</sub> - <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>e</sub> &nbsp;&nbsp;&nbsp;(Eq 8.4)
+                     $$ \frac{dm_{cv}}{dt} = \sum_{i} \dot{m}_i - \sum_{e} \dot{m}_e \quad (Eq 8.4) $$
                 </div>
                 <div class="formula-container"
-                     onclick="copyFormulaLatex(this, '\\color{white}{\\frac{dE_{cv}}{dt} = \\sum \\dot{Q}_j + \\sum \\dot{m}_i h_{tot,i} - \\sum \\dot{m}_e h_{tot,e} - \\dot{W}_{cv,ac}}')""
+                     onclick="copyFormulaLatex(this, '\\color{white}{\\frac{dE_{cv}}{dt} = \\sum \\dot{Q}_j + \\sum \\dot{m}_i h_{tot,i} - \\sum \\dot{m}_e h_{tot,e} - \\dot{W}_{cv,ac}}')"
                      data-latex="\frac{dE_{cv}}{dt} = \sum \dot{Q}_j + \sum \dot{m}_i h_{tot,i} - \sum \dot{m}_e h_{tot,e} - \dot{W}_{cv,ac} \quad (Eq 8.5)"
                      title="Click to copy LaTeX">
-                    <span class="fraction"><span class="numerator">d<i>E</i><sub>cv</sub></span><span class="denominator">dt</span></span> = <span class="summation">∑</span> <span class="overdot"><i>Q</i></span><sub>j</sub> + <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>i</sub> <i>h</i><sub>tot,i</sub> - <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>e</sub> <i>h</i><sub>tot,e</sub> - <span class="overdot"><i>W</i></span><sub>cv,ac</sub> &nbsp;&nbsp;&nbsp;(Eq 8.5)
+                     $$ \frac{dE_{cv}}{dt} = \sum_{j} \dot{Q}_j + \sum_{i} \dot{m}_i h_{tot,i} - \sum_{e} \dot{m}_e h_{tot,e} - \dot{W}_{cv,ac} \quad (Eq 8.5) $$
                 </div>
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{\\frac{dS_{cv}}{dt} = \\sum \\frac{\\dot{Q}_j}{T_j} + \\sum \\dot{m}_i s_i - \\sum \\dot{m}_e s_e + \\dot{S}_{gen,ac}}')""
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\frac{dS_{cv}}{dt} = \\sum \\frac{\\dot{Q}_j}{T_j} + \\sum \\dot{m}_i s_i - \\sum \\dot{m}_e s_e + \\dot{S}_{gen,ac}}')"
                       data-latex="\frac{dS_{cv}}{dt} = \sum \frac{\dot{Q}_j}{T_j} + \sum \dot{m}_i s_i - \sum \dot{m}_e s_e + \dot{S}_{gen,ac} \quad (Eq 8.6)"
                       title="Click to copy LaTeX">
-                     <span class="fraction"><span class="numerator">d<i>S</i><sub>cv</sub></span><span class="denominator">dt</span></span> = <span class="summation">∑</span> <span class="fraction"><span class="numerator"><span class="overdot"><i>Q</i></span><sub>j</sub></span><span class="denominator"><i>T</i><sub>j</sub></span></span> + <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>i</sub> <i>s</i><sub>i</sub> - <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>e</sub> <i>s</i><sub>e</sub> + <span class="overdot"><i>S</i></span><sub>gen,ac</sub> &nbsp;&nbsp;&nbsp;(Eq 8.6)
+                      $$ \frac{dS_{cv}}{dt} = \sum_{j} \frac{\dot{Q}_j}{T_j} + \sum_{i} \dot{m}_i s_i - \sum_{e} \dot{m}_e s_e + \dot{S}_{gen,ac} \quad (Eq 8.6) $$
                  </div>
-                 Note <span class="math-var">Ẇ<sub>cv,ac</sub></span> is the actual work rate, <span class="math-var">Ṡ<sub>gen,ac</sub></span> is the actual entropy generation rate (which is <span class="math-var">≥ 0</span>).
+                 Note $\dot{W}_{cv,ac}$ is the actual work rate, $\dot{S}_{gen,ac}$ is the actual entropy generation rate (which is $\ge 0$).
             </li>
             <li>
-                <strong>Ideal Reversible Process:</strong> We imagine an ideal counterpart that has the same control volume, same mass flows (<span class="math-var">ṁᵢ</span>, <span class="math-var">ṁₑ</span> at same states), same heat transfers (<span class="math-var">Q̇ⱼ</span> at same <span class="math-var">Tⱼ</span>), and same storage effects (<span class="math-var">dE<sub>cv</sub>/dt</span>, <span class="math-var">dS<sub>cv</sub>/dt</span>). The key differences are:
+                <strong>Ideal Reversible Process:</strong> We imagine an ideal counterpart that has the same control volume, same mass flows ($\dot{m}_i$, $\dot{m}_e$ at same states), same heat transfers ($\dot{Q}_j$ at same $T_j$), and same storage effects ($dE_{cv}/dt$, $dS_{cv}/dt$). The key differences are:
                 <ol>
-                    <li>Entropy Generation: <span class="math-var">Ṡ<sub>gen,rev</sub> = 0</span> (by definition of reversible).</li>
-                    <li>Work Term: It produces the reversible work rate <span class="math-var">Ẇ<sub>rev</sub></span>.</li>
-                    <li>Extra Heat Transfer: To make the entropy balance work with <span class="math-var">Ṡ<sub>gen</sub>=0</span>, we must allow for a possible reversible heat transfer <span class="math-var">Q̇₀<sup>rev</sup></span> with the <strong>ambient environment at T₀</strong>. This term replaces the <span class="math-var">T₀Ṡ<sub>gen,ac</sub></span> "lost work" potential.</li>
+                    <li>Entropy Generation: $\dot{S}_{gen,rev} = 0$ (by definition of reversible).</li>
+                    <li>Work Term: It produces the reversible work rate $\dot{W}_{rev}$.</li>
+                    <li>Extra Heat Transfer: To make the entropy balance work with $\dot{S}_{gen}=0$, we must allow for a possible reversible heat transfer $\dot{Q}_0^{rev}$ with the <strong>ambient environment at $T_0$</strong>. This term replaces the $T_0 \dot{S}_{gen,ac}$ "lost work" potential.</li>
                 </ol>
             </li>
         </ul>
 
         <p>
-            <strong>Deriving the Reversible Work Rate (<span class="math-var">Ẇ<sub>rev</sub></span>)</strong>
+            <strong>Deriving the Reversible Work Rate ($\dot{W}_{rev}$)</strong>
         </p>
         <ol>
-            <li>Look at the entropy equation (8.6) for the actual process. Solve for <span class="math-var">Ṡ<sub>gen,ac</sub></span>:
+            <li>Look at the entropy equation (8.6) for the actual process. Solve for $\dot{S}_{gen,ac}$:
                 <div class="formula-container"
-                     onclick="copyFormulaLatex(this, '\\color{white}{\\dot{S}_{gen,ac} = \\frac{dS_{cv}}{dt} - \\sum \\frac{\\dot{Q}_j}{T_j} - \\sum \\dot{m}_i s_i + \\sum \\dot{m}_e s_e}')""
+                     onclick="copyFormulaLatex(this, '\\color{white}{\\dot{S}_{gen,ac} = \\frac{dS_{cv}}{dt} - \\sum \\frac{\\dot{Q}_j}{T_j} - \\sum \\dot{m}_i s_i + \\sum \\dot{m}_e s_e}')"
                      data-latex="\dot{S}_{gen,ac} = \frac{dS_{cv}}{dt} - \sum \frac{\dot{Q}_j}{T_j} - \sum \dot{m}_i s_i + \sum \dot{m}_e s_e"
                      title="Click to copy LaTeX">
-                     <span class="overdot"><i>S</i></span><sub>gen,ac</sub> = <span class="fraction"><span class="numerator">d<i>S</i><sub>cv</sub></span><span class="denominator">dt</span></span> - <span class="summation">∑</span> <span class="fraction"><span class="numerator"><span class="overdot"><i>Q</i></span><sub>j</sub></span><span class="denominator"><i>T</i><sub>j</sub></span></span> - <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>i</sub> <i>s</i><sub>i</sub> + <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>e</sub> <i>s</i><sub>e</sub>
+                     $$ \dot{S}_{gen,ac} = \frac{dS_{cv}}{dt} - \sum_{j} \frac{\dot{Q}_j}{T_j} - \sum_{i} \dot{m}_i s_i + \sum_{e} \dot{m}_e s_e $$
                 </div>
             </li>
-            <li>In the *ideal* reversible process, instead of generating <span class="math-var">Ṡ<sub>gen,ac</sub></span>, this same amount of entropy must be transferred *out* reversibly to the environment at <span class="math-var">T₀</span>. So, the necessary heat transfer *from* the environment (at T₀) *to* the ideal CV is:
+            <li>In the <strong>ideal</strong> reversible process, instead of generating $\dot{S}_{gen,ac}$, this same amount of entropy must be transferred <strong>out</strong> reversibly to the environment at $T_0$. So, the necessary heat transfer <strong>from</strong> the environment (at $T_0$) <strong>to</strong> the ideal CV is:
                 <div class="formula-container"
-                     onclick="copyFormulaLatex(this, '\\color{white}{\\dot{Q}_0^{rev} = T_0 \\dot{S}_{gen,ac}}')""
+                     onclick="copyFormulaLatex(this, '\\color{white}{\\dot{Q}_0^{rev} = T_0 \\dot{S}_{gen,ac}}')"
                      data-latex="\dot{Q}_0^{rev} = T_0 \dot{S}_{gen,ac} \quad (from Eq 8.7/8.9)"
                      title="Click to copy LaTeX">
-                     <span class="overdot"><i>Q</i></span>₀<sup>rev</sup> = <i>T</i>₀ <span class="overdot"><i>S</i></span><sub>gen,ac</sub> &nbsp;&nbsp;&nbsp;(from Eq 8.7/8.9)
+                     $$ \dot{Q}_0^{rev} = T_0 \dot{S}_{gen,ac} \quad (from Eq 8.7/8.9) $$
                 </div>
-                <strong>Important Note:</strong> If the actual process is adiabatic (<span class="math-var">Q̇ⱼ=0</span>) but irreversible (<span class="math-var">Ṡ<sub>gen,ac</sub>>0</span>), the corresponding *reversible* process needs heat transfer *from* the environment (<span class="math-var">Q̇₀<sup>rev</sup> > 0</span>) to maintain the same state changes and flows reversibly. If the actual process is reversible (<span class="math-var">Ṡ<sub>gen,ac</sub>=0</span>), then <span class="math-var">Q̇₀<sup>rev</sup> = 0</span>.
+                <strong>Important Note:</strong> If the actual process is adiabatic ($\dot{Q}_j=0$) but irreversible ($\dot{S}_{gen,ac}>0$), the corresponding *reversible* process needs heat transfer <strong>from</strong> the environment ($\dot{Q}_0^{rev} > 0$) to maintain the same state changes and flows reversibly. If the actual process is reversible ($\dot{S}_{gen,ac}=0$), then $\dot{Q}_0^{rev} = 0$.
             </li>
-            <li>The *total* work rate term in the ideal reversible process energy equation must replace the actual work <span class="math-var">-Ẇ<sub>cv,ac</sub></span>. Comparing terms from the actual and ideal last parts (Eq 8.8): <span class="math-var">-Ẇ<sub>cv,ac</sub></span> is replaced by <span class="math-var">(Q̇₀<sup>rev</sup> - Ẇ<sub>rev</sub>)</span>.
+            <li>The <strong>total</strong> work rate term in the ideal reversible process energy equation must replace the actual work $-\dot{W}_{cv,ac}$. Comparing terms from the actual and ideal last parts (Eq 8.8): $-\dot{W}_{cv,ac}$ is replaced by $(\dot{Q}_0^{rev} - \dot{W}_{rev})$.
             </li>
-             <li>Solving for <span class="math-var">Ẇ<sub>rev</sub></span>:
+             <li>Solving for $\dot{W}_{rev}$:
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\dot{W}_{cv,ac} + \\dot{Q}_0^{rev}}')""
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\dot{W}_{cv,ac} + \\dot{Q}_0^{rev}}')"
                       data-latex="\dot{W}_{rev} = \dot{W}_{cv,ac} + \dot{Q}_0^{rev} \quad (Eq 8.10)"
                       title="Click to copy LaTeX">
-                     <span class="overdot"><i>W</i></span><sub>rev</sub> = <span class="overdot"><i>W</i></span><sub>cv,ac</sub> + <span class="overdot"><i>Q</i></span>₀<sup>rev</sup> &nbsp;&nbsp;&nbsp;(Eq 8.10)
+                     $$ \dot{W}_{rev} = \dot{W}_{cv,ac} + \dot{Q}_0^{rev} \quad (Eq 8.10) $$
                  </div>
             </li>
-             <li>Now substitute <span class="math-var">Q̇₀<sup>rev</sup> = T₀ Ṡ<sub>gen,ac</sub></span>: <span class="math-var">Ẇ<sub>rev</sub> = Ẇ<sub>cv,ac</sub> + T₀ Ṡ<sub>gen,ac</sub></span>.
+             <li>Now substitute $\dot{Q}_0^{rev} = T_0 \dot{S}_{gen,ac}$: $\dot{W}_{rev} = \dot{W}_{cv,ac} + T_0 \dot{S}_{gen,ac}$.
             </li>
-             <li>Next, substitute the expression for <span class="math-var">Ṡ<sub>gen,ac</sub></span> (from step 1) into this equation:
+             <li>Next, substitute the expression for $\dot{S}_{gen,ac}$ (from step 1) into this equation:
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\dot{W}_{cv,ac} + T_0 \\left[ \\frac{dS_{cv}}{dt} - \\sum\\frac{\\dot{Q}_j}{T_j} - \\sum\\dot{m}_i s_i + \\sum\\dot{m}_e s_e \\right]}')""
-                      data-latex="\dot{W}_{rev} = \dot{W}_{cv,ac} + T_0 \left[ \frac{dS_{cv}}{dt} - \sum\frac{\dot{Q}_j}{T_j} - \sum\dot{m}_i s_i + \sum\dot{m}_e s_e \right]"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\dot{W}_{cv,ac} + T_0 \\left[ \\frac{dS_{cv}}{dt} - \\sum_{j}\\frac{\\dot{Q}_j}{T_j} - \\sum_{i}\\dot{m}_i s_i + \\sum_{e}\\dot{m}_e s_e \\right]}')"
+                      data-latex="\dot{W}_{rev} = \dot{W}_{cv,ac} + T_0 \left[ \frac{dS_{cv}}{dt} - \sum_{j}\frac{\dot{Q}_j}{T_j} - \sum_{i}\dot{m}_i s_i + \sum_{e}\dot{m}_e s_e \right]"
                       title="Click to copy LaTeX">
-                     <span class="overdot"><i>W</i></span><sub>rev</sub> = <span class="overdot"><i>W</i></span><sub>cv,ac</sub> + <i>T</i>₀ [ <span class="fraction"><span class="numerator">d<i>S</i><sub>cv</sub></span><span class="denominator">dt</span></span> - <span class="summation">∑</span><span class="fraction"><span class="numerator"><span class="overdot"><i>Q</i></span><sub>j</sub></span><span class="denominator"><i>T</i><sub>j</sub></span></span> - <span class="summation">∑</span><span class="overdot"><i>m</i></span><sub>i</sub> <i>s</i><sub>i</sub> + <span class="summation">∑</span><span class="overdot"><i>m</i></span><sub>e</sub> <i>s</i><sub>e</sub> ]
+                     $$ \dot{W}_{rev} = \dot{W}_{cv,ac} + T_0 \left[ \frac{dS_{cv}}{dt} - \sum_{j}\frac{\dot{Q}_j}{T_j} - \sum_{i}\dot{m}_i s_i + \sum_{e}\dot{m}_e s_e \right] $$
                  </div>
             </li>
-             <li>Now, replace <span class="math-var">Ẇ<sub>cv,ac</sub></span> using the energy equation (8.5) solved for <span class="math-var">Ẇ<sub>cv,ac</sub></span>:
+             <li>Now, replace $\dot{W}_{cv,ac}$ using the energy equation (8.5) solved for $\dot{W}_{cv,ac}$:
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{cv,ac} = \\sum\\dot{Q}_j + \\sum\\dot{m}_i h_{tot,i} - \\sum\\dot{m}_e h_{tot,e} - \\frac{dE_{cv}}{dt}}')""
-                      data-latex="\dot{W}_{cv,ac} = \sum\dot{Q}_j + \sum\dot{m}_i h_{tot,i} - \sum\dot{m}_e h_{tot,e} - \frac{dE_{cv}}{dt}"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{cv,ac} = \\sum_{j}\\dot{Q}_j + \\sum_{i}\\dot{m}_i h_{tot,i} - \\sum_{e}\\dot{m}_e h_{tot,e} - \\frac{dE_{cv}}{dt}}')"
+                      data-latex="\dot{W}_{cv,ac} = \sum_{j}\dot{Q}_j + \sum_{i}\dot{m}_i h_{tot,i} - \sum_{e}\dot{m}_e h_{tot,e} - \frac{dE_{cv}}{dt}"
                       title="Click to copy LaTeX">
-                     <span class="overdot"><i>W</i></span><sub>cv,ac</sub> = <span class="summation">∑</span><span class="overdot"><i>Q</i></span><sub>j</sub> + <span class="summation">∑</span><span class="overdot"><i>m</i></span><sub>i</sub> <i>h</i><sub>tot,i</sub> - <span class="summation">∑</span><span class="overdot"><i>m</i></span><sub>e</sub> <i>h</i><sub>tot,e</sub> - <span class="fraction"><span class="numerator">d<i>E</i><sub>cv</sub></span><span class="denominator">dt</span></span>
+                     $$ \dot{W}_{cv,ac} = \sum_{j}\dot{Q}_j + \sum_{i}\dot{m}_i h_{tot,i} - \sum_{e}\dot{m}_e h_{tot,e} - \frac{dE_{cv}}{dt} $$
                  </div>
             </li>
              <li>Plug this into the equation from step 6 (results in a long expression).</li>
             <li>Finally, group terms by heat transfer, mass flows, and storage:</li>
                 <div class="formula-container"
-                     onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\sum \\dot{Q}_j(1 - T_0/T_j) + \\sum \\dot{m}_i(h_{tot,i} - T_0 s_i) - \\sum \\dot{m}_e(h_{tot,e} - T_0 s_e) - \\left( \\frac{dE_{cv}}{dt} - T_0 \\frac{dS_{cv}}{dt} \\right)}')""
-                     data-latex="\dot{W}_{rev} = \sum \dot{Q}_j(1 - T_0/T_j) + \sum \dot{m}_i(h_{tot,i} - T_0 s_i) - \sum \dot{m}_e(h_{tot,e} - T_0 s_e) - \left( \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} \right) \quad (Eq 8.11)"
+                     onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\sum_{j} \\dot{Q}_j(1 - \\frac{T_0}{T_j}) + \\sum_{i} \\dot{m}_i(h_{tot,i} - T_0 s_i) - \\sum_{e} \\dot{m}_e(h_{tot,e} - T_0 s_e) - \\left( \\frac{dE_{cv}}{dt} - T_0 \\frac{dS_{cv}}{dt} \\right)}')""
+                     data-latex="\dot{W}_{rev} = \sum_{j} \dot{Q}_j(1 - \frac{T_0}{T_j}) + \sum_{i} \dot{m}_i(h_{tot,i} - T_0 s_i) - \sum_{e} \dot{m}_e(h_{tot,e} - T_0 s_e) - \left( \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} \right) \quad (Eq 8.11)"
                      title="Click to copy LaTeX">
-                     <span class="overdot"><i>W</i></span><sub>rev</sub> = <span class="summation">∑</span> <span class="overdot"><i>Q</i></span><sub>j</sub>(1 - <i>T</i>₀/<i>T</i><sub>j</sub>) + <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>i</sub>(<i>h</i><sub>tot,i</sub> - <i>T</i>₀<i>s</i><sub>i</sub>) - <span class="summation">∑</span> <span class="overdot"><i>m</i></span><sub>e</sub>(<i>h</i><sub>tot,e</sub> - <i>T</i>₀<i>s</i><sub>e</sub>) - ( <span class="fraction"><span class="numerator">d<i>E</i><sub>cv</sub></span><span class="denominator">dt</span></span> - <i>T</i>₀<span class="fraction"><span class="numerator">d<i>S</i><sub>cv</sub></span><span class="denominator">dt</span></span> ) &nbsp;&nbsp;&nbsp;(Eq 8.11)
+                     $$ \dot{W}_{rev} = \sum_{j} \dot{Q}_j(1 - \frac{T_0}{T_j}) + \sum_{i} \dot{m}_i(h_{tot,i} - T_0 s_i) - \sum_{e} \dot{m}_e(h_{tot,e} - T_0 s_e) - \left( \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} \right) \quad (Eq 8.11) $$
                  </div>
-                This equation gives the maximum theoretical (reversible) work rate obtainable from the given control volume process, considering its interactions with heat sources, mass flows, and internal storage changes, all relative to the ambient temperature <span class="math-var">T₀</span>.
+                This equation gives the maximum theoretical (reversible) work rate obtainable from the given control volume process, considering its interactions with heat sources, mass flows, and internal storage changes, all relative to the ambient temperature $T_0$.
         </ol>
 
         <p>
-            <strong>Irreversibility (<span class="math-var">İ</span>) or Lost Work:</strong>
+            <strong>Irreversibility ($\dot{I}$) or Lost Work:</strong>
         </p>
          <ul>
-            <li>The difference between the best possible work (<span class="math-var">Ẇ<sub>rev</sub></span>) and the actual work produced (<span class="math-var">Ẇ<sub>cv,ac</sub></span>) is called the <strong>irreversibility rate</strong> (<span class="math-var">İ</span>).
+            <li>The difference between the best possible work ($\dot{W}_{rev}$) and the actual work produced ($\dot{W}_{cv,ac}$) is called the <strong>irreversibility rate</strong> ($\dot{I}$).
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{I} = \\dot{W}_{rev} - \\dot{W}_{cv,ac}}')""
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{I} = \\dot{W}_{rev} - \\dot{W}_{cv,ac}}')"
                       data-latex="\dot{I} = \dot{W}_{rev} - \dot{W}_{cv,ac} \quad (Eq 8.12)"
                       title="Click to copy LaTeX">
-                     <span class="overdot"><i>I</i></span> = <span class="overdot"><i>W</i></span><sub>rev</sub> - <span class="overdot"><i>W</i></span><sub>cv,ac</sub> &nbsp;&nbsp;&nbsp;(Eq 8.12)
+                     $$ \dot{I} = \dot{W}_{rev} - \dot{W}_{cv,ac} \quad (Eq 8.12) $$
                  </div>
             </li>
-            <li>From Eq 8.10, we also know <span class="math-var">Ẇ<sub>rev</sub> - Ẇ<sub>cv,ac</sub> = Q̇₀<sup>rev</sup></span>.</li>
-            <li>From Eq 8.9 (related), we also know <span class="math-var">Q̇₀<sup>rev</sup> = T₀ Ṡ<sub>gen,ac</sub></span>.</li>
+            <li>From Eq 8.10, we also know $\dot{W}_{rev} - \dot{W}_{cv,ac} = \dot{Q}_0^{rev}$.</li>
+            <li>From Eq 8.9 (related), we also know $\dot{Q}_0^{rev} = T_0 \dot{S}_{gen,ac}$.</li>
              <li>Therefore:
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{I} = \\dot{Q}_0^{rev} = T_0 \\dot{S}_{gen,ac}}')""
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{I} = \\dot{Q}_0^{rev} = T_0 \\dot{S}_{gen,ac}}')"
                       data-latex="\dot{I} = \dot{Q}_0^{rev} = T_0 \dot{S}_{gen,ac} \quad (Eq 8.13)"
                       title="Click to copy LaTeX">
-                     <span class="overdot"><i>I</i></span> = <span class="overdot"><i>Q</i></span>₀<sup>rev</sup> = <i>T</i>₀ <span class="overdot"><i>S</i></span><sub>gen,ac</sub> &nbsp;&nbsp;&nbsp;(Eq 8.13)
+                      $$ \dot{I} = \dot{Q}_0^{rev} = T_0 \dot{S}_{gen,ac} \quad (Eq 8.13) $$
                  </div>
             </li>
-            <li><strong>Conclusion:</strong> Irreversibility (lost work potential) is directly proportional to the rate of entropy generation, scaled by the ambient temperature <span class="math-var">T₀</span>. Minimizing entropy generation maximizes useful work output (or minimizes required work input). Energy is conserved, but the potential to do work (exergy) is destroyed by irreversibility.</li>
-            <li><strong>Figure 8.5:</strong> Shows this graphically. If actual work <span class="math-var">Ẇ<sub>ac,1</sub></span> is positive (e.g., turbine), the reversible work <span class="math-var">Ẇ<sub>rev,1</sub></span> is higher by the amount <span class="math-var">İ₁</span>. If actual work <span class="math-var">Ẇ<sub>ac,2</sub></span> is negative (work input, e.g., compressor), the reversible work <span class="math-var">Ẇ<sub>rev,2</sub></span> is less negative (closer to zero) by the amount <span class="math-var">İ₂</span>. <span class="math-var">Ẇ<sub>rev</sub></span> is always algebraically greater than <span class="math-var">Ẇ<sub>ac</sub></span>.</li>
+            <li><strong>Conclusion:</strong> Irreversibility (lost work potential) is directly proportional to the rate of entropy generation, scaled by the ambient temperature $T_0$. Minimizing entropy generation maximizes useful work output (or minimizes required work input). Energy is conserved, but the potential to do work (exergy) is destroyed by irreversibility.</li>
+            <li><strong>Figure 8.5:</strong> Shows this graphically. If actual work $\dot{W}_{ac,1}$ is positive (e.g., turbine), the reversible work $\dot{W}_{rev,1}$ is higher by the amount $\dot{I}_1$. If actual work $\dot{W}_{ac,2}$ is negative (work input, e.g., compressor), the reversible work $\dot{W}_{rev,2}$ is less negative (closer to zero) by the amount $\dot{I}_2$. $\dot{W}_{rev}$ is always algebraically greater than $\dot{W}_{ac}$.</li>
          </ul>
 
         <p>
              <strong>Application to Steady-State Process (SISO):</strong>
         </p>
         <ul>
-             <li>In steady state, <span class="math-var">dE<sub>cv</sub>/dt = 0</span> and <span class="math-var">dS<sub>cv</sub>/dt = 0</span>. The last term in Eq 8.11 drops out.</li>
-             <li>For single inlet/outlet, <span class="math-var">Σṁᵢ(...)</span> becomes <span class="math-var">ṁ(h<sub>totᵢ</sub> - T₀sᵢ)</span> and <span class="math-var">Σṁₑ(...)</span> becomes <span class="math-var">ṁ(h<sub>totₑ</sub> - T₀sₑ)</span>.</li>
-             <li>The reversible work rate is <span class="math-var">Ẇ<sub>rev</sub> = ṁ [ Σqⱼ(1-T₀/Tⱼ) + (h<sub>totᵢ</sub> - T₀sᵢ) - (h<sub>totₑ</sub> - T₀sₑ) ]</span>.</li>
-             <li>Specific reversible work <span class="math-var">w<sub>rev</sub> = Ẇ<sub>rev</sub> / ṁ</span>:
+             <li>In steady state, $dE_{cv}/dt = 0$ and $dS_{cv}/dt = 0$. The last term in Eq 8.11 drops out.</li>
+             <li>For single inlet/outlet, $\sum \dot{m}_i(...) $ becomes $\dot{m}(h_{tot,i} - T_0 s_i)$ and $\sum \dot{m}_e(...) $ becomes $\dot{m}(h_{tot,e} - T_0 s_e)$.</li>
+             <li>The reversible work rate is $\dot{W}_{rev} = \dot{m} [ \sum_j q_j(1-\frac{T_0}{T_j}) + (h_{tot,i} - T_0 s_i) - (h_{tot,e} - T_0 s_e) ]$.</li>
+             <li>Specific reversible work $w_{rev} = \dot{W}_{rev} / \dot{m}$:
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{w_{rev} = \\sum q_j(1 - T_0/T_j) + (h_{tot,i} - T_0 s_i) - (h_{tot,e} - T_0 s_e)}')""
-                      data-latex="w_{rev} = \sum q_j(1 - T_0/T_j) + (h_{tot,i} - T_0 s_i) - (h_{tot,e} - T_0 s_e) \quad (Eq 8.14)"
+                      onclick="copyFormulaLatex(this, '\\color{white}{w_{rev} = \\sum_{j} q_j(1 - \\frac{T_0}{T_j}) + (h_{tot,i} - T_0 s_i) - (h_{tot,e} - T_0 s_e)}')""
+                      data-latex="w_{rev} = \sum_{j} q_j(1 - \frac{T_0}{T_j}) + (h_{tot,i} - T_0 s_i) - (h_{tot,e} - T_0 s_e) \quad (Eq 8.14)"
                       title="Click to copy LaTeX">
-                     <i>w</i><sub>rev</sub> = <span class="summation">∑</span><i>q</i><sub>j</sub>(1 - <i>T</i>₀/<i>T</i><sub>j</sub>) + (<i>h</i><sub>tot,i</sub> - <i>T</i>₀<i>s</i><sub>i</sub>) - (<i>h</i><sub>tot,e</sub> - <i>T</i>₀<i>s</i><sub>e</sub>) &nbsp;&nbsp;&nbsp;(Eq 8.14)
+                      $$ w_{rev} = \sum_{j} q_j(1 - \frac{T_0}{T_j}) + (h_{tot,i} - T_0 s_i) - (h_{tot,e} - T_0 s_e) \quad (Eq 8.14) $$
                  </div>
              </li>
-             <li>Specific irreversibility <span class="math-var">i = İ / ṁ</span>:
-                 <br><span class="math-var">i = w<sub>rev</sub> - w<sub>ac</sub></span>
-                 <br><span class="math-var">i = T₀ s<sub>gen,ac</sub></span> (where <span class="math-var">s<sub>gen,ac</sub> = Ṡ<sub>gen,ac</sub> / ṁ</span>)
-                 <br>From entropy balance <span class="math-var">sₑ = sᵢ + Σqⱼ/Tⱼ + s<sub>gen</sub></span>, so <span class="math-var">s<sub>gen</sub> = sₑ - sᵢ - Σqⱼ/Tⱼ</span>.
+             <li>Specific irreversibility $i = \dot{I} / \dot{m}$:
+                 <br>$i = w_{rev} - w_{ac}$
+                 <br>$i = T_0 s_{gen,ac}$ (where $s_{gen,ac} = \dot{S}_{gen,ac} / \dot{m}$)
+                 <br>From entropy balance $s_e = s_i + \sum_j q_j/T_j + s_{gen}$, so $s_{gen} = s_e - s_i - \sum_j q_j/T_j$.
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{i = T_0 \\left[ s_e - s_i - \\sum \\frac{q_j}{T_j} \\right]}')""
-                      data-latex="i = T_0 \left[ s_e - s_i - \sum \frac{q_j}{T_j} \right] \quad (Eq 8.15)"
+                      onclick="copyFormulaLatex(this, '\\color{white}{i = T_0 \\left[ s_e - s_i - \\sum_{j} \\frac{q_j}{T_j} \\right]}')""
+                      data-latex="i = T_0 \left[ s_e - s_i - \sum_{j} \frac{q_j}{T_j} \right] \quad (Eq 8.15)"
                       title="Click to copy LaTeX">
-                     <i>i</i> = <i>T</i>₀ [ <i>s</i><sub>e</sub> - <i>s</i><sub>i</sub> - <span class="summation">∑</span>(<span class="fraction"><span class="numerator"><i>q</i><sub>j</sub></span><span class="denominator"><i>T</i><sub>j</sub></span></span>) ] &nbsp;&nbsp;&nbsp;(Eq 8.15)
+                      $$ i = T_0 \left[ s_e - s_i - \sum_{j} \frac{q_j}{T_j} \right] \quad (Eq 8.15) $$
                  </div>
              </li>
         </ul>
 
         <p><strong>Example 8.1 (Feedwater Heater):</strong> [Summary - details omitted for brevity, assume steps 1-5 performed]</p>
         <ul>
-            <li>Results: <span class="math-var">w<sub>rev</sub> = 62.0 kJ/kg</span>, <span class="math-var">i = 62.0 kJ/kg</span>.</li>
+            <li>Results: $w_{rev} = 62.0 \, \text{kJ/kg}$, $i = 62.0 \, \text{kJ/kg}$.</li>
         </ul>
 
         <p><strong>Example 8.2 / 8.2E (Compressor with Heat Loss):</strong> [Summary - details omitted]</p>
          <ul>
-             <li>Results: <span class="math-var">w<sub>ac</sub> = -296.1 kJ/kg</span>, <span class="math-var">w<sub>rev</sub> ≈ -263.3 kJ/kg</span>, <span class="math-var">i ≈ 32.8 kJ/kg</span>.</li>
+             <li>Results: $w_{ac} = -296.1 \, \text{kJ/kg}$, $w_{rev} \approx -263.3 \, \text{kJ/kg}$, $i \approx 32.8 \, \text{kJ/kg}$.</li>
          </ul>
 
         <p>
             <strong>Application to Control Mass Process:</strong>
         </p>
         <ul>
-            <li>No mass flows (<span class="math-var">ṁᵢ=ṁₑ=0</span>). Eq 8.11 simplifies to:
+            <li>No mass flows ($\dot{m}_i=\dot{m}_e=0$). Eq 8.11 simplifies to:
                 <div class="formula-container"
-                     onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\sum \\dot{Q}_j(1 - T_0/T_j) - \\left( \\frac{dE_{cv}}{dt} - T_0 \\frac{dS_{cv}}{dt} \\right)}')""
-                     data-latex="\dot{W}_{rev} = \sum \dot{Q}_j(1 - T_0/T_j) - \left( \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} \right) \quad (Eq 8.16)"
+                     onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\sum_{j} \\dot{Q}_j(1 - \\frac{T_0}{T_j}) - \\left( \\frac{dE_{cv}}{dt} - T_0 \\frac{dS_{cv}}{dt} \\right)}')""
+                     data-latex="\dot{W}_{rev} = \sum_{j} \dot{Q}_j(1 - \frac{T_0}{T_j}) - \left( \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} \right) \quad (Eq 8.16)"
                      title="Click to copy LaTeX">
-                     <span class="overdot"><i>W</i></span><sub>rev</sub> = <span class="summation">∑</span> <span class="overdot"><i>Q</i></span><sub>j</sub>(1 - <i>T</i>₀/<i>T</i><sub>j</sub>) - ( <span class="fraction"><span class="numerator">d<i>E</i><sub>cv</sub></span><span class="denominator">dt</span></span> - <i>T</i>₀<span class="fraction"><span class="numerator">d<i>S</i><sub>cv</sub></span><span class="denominator">dt</span></span> ) &nbsp;&nbsp;&nbsp;(Eq 8.16 rate form)
+                     $$ \dot{W}_{rev} = \sum_{j} \dot{Q}_j(1 - \frac{T_0}{T_j}) - \left( \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} \right) \quad (Eq 8.16 \text{ rate form}) $$
                 </div>
             </li>
             <li>Integrate over time for a process from state 1 to 2:
-                <br><span class="math-var">₁W₂<sup>rev</sup> = Σ ∫Q̇ⱼ(1 - T₀/Tⱼ)dt - [(E₂ - E₁) - T₀(S₂ - S₁)]</span>.
-                <br>If heat <span class="math-var">₁Q₂ⱼ</span> comes from a reservoir at <span class="math-var">Tⱼ</span>, <span class="math-var">∫ Q̇ⱼ dt = ₁Q₂ⱼ</span>:
+                <br>${_1W_2^{rev}} = \sum_j \int \dot{Q}_j(1 - T_0/T_j)dt - [(E_2 - E_1) - T_0(S_2 - S_1)]$.
+                <br>If heat ${_1Q_{2j}}$ comes from a reservoir at $T_j$, $\int \dot{Q}_j dt = {_1Q_{2j}}$:
                 <div class="formula-container"
-                     onclick="copyFormulaLatex(this, '\\color{white}{{_1W_2^{rev}} = \\sum {_1Q_{2j}}(1 - T_0/T_j) - \\left[ (E_2 - E_1) - T_0(S_2 - S_1) \\right]}')""
-                     data-latex="{_1W_2^{rev}} = \sum {_1Q_{2j}}(1 - T_0/T_j) - \left[ (E_2 - E_1) - T_0(S_2 - S_1) \right] \quad (Eq 8.17)"
+                     onclick="copyFormulaLatex(this, '\\color{white}{{_1W_2^{rev}} = \\sum_{j} {_1Q_{2j}}(1 - \\frac{T_0}{T_j}) - \\left[ (E_2 - E_1) - T_0(S_2 - S_1) \\right]}')""
+                     data-latex="{_1W_2^{rev}} = \sum_{j} {_1Q_{2j}}(1 - \frac{T_0}{T_j}) - \left[ (E_2 - E_1) - T_0(S_2 - S_1) \right] \quad (Eq 8.17)"
                      title="Click to copy LaTeX">
-                    ₁<i>W</i>₂<sup>rev</sup> = <span class="summation">∑</span> ₁<i>Q</i>₂ⱼ(1 - <i>T</i>₀/<i>T</i><sub>j</sub>) - [ (<i>E</i>₂ - <i>E</i>₁) - <i>T</i>₀(<i>S</i>₂ - <i>S</i>₁) ] &nbsp;&nbsp;&nbsp;(Eq 8.17)
+                    $$ {_1W_2^{rev}} = \sum_{j} {_1Q_{2j}}(1 - \frac{T_0}{T_j}) - \left[ (E_2 - E_1) - T_0(S_2 - S_1) \right] \quad (Eq 8.17) $$
                 </div>
             </li>
-            <li>Irreversibility for the process <span class="math-var">₁I₂</span>:
-                <br><span class="math-var">₁I₂ = ₁W₂<sup>rev</sup> - ₁W₂<sup>ac</sup></span>
+            <li>Irreversibility for the process ${_1I_2}$:
+                <br>${_1I_2} = {_1W_2^{rev}} - {_1W_2^{ac}}$
                 <div class="formula-container"
                      onclick="copyFormulaLatex(this, '\\color{white}{{_1I_2} = T_0 \\cdot {_1S_{2,gen,ac}}}')""
                      data-latex="{_1I_2} = T_0 \cdot {_1S_{2,gen,ac}} \quad (Eq 8.18, part 1)"
                      title="Click to copy LaTeX">
-                     ₁<i>I</i>₂ = <i>T</i>₀ · ₁<i>S</i>₂,gen,ac &nbsp;&nbsp;&nbsp;(Eq 8.18, first part)
+                     $$ {_1I_2} = T_0 \cdot {_1S_{2,gen,ac}} \quad (Eq 8.18, \text{ first part}) $$
                  </div>
-                 Substitute entropy generation from integrated entropy balance <span class="math-var">S₂ - S₁ = Σ ∫(Q̇ⱼ/Tⱼ) dt + ₁S₂,gen</span>. Assume <span class="math-var">₁Q₂ⱼ</span> comes from <span class="math-var">Tⱼ</span>.
-                <br><span class="math-var">S₂ - S₁ = Σ (₁Q₂ⱼ / Tⱼ) + ₁S₂,gen</span> => <span class="math-var">₁S₂,gen = (S₂ - S₁) - Σ (₁Q₂ⱼ / Tⱼ)</span>.
+                 Substitute entropy generation from integrated entropy balance $S_2 - S_1 = \sum_j \int(\dot{Q}_j/T_j) dt + {_1S_{2,gen}}$. Assume ${_1Q_{2j}}$ comes from $T_j$.
+                <br>$S_2 - S_1 = \sum_j ({_1Q_{2j}} / T_j) + {_1S_{2,gen}}$ => ${_1S_{2,gen}} = (S_2 - S_1) - \sum_j ({_1Q_{2j}} / T_j)$.
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{{_1I_2} = T_0 \\left[ (S_2 - S_1) - \\sum \\frac{{_1Q_{2j}}}{T_j} \\right]}')""
-                      data-latex="{_1I_2} = T_0 \left[ (S_2 - S_1) - \sum \frac{{_1Q_{2j}}}{T_j} \right] \quad (Eq 8.18, part 2)"
+                      onclick="copyFormulaLatex(this, '\\color{white}{{_1I_2} = T_0 \\left[ (S_2 - S_1) - \\sum_{j} \\frac{{_1Q_{2j}}}{T_j} \\right]}')""
+                      data-latex="{_1I_2} = T_0 \left[ (S_2 - S_1) - \sum_{j} \frac{{_1Q_{2j}}}{T_j} \right] \quad (Eq 8.18, part 2)"
                       title="Click to copy LaTeX">
-                     ₁<i>I</i>₂ = <i>T</i>₀ [ (<i>S</i>₂ - <i>S</i>₁) - <span class="summation">∑</span> (<span class="fraction"><span class="numerator">₁<i>Q</i>₂ⱼ</span><span class="denominator"><i>T</i><sub>j</sub></span></span>) ] &nbsp;&nbsp;&nbsp;(Eq 8.18, second part)
+                      $$ {_1I_2} = T_0 \left[ (S_2 - S_1) - \sum_{j} \frac{{_1Q_{2j}}}{T_j} \right] \quad (Eq 8.18, \text{ second part}) $$
                  </div>
             </li>
-            <li>If KE/PE negligible, <span class="math-var">E=U</span>.</li>
+            <li>If KE/PE negligible, $E=U$.</li>
         </ul>
 
         <p><strong>Example 8.3 (Tank Expansion):</strong> [Summary]</p>
          <ul>
-             <li>Results: <span class="math-var">₁W₂<sup>rev</sup> ≈ 1.645 kJ</span>, <span class="math-var">₁I₂ = 1.645 kJ</span> (since <span class="math-var">W<sub>ac</sub> = 0</span>).</li>
+             <li>Results: ${_1W_2^{rev}} \approx 1.645 \, \text{kJ}$, ${_1I_2} = 1.645 \, \text{kJ}$ (since $W_{ac} = 0$).</li>
          </ul>
 
         <p>
             <strong>Application to Transient Process:</strong>
         </p>
         <ul>
-             <li>Integrate Eq 8.11 over time <span class="math-var">t</span>:
+             <li>Integrate Eq 8.11 over time $t$:
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{{_1W_2^{rev}} = \\sum \\int \\dot{Q}_j(1-T_0/T_j)dt + \\sum \\int \\dot{m}_i(h_{tot,i} - T_0 s_i)dt - \\sum \\int \\dot{m}_e(h_{tot,e} - T_0 s_e)dt - [(E_2-E_1) - T_0(S_2-S_1)]_{cv}}')""
-                      data-latex="{_1W_2^{rev}} = \sum \int \dot{Q}_j(1-T_0/T_j)dt + \sum \int \dot{m}_i(h_{tot,i} - T_0 s_i)dt - \sum \int \dot{m}_e(h_{tot,e} - T_0 s_e)dt - [(E_2-E_1) - T_0(S_2-S_1)]_{cv} \quad (Eq 8.19)"
+                      onclick="copyFormulaLatex(this, '\\color{white}{{_1W_2^{rev}} = \\sum_{j} \\int \\dot{Q}_j(1-\\frac{T_0}{T_j})dt + \\sum_{i} \\int \\dot{m}_i(h_{tot,i} - T_0 s_i)dt - \\sum_{e} \\int \\dot{m}_e(h_{tot,e} - T_0 s_e)dt - [(E_2-E_1) - T_0(S_2-S_1)]_{cv}}')""
+                      data-latex="{_1W_2^{rev}} = \sum_{j} \int \dot{Q}_j(1-\frac{T_0}{T_j})dt + \sum_{i} \int \dot{m}_i(h_{tot,i} - T_0 s_i)dt - \sum_{e} \int \dot{m}_e(h_{tot,e} - T_0 s_e)dt - [(E_2-E_1) - T_0(S_2-S_1)]_{cv} \quad (Eq 8.19)"
                       title="Click to copy LaTeX">
-                     ₁<i>W</i>₂<sup>rev</sup> = <span class="summation">∑</span>∫<span class="overdot"><i>Q</i></span><sub>j</sub>(1-<i>T</i>₀/<i>T</i><sub>j</sub>)dt + <span class="summation">∑</span>∫<span class="overdot"><i>m</i></span><sub>i</sub>(<i>h</i><sub>tot,i</sub> - <i>T</i>₀<i>s</i><sub>i</sub>)dt - <span class="summation">∑</span>∫<span class="overdot"><i>m</i></span><sub>e</sub>(<i>h</i><sub>tot,e</sub> - <i>T</i>₀<i>s</i><sub>e</sub>)dt - [(<i>E</i>₂-<i>E</i>₁) - <i>T</i>₀(<i>S</i>₂-<i>S</i>₁)]<sub>cv</sub> &nbsp;&nbsp;&nbsp;(Eq 8.19 generalized)
+                      $$ {_1W_2^{rev}} = \sum_{j} \int \dot{Q}_j(1-\frac{T_0}{T_j})dt + \sum_{i} \int \dot{m}_i(h_{tot,i} - T_0 s_i)dt - \sum_{e} \int \dot{m}_e(h_{tot,e} - T_0 s_e)dt - [(E_2-E_1) - T_0(S_2-S_1)]_{cv} \quad (Eq 8.19 \text{ generalized}) $$
                  </div>
              </li>
-            <li>If heat <span class="math-var">₁Q₂ⱼ</span> comes from reservoir <span class="math-var">Tⱼ</span>, inlet flows <span class="math-var">mᵢ</span> total come from state <span class="math-var">i</span>, exit flows <span class="math-var">mₑ</span> total go to state <span class="math-var">e</span>:
-                <br><span class="math-var">₁W₂<sup>rev</sup> = Σ ₁Q₂ⱼ(1-T₀/Tⱼ) + Σ mᵢ(h<sub>totᵢ</sub> - T₀sᵢ) - Σ mₑ(h<sub>totₑ</sub> - T₀sₑ) - [(E₂-E₁) - T₀(S₂-S₁)]<sub>cv</sub></span>
+            <li>If heat ${_1Q_{2j}}$ comes from reservoir $T_j$, inlet flows $m_i$ total come from state $i$, exit flows $m_e$ total go to state $e$:
+                <br>${_1W_2^{rev}} = \sum_j {_1Q_{2j}}(1-\frac{T_0}{T_j}) + \sum_i m_i(h_{tot,i} - T_0 s_i) - \sum_e m_e(h_{tot,e} - T_0 s_e) - [(E_2-E_1) - T_0(S_2-S_1)]_{cv}$
             </li>
-            <li>Irreversibility <span class="math-var">₁I₂</span>:
+            <li>Irreversibility ${_1I_2}$:
                  <div class="formula-container"
                       onclick="copyFormulaLatex(this, '\\color{white}{{_1I_2} = {_1W_2^{rev}} - {_1W_2^{ac}} = T_0 \\cdot {_1S_{2,gen,ac}}}')""
                       data-latex="{_1I_2} = {_1W_2^{rev}} - {_1W_2^{ac}} = T_0 \cdot {_1S_{2,gen,ac}} \quad (Eq 8.20)"
                       title="Click to copy LaTeX">
-                     ₁<i>I</i>₂ = ₁<i>W</i>₂<sup>rev</sup> - ₁<i>W</i>₂<sup>ac</sup> = <i>T</i>₀ · ₁<i>S</i>₂,gen,ac &nbsp;&nbsp;&nbsp;(Eq 8.20)
+                      $$ {_1I_2} = {_1W_2^{rev}} - {_1W_2^{ac}} = T_0 \cdot {_1S_{2,gen,ac}} \quad (Eq 8.20) $$
                  </div>
             </li>
         </ul>
 
         <p><strong>Example 8.4 (Charging Tank with Ammonia):</strong> [Summary]</p>
          <ul>
-             <li>Result: <span class="math-var">₁I₂ = 34.885 kJ</span>.</li>
+             <li>Result: ${_1I_2} = 34.885 \, \text{kJ}$.</li>
          </ul>
 
         <h2>8.2 EXERGY AND ITS BALANCE EQUATION</h2>
@@ -387,68 +431,68 @@
         </p>
 
         <ul>
-            <li><strong>Maximum Reversible Work & Exergy:</strong> The maximum possible work from a system in a given state occurs when it undergoes a reversible process to reach the <strong>dead state</strong> (equilibrium with the environment at <span class="math-var">P₀</span>, <span class="math-var">T₀</span>, zero velocity, reference elevation <span class="math-var">Z₀</span>). This maximum work potential is the <strong>Exergy (<span class="math-var">Φ</span>)</strong> of the initial state.</li>
+            <li><strong>Maximum Reversible Work & Exergy:</strong> The maximum possible work from a system in a given state occurs when it undergoes a reversible process to reach the <strong>dead state</strong> (equilibrium with the environment at $P_0$, $T_0$, zero velocity, reference elevation $Z_0$). This maximum work potential is the <strong>Exergy ($\Phi$)</strong> of the initial state.</li>
             <li>
-                <strong>Exergy Components:</strong> We re-examine the terms in the reversible work equation (Eq 8.11) and identify them as different forms of exergy transfer or change, all measured relative to the dead state <span class="math-var">P₀, T₀</span>.
+                <strong>Exergy Components:</strong> We re-examine the terms in the reversible work equation (Eq 8.11) and identify them as different forms of exergy transfer or change, all measured relative to the dead state $P_0, T_0$.
                 <ol>
-                    <li><strong>Exergy Transfer with Heat (<span class="math-var">Φ̇<sub>q</sub></span>):</strong>
+                    <li><strong>Exergy Transfer with Heat ($\dot{\Phi}_q$):</strong>
                         <div class="formula-container"
-                             onclick="copyFormulaLatex(this, '\\color{white}{\\dot{\\Phi}_q = \\sum \\dot{Q}_j (1 - T_0/T_j)}')""
-                             data-latex="\dot{\Phi}_q = \sum \dot{Q}_j (1 - T_0/T_j) \quad (Eq 8.21)"
+                             onclick="copyFormulaLatex(this, '\\color{white}{\\dot{\\Phi}_q = \\sum_{j} \\dot{Q}_j (1 - \\frac{T_0}{T_j})}')""
+                             data-latex="\dot{\Phi}_q = \sum_{j} \dot{Q}_j (1 - \frac{T_0}{T_j}) \quad (Eq 8.21)"
                              title="Click to copy LaTeX">
-                            <span class="overdot"><i>Φ</i></span><sub>q</sub> = <span class="summation">∑</span> <span class="overdot"><i>Q</i></span><sub>j</sub> (1 - <i>T</i>₀/<i>T</i><sub>j</sub>) &nbsp;&nbsp;&nbsp;(Eq 8.21)
+                            $$ \dot{\Phi}_q = \sum_{j} \dot{Q}_j (1 - \frac{T_0}{T_j}) \quad (Eq 8.21) $$
                         </div>
-                        This is the work potential of heat <span class="math-var">Q̇ⱼ</span> coming from temperature <span class="math-var">Tⱼ</span>. It's the portion of heat that *could* be converted to work by a Carnot engine operating between <span class="math-var">Tⱼ</span> and <span class="math-var">T₀</span>. Higher <span class="math-var">Tⱼ</span> means higher quality (higher exergy content) heat. Heat at <span class="math-var">T₀</span> has zero exergy.
+                        This is the work potential of heat $\dot{Q}_j$ coming from temperature $T_j$. It's the portion of heat that *could* be converted to work by a Carnot engine operating between $T_j$ and $T_0$. Higher $T_j$ means higher quality (higher exergy content) heat. Heat at $T_0$ has zero exergy.
                     </li>
-                    <li><strong>Flow Exergy (<span class="math-var">ψ</span>):</strong> The maximum work associated with a unit mass of fluid flowing at a certain state, as it reversibly reaches the dead state. From Eq 8.14 applied between the state and the dead state 0:
-                        <br><span class="math-var">w<sub>rev</sub> = (h<sub>tot</sub> - T₀s) - (h<sub>tot₀</sub> - T₀s₀)</span>. This reversible work *is* the flow exergy <span class="math-var">ψ</span>.
-                        <br><span class="math-var">ψ = (h - T₀s + V²/2 + gZ) - (h₀ - T₀s₀ + V₀²/2 + gZ₀)</span>
-                        <br>Since <span class="math-var">V₀=0</span>, <span class="math-var">Z₀=0</span> (by convention):
+                    <li><strong>Flow Exergy ($\psi$):</strong> The maximum work associated with a unit mass of fluid flowing at a certain state, as it reversibly reaches the dead state. From Eq 8.14 applied between the state and the dead state 0:
+                        <br>$w_{rev} = (h_{tot} - T_0 s) - (h_{tot,0} - T_0 s_0)$. This reversible work *is* the flow exergy $\psi$.
+                        <br>$\psi = (h - T_0 s + \frac{V^2}{2} + gZ) - (h_0 - T_0 s_0 + \frac{V_0^2}{2} + gZ_0)$
+                        <br>Since $V_0=0$, $Z_0=0$ (by convention):
                          <div class="formula-container"
-                              onclick="copyFormulaLatex(this, '\\color{white}{\\psi = (h - h_0) - T_0(s - s_0) + V^2/2 + gZ}')""
-                              data-latex="\psi = (h - h_0) - T_0(s - s_0) + V^2/2 + gZ \quad (Eq 8.22)"
+                              onclick="copyFormulaLatex(this, '\\color{white}{\\psi = (h - h_0) - T_0(s - s_0) + \\frac{V^2}{2} + gZ}')""
+                              data-latex="\psi = (h - h_0) - T_0(s - s_0) + \frac{V^2}{2} + gZ \quad (Eq 8.22)"
                               title="Click to copy LaTeX">
-                             <i>ψ</i> = (<i>h</i> - <i>h</i>₀) - <i>T</i>₀(<i>s</i> - <i>s</i>₀) + <i>V</i>²/2 + <i>gZ</i> &nbsp;&nbsp;&nbsp;(Eq 8.22 generalized form)
+                             $$ \psi = (h - h_0) - T_0(s - s_0) + \frac{V^2}{2} + gZ \quad (Eq 8.22 \text{ generalized form}) $$
                          </div>
-                         Difference in flow exergy between inlet <span class="math-var">i</span> and exit <span class="math-var">e</span>:
-                         <br><span class="math-var">ψᵢ - ψₑ = [(h<sub>totᵢ</sub> - T₀sᵢ) - (h<sub>tot₀</sub> - T₀s₀)] - [(h<sub>totₑ</sub> - T₀sₑ) - (h<sub>tot₀</sub> - T₀s₀)]</span>
+                         Difference in flow exergy between inlet $i$ and exit $e$:
+                         <br>$\psi_i - \psi_e = [(h_{tot,i} - T_0 s_i) - (h_{tot,0} - T_0 s_0)] - [(h_{tot,e} - T_0 s_e) - (h_{tot,0} - T_0 s_0)]$
                          <div class="formula-container"
                               onclick="copyFormulaLatex(this, '\\color{white}{\\psi_i - \\psi_e = (h_{tot,i} - T_0 s_i) - (h_{tot,e} - T_0 s_e)}')""
                               data-latex="\psi_i - \psi_e = (h_{tot,i} - T_0 s_i) - (h_{tot,e} - T_0 s_e) \quad (Eq 8.23)"
                               title="Click to copy LaTeX">
-                             <i>ψ</i><sub>i</sub> - <i>ψ</i><sub>e</sub> = (<i>h</i><sub>tot,i</sub> - <i>T</i>₀<i>s</i><sub>i</sub>) - (<i>h</i><sub>tot,e</sub> - <i>T</i>₀<i>s</i><sub>e</sub>) &nbsp;&nbsp;&nbsp;(Eq 8.23)
+                             $$ \psi_i - \psi_e = (h_{tot,i} - T_0 s_i) - (h_{tot,e} - T_0 s_e) \quad (Eq 8.23) $$
                          </div>
                          The constant dead state terms cancel. This matches the flow terms in the specific reversible work equation (8.14).
                     </li>
-                    <li><strong>Stored Exergy (<span class="math-var">Φ</span> or <span class="math-var">φ</span>):</strong> The maximum work potential stored within the control volume due to its state relative to the environment.
+                    <li><strong>Stored Exergy ($\Phi$ or $\phi$):</strong> The maximum work potential stored within the control volume due to its state relative to the environment.
                         <ul>
-                            <li>From Eq 8.11, the storage term contribution to *rate* of reversible work is <span class="math-var">-(dE<sub>cv</sub>/dt - T₀ dS<sub>cv</sub>/dt)</span>.</li>
-                            <li>However, we must account for work done *on the surroundings* at <span class="math-var">P₀</span> if the CV volume changes (<span class="math-var">V</span>). <span class="math-var">Ẇ<sub>surr</sub> = P₀ (dV<sub>cv</sub>/dt)</span>. This isn't useful work.</li>
-                             <li>The maximum *available* work rate from storage changes is:
+                            <li>From Eq 8.11, the storage term contribution to *rate* of reversible work is $-(\frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt})$.</li>
+                            <li>However, we must account for work done *on the surroundings* at $P_0$ if the CV volume changes ($V$). $\dot{W}_{surr} = P_0 \frac{dV_{cv}}{dt}$. This isn't useful work.</li>
+                             <li>The maximum <strong>available</strong> work rate from storage changes is:
                                  <div class="formula-container"
                                       onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{avail}^{max} = - \\left( \\frac{dE_{cv}}{dt} - T_0 \\frac{dS_{cv}}{dt} \\right) - P_0 \\frac{dV_{cv}}{dt}}')""
                                       data-latex="\dot{W}_{avail}^{max} = - \left( \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} \right) - P_0 \frac{dV_{cv}}{dt} \quad (Eq 8.25 mod)"
                                       title="Click to copy LaTeX">
-                                    <span class="overdot"><i>W</i></span><sub>avail</sub><sup>max</sup> = - ( <span class="fraction"><span class="numerator">d<i>E</i><sub>cv</sub></span><span class="denominator">dt</span></span> - <i>T</i>₀<span class="fraction"><span class="numerator">d<i>S</i><sub>cv</sub></span><span class="denominator">dt</span></span> ) - <i>P</i>₀<span class="fraction"><span class="numerator">d<i>V</i><sub>cv</sub></span><span class="denominator">dt</span></span> &nbsp;&nbsp;&nbsp;(Eq 8.25 modified)
+                                    $$ \dot{W}_{avail}^{max} = - \left( \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} \right) - P_0 \frac{dV_{cv}}{dt} \quad (Eq 8.25 \text{ modified}) $$
                                  </div>
                              </li>
-                            <li>Define the <strong>rate of change of stored exergy <span class="math-var">Φ̇<sub>cv</sub></span></strong> such that <span class="math-var">Ẇ<sub>avail</sub><sup>max</sup> = -Φ̇<sub>cv</sub></span>.
+                            <li>Define the <strong>rate of change of stored exergy $\dot{\Phi}_{cv}$</strong> such that $\dot{W}_{avail}^{max} = -\dot{\Phi}_{cv}$.
                                  <div class="formula-container"
                                       onclick="copyFormulaLatex(this, '\\color{white}{\\dot{\\Phi}_{cv} = \\frac{dE_{cv}}{dt} - T_0 \\frac{dS_{cv}}{dt} + P_0 \\frac{dV_{cv}}{dt}}')""
                                       data-latex="\dot{\Phi}_{cv} = \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} + P_0 \frac{dV_{cv}}{dt} \quad (Eq 8.26)"
                                       title="Click to copy LaTeX">
-                                     <span class="overdot"><i>Φ</i></span><sub>cv</sub> = <span class="fraction"><span class="numerator">d<i>E</i><sub>cv</sub></span><span class="denominator">dt</span></span> - <i>T</i>₀ <span class="fraction"><span class="numerator">d<i>S</i><sub>cv</sub></span><span class="denominator">dt</span></span> + <i>P</i>₀ <span class="fraction"><span class="numerator">d<i>V</i><sub>cv</sub></span><span class="denominator">dt</span></span> &nbsp;&nbsp;&nbsp;(Eq 8.26)
+                                      $$ \dot{\Phi}_{cv} = \frac{dE_{cv}}{dt} - T_0 \frac{dS_{cv}}{dt} + P_0 \frac{dV_{cv}}{dt} \quad (Eq 8.26) $$
                                  </div>
                             </li>
-                             <li>Integrating from the dead state (E₀, S₀, V₀) to the actual state (E, S, V) gives the total stored exergy <span class="math-var">Φ</span>:
-                                 <br><span class="math-var">Φ = (E - E₀) - T₀(S - S₀) + P₀(V - V₀)</span>
+                             <li>Integrating from the dead state ($E_0, S_0, V_0$) to the actual state ($E, S, V$) gives the total stored exergy $\Phi$:
+                                 <br>$\Phi = (E - E_0) - T_0(S - S_0) + P_0(V - V_0)$
                             </li>
-                            <li><strong>Specific stored exergy (<span class="math-var">φ</span> for control mass):</strong> Divide by mass <span class="math-var">m</span>, let <span class="math-var">E = U + KE + PE</span>. Assume KE=PE=0 initially and at dead state. <span class="math-var">e = u</span>.
+                            <li><strong>Specific stored exergy ($\phi$ for control mass):</strong> Divide by mass $m$, let $E = U + KE + PE$. Assume KE=PE=0 initially and at dead state. $e = u$.
                                  <div class="formula-container"
                                       onclick="copyFormulaLatex(this, '\\color{white}{\\phi = (u - u_0) - T_0(s - s_0) + P_0(v - v_0)}')""
                                       data-latex="\phi = (u - u_0) - T_0(s - s_0) + P_0(v - v_0) \quad (Eq 8.27)"
                                       title="Click to copy LaTeX">
-                                     <i>φ</i> = (<i>u</i> - <i>u</i>₀) - <i>T</i>₀(<i>s</i> - <i>s</i>₀) + <i>P</i>₀(<i>v</i> - <i>v</i>₀) &nbsp;&nbsp;&nbsp;(Eq 8.27 generalized)
+                                     $$ \phi = (u - u_0) - T_0(s - s_0) + P_0(v - v_0) \quad (Eq 8.27 \text{ generalized}) $$
                                  </div>
                             </li>
                             <li>Difference between two states:
@@ -456,7 +500,7 @@
                                       onclick="copyFormulaLatex(this, '\\color{white}{\\phi_2 - \\phi_1 = (u_2 - u_1) - T_0(s_2 - s_1) + P_0(v_2 - v_1)}')""
                                       data-latex="\phi_2 - \phi_1 = (u_2 - u_1) - T_0(s_2 - s_1) + P_0(v_2 - v_1) \quad (Eq 8.28)"
                                       title="Click to copy LaTeX">
-                                     <i>φ</i>₂ - <i>φ</i>₁ = (<i>u</i>₂ - <i>u</i>₁) - <i>T</i>₀(<i>s</i>₂ - <i>s</i>₁) + <i>P</i>₀(<i>v</i>₂ - <i>v</i>₁) &nbsp;&nbsp;&nbsp;(Eq 8.28)
+                                     $$ \phi_2 - \phi_1 = (u_2 - u_1) - T_0(s_2 - s_1) + P_0(v_2 - v_1) \quad (Eq 8.28) $$
                                  </div>
                                  The dead state terms cancel.
                              </li>
@@ -464,30 +508,30 @@
                     </li>
                 </ol>
              </li>
-             <li><strong>Rewriting Reversible Work Rate using Exergy:</strong> Substitute the definitions <span class="math-var">Φ̇<sub>q</sub></span>, <span class="math-var">ψᵢ</span>, <span class="math-var">ψₑ</span>, and <span class="math-var">-Φ̇<sub>cv</sub> + P₀V̇</span> into Eq 8.11:
+             <li><strong>Rewriting Reversible Work Rate using Exergy:</strong> Substitute the definitions $\dot{\Phi}_q$, $\psi_i$, $\psi_e$, and $-\dot{\Phi}_{cv} + P_0 \dot{V}$ into Eq 8.11:
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\dot{\\Phi}_q + \\sum \\dot{m}_i \\psi_i - \\sum \\dot{m}_e \\psi_e - \\dot{\\Phi}_{cv} + P_0 \\dot{V}}')""
-                      data-latex="\dot{W}_{rev} = \dot{\Phi}_q + \sum \dot{m}_i \psi_i - \sum \dot{m}_e \psi_e - \dot{\Phi}_{cv} + P_0 \dot{V} \quad (Eq 8.29)"
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{rev} = \\dot{\\Phi}_q + \\sum_{i} \\dot{m}_i \\psi_i - \\sum_{e} \\dot{m}_e \\psi_e - \\dot{\\Phi}_{cv} + P_0 \\dot{V}}')""
+                      data-latex="\dot{W}_{rev} = \dot{\Phi}_q + \sum_{i} \dot{m}_i \psi_i - \sum_{e} \dot{m}_e \psi_e - \dot{\Phi}_{cv} + P_0 \dot{V} \quad (Eq 8.29)"
                       title="Click to copy LaTeX">
-                     <span class="overdot"><i>W</i></span><sub>rev</sub> = <span class="overdot"><i>Φ</i></span><sub>q</sub> + <span class="summation">∑</span><span class="overdot"><i>m</i></span><sub>i</sub><i>ψ</i><sub>i</sub> - <span class="summation">∑</span><span class="overdot"><i>m</i></span><sub>e</sub><i>ψ</i><sub>e</sub> - <span class="overdot"><i>Φ</i></span><sub>cv</sub> + <i>P</i>₀<span class="overdot"><i>V</i></span> &nbsp;&nbsp;&nbsp;(Eq 8.29)
+                     $$ \dot{W}_{rev} = \dot{\Phi}_q + \sum_{i} \dot{m}_i \psi_i - \sum_{e} \dot{m}_e \psi_e - \dot{\Phi}_{cv} + P_0 \dot{V} \quad (Eq 8.29) $$
                  </div>
-                 (Here <span class="math-var">P₀V̇ = P₀ dV/dt</span>)
+                 (Here $P_0 \dot{V} = P_0 dV/dt$)
              </li>
              <li>
                  <strong>The Exergy Balance Equation:</strong>
                  <ol>
-                     <li>Start with the link between actual and reversible work: <span class="math-var">Ẇ<sub>ac</sub> = Ẇ<sub>rev</sub> - İ = Ẇ<sub>rev</sub> - T₀Ṡ<sub>gen</sub></span>.</li>
-                     <li>Substitute the expression for <span class="math-var">Ẇ<sub>rev</sub></span> from Eq 8.29 into this.</li>
-                     <li>Rearrange to solve for the rate of change of stored exergy <span class="math-var">Φ̇<sub>cv</sub></span>:
-                         <br><span class="math-var">Φ̇<sub>cv</sub> = Φ̇<sub>q</sub> + Σṁᵢψᵢ - Σṁₑψₑ - (Ẇ<sub>ac</sub> - P₀V̇) - T₀Ṡ<sub>gen</sub></span>
-                         <br>(Recognize <span class="math-var">Ẇ<sub>useful</sub> = Ẇ<sub>ac</sub> - P₀V̇</span> as shaft/boundary work excluding work against atmosphere).
+                     <li>Start with the link between actual and reversible work: $\dot{W}_{ac} = \dot{W}_{rev} - \dot{I} = \dot{W}_{rev} - T_0 \dot{S}_{gen}$.</li>
+                     <li>Substitute the expression for $\dot{W}_{rev}$ from Eq 8.29 into this.</li>
+                     <li>Rearrange to solve for the rate of change of stored exergy $\dot{\Phi}_{cv}$:
+                         <br>$\dot{\Phi}_{cv} = \dot{\Phi}_q + \sum_i \dot{m}_i \psi_i - \sum_e \dot{m}_e \psi_e - (\dot{W}_{ac} - P_0 \dot{V}) - T_0 \dot{S}_{gen}$
+                         <br>(Recognize $\dot{W}_{useful} = \dot{W}_{ac} - P_0 \dot{V}$ as shaft/boundary work excluding work against atmosphere).
                      </li>
-                      <li>Rewriting the <span class="math-var">Φ̇<sub>cv</sub></span> term (<span class="math-var">dΦ<sub>cv</sub>/dt</span>) and exergy flow with heat <span class="math-var">Φ̇<sub>q</sub> = ΣQ̇ⱼ(1-T₀/Tⱼ)</span>:
+                      <li>Rewriting the $\dot{\Phi}_{cv}$ term ($d\Phi_{cv}/dt$) and exergy flow with heat $\dot{\Phi}_q = \sum_j \dot{Q}_j(1-T_0/T_j)$:
                          <div class="formula-container"
-                              onclick="copyFormulaLatex(this, '\\color{white}{\\frac{d\\Phi_{cv}}{dt} = \\sum \\dot{Q}_j(1-T_0/T_j) + \\sum \\dot{m}_i \\psi_i - \\sum \\dot{m}_e \\psi_e - (\\dot{W}_{cv} - P_0 \\frac{dV}{dt}) - T_0 \\dot{S}_{gen}}')""
-                              data-latex="\frac{d\Phi_{cv}}{dt} = \sum \dot{Q}_j(1-T_0/T_j) + \sum \dot{m}_i \psi_i - \sum \dot{m}_e \psi_e - (\dot{W}_{cv} - P_0 \frac{dV}{dt}) - T_0 \dot{S}_{gen} \quad (Eq 8.31)"
+                              onclick="copyFormulaLatex(this, '\\color{white}{\\frac{d\\Phi_{cv}}{dt} = \\sum_{j} \\dot{Q}_j(1-\\frac{T_0}{T_j}) + \\sum_{i} \\dot{m}_i \\psi_i - \\sum_{e} \\dot{m}_e \\psi_e - (\\dot{W}_{cv} - P_0 \\frac{dV}{dt}) - T_0 \\dot{S}_{gen}}')""
+                              data-latex="\frac{d\Phi_{cv}}{dt} = \sum_{j} \dot{Q}_j(1-\frac{T_0}{T_j}) + \sum_{i} \dot{m}_i \psi_i - \sum_{e} \dot{m}_e \psi_e - (\dot{W}_{cv} - P_0 \frac{dV}{dt}) - T_0 \dot{S}_{gen} \quad (Eq 8.31)"
                               title="Click to copy LaTeX">
-                            <span class="fraction"><span class="numerator">d<i>Φ</i><sub>cv</sub></span><span class="denominator">dt</span></span> = <span class="summation">∑</span><span class="overdot"><i>Q</i></span><sub>j</sub>(1-<i>T</i>₀/<i>T</i><sub>j</sub>) + <span class="summation">∑</span><span class="overdot"><i>m</i></span><sub>i</sub><i>ψ</i><sub>i</sub> - <span class="summation">∑</span><span class="overdot"><i>m</i></span><sub>e</sub><i>ψ</i><sub>e</sub> - (<span class="overdot"><i>W</i></span><sub>cv</sub> - <i>P</i>₀ <span class="fraction"><span class="numerator">d<i>V</i></span><span class="denominator">dt</span></span>) - <i>T</i>₀<span class="overdot"><i>S</i></span><sub>gen</sub> &nbsp;&nbsp;&nbsp;(Eq 8.31)
+                              $$ \frac{d\Phi_{cv}}{dt} = \sum_{j} \dot{Q}_j(1-\frac{T_0}{T_j}) + \sum_{i} \dot{m}_i \psi_i - \sum_{e} \dot{m}_e \psi_e - (\dot{W}_{cv} - P_0 \frac{dV}{dt}) - T_0 \dot{S}_{gen} \quad (Eq 8.31) $$
                          </div>
                       </li>
                  </ol>
@@ -496,20 +540,20 @@
                  <strong>Interpretation of Exergy Balance:</strong>
                  <br><code>(Rate of change of stored exergy) = (Rate of exergy transfer with heat) + (Rate of exergy transfer with flow IN) - (Rate of exergy transfer with flow OUT) - (Rate of useful work output) - (Rate of Exergy Destruction)</code>
                  <ul>
-                     <li><span class="math-var">Exergy Destruction Rate = T₀ Ṡ<sub>gen</sub> = İ</span>. This term represents the rate at which the potential to do useful work is lost due to irreversibilities.</li>
-                     <li>Unlike energy, exergy is *not* conserved; it is destroyed by entropy generation.</li>
+                     <li><strong>Exergy Destruction Rate</strong> $= T_0 \dot{S}_{gen} = \dot{I}$. This term represents the rate at which the potential to do useful work is lost due to irreversibilities.</li>
+                     <li>Unlike energy, exergy is <strong>not</strong> conserved; it is destroyed by entropy generation.</li>
                  </ul>
              </li>
         </ul>
 
         <p><strong>Example 8.5 (Heating Element):</strong> [Summary]</p>
          <ul>
-             <li>Results: Wire: `İ₁ = 149 W`. Ceramic: `İ₂ = 149 W`.</li>
+             <li>Results: Wire: $\dot{I}_1 = 149 \, \text{W}$. Ceramic: $\dot{I}_2 = 149 \, \text{W}$.</li>
          </ul>
 
         <p><strong>Example 8.6 (Steam Turbine with Bleed):</strong> [Summary]</p>
          <ul>
-             <li>Results: `ψ₁=1109.6`, `ψ₂=755.3`, `ψ₃=195.0 kJ/kg`. `Ẇ_rev = 24637 kW`.</li>
+             <li>Results: $\psi_1=1109.6, \psi_2=755.3, \psi_3=195.0 \, \text{kJ/kg}$. $\dot{W}_{rev} = 24637 \, \text{kW}$.</li>
          </ul>
 
         <h2>8.3 THE SECOND LAW EFFICIENCY</h2>
@@ -517,55 +561,55 @@
              This section defines efficiency based on exergy ("Second Law Efficiency") rather than just energy ("First Law Efficiency").
         </p>
         <ul>
-             <li><strong>Concept:</strong> Exergy represents the *true useful work potential* or the *quality* of energy. A Second Law efficiency compares the desired output (in exergy terms) to the required input (in exergy terms).
-                 <br><span class="math-var">η₂ = η<sub>IId law</sub> = (Exergy Out / Exergy Used) = (Exergy Wanted / Exergy Supplied)</span>
+             <li><strong>Concept:</strong> Exergy represents the <strong>true useful work potential</strong> or the <strong>quality</strong> of energy. A Second Law efficiency compares the desired output (in exergy terms) to the required input (in exergy terms).
+                 <br>$\eta_2 = \eta_{IId law} = \frac{\text{Exergy Out}}{\text{Exergy Used}} = \frac{\text{Exergy Wanted}}{\text{Exergy Supplied}}$
              </li>
             <li>
                  <strong>Device Efficiencies (Revisited):</strong>
                  <ul>
                      <li><strong>Turbine:</strong>
-                         <br>Wanted output: Actual work <span class="math-var">Ẇ<sub>ac</sub></span>. Exergy of work is work itself.
-                         <br>Exergy used: The decrease in flow exergy from inlet to exit: <span class="math-var">ṁ(ψᵢ - ψₑ)</span>. This equals the reversible work <span class="math-var">Ẇ<sub>rev</sub></span> *for the actual process end states*.
+                         <br>Wanted output: Actual work $\dot{W}_{ac}$. Exergy of work is work itself.
+                         <br>Exergy used: The decrease in flow exergy from inlet to exit: $\dot{m}(\psi_i - \psi_e)$. This equals the reversible work $\dot{W}_{rev}$ <strong>for the actual process end states</strong>.
                          <div class="formula-container"
                               onclick="copyFormulaLatex(this, '\\color{white}{\\eta_2 = \\frac{\\dot{W}_{ac}}{\\dot{m}(\\psi_i - \\psi_e)} = \\frac{\\dot{W}_{ac}}{\\dot{W}_{rev}}}')""
                               data-latex="\eta_2 = \frac{\dot{W}_{ac}}{\dot{m}(\psi_i - \psi_e)} = \frac{\dot{W}_{ac}}{\dot{W}_{rev}} \quad (Eq 8.32)"
                               title="Click to copy LaTeX">
-                             <i>η</i>₂ = <span class="fraction"><span class="numerator"><span class="overdot"><i>W</i></span><sub>ac</sub></span><span class="denominator"><span class="overdot"><i>m</i></span>(<i>ψ</i><sub>i</sub> - <i>ψ</i><sub>e</sub>)</span></span> = <span class="fraction"><span class="numerator"><span class="overdot"><i>W</i></span><sub>ac</sub></span><span class="denominator"><span class="overdot"><i>W</i></span><sub>rev</sub></span></span> &nbsp;&nbsp;&nbsp;(Eq 8.32)
+                              $$ \eta_2 = \frac{\dot{W}_{ac}}{\dot{m}(\psi_i - \psi_e)} = \frac{\dot{W}_{ac}}{\dot{W}_{rev}} \quad (Eq 8.32) $$
                          </div>
-                         Note: This uses the actual exit state <span class="math-var">e</span>, unlike <span class="math-var">η₁</span> which used ideal state <span class="math-var">es</span>. See Fig 8.12.
+                         Note: This uses the actual exit state $e$, unlike $\eta_1$ which used ideal state $es$. See Fig 8.12.
                      </li>
                      <li><strong>Compressor/Pump:</strong>
-                         <br>Exergy wanted/gained: The increase in flow exergy <span class="math-var">ṁ(ψₑ - ψᵢ)</span>. This equals the magnitude of reversible work input <span class="math-var">|Ẇ<sub>rev</sub>|</span>.
-                         <br>Exergy used: The actual work input <span class="math-var">|Ẇ<sub>ac</sub>|</span>.
-                         <br><span class="math-var">η₂ = [ṁ(ψₑ - ψᵢ)] / |Ẇ<sub>ac</sub>| = |Ẇ<sub>rev</sub>| / |Ẇ<sub>ac</sub>|</span>
+                         <br>Exergy wanted/gained: The increase in flow exergy $\dot{m}(\psi_e - \psi_i)$. This equals the magnitude of reversible work input $|\dot{W}_{rev}|$.
+                         <br>Exergy used: The actual work input $|\dot{W}_{ac}|$.
+                         <br>$\eta_2 = \frac{\dot{m}(\psi_e - \psi_i)}{|\dot{W}_{ac}|} = \frac{|\dot{W}_{rev}|}{|\dot{W}_{ac}|}$
                      </li>
                  </ul>
             </li>
             <li><strong>Heat Exchanger Efficiency (Fig 8.13):</strong>
-                 <br>Exergy wanted: Increase in exergy of the cold stream <span class="math-var">ṁ<sub>cold</sub>(ψ₂ - ψ₁)</span>.
-                 <br>Exergy used: Decrease in exergy of the hot stream <span class="math-var">ṁ<sub>hot</sub>(ψ₃ - ψ₄)</span>.
+                 <br>Exergy wanted: Increase in exergy of the cold stream $\dot{m}_{cold}(\psi_2 - \psi_1)$.
+                 <br>Exergy used: Decrease in exergy of the hot stream $\dot{m}_{hot}(\psi_3 - \psi_4)$.
                  <div class="formula-container"
                       onclick="copyFormulaLatex(this, '\\color{white}{\\eta_2 = \\frac{\\dot{m}_{cold}(\\psi_2 - \\psi_1)}{\\dot{m}_{hot}(\\psi_3 - \\psi_4)}}')""
                       data-latex="\eta_2 = \frac{\dot{m}_{cold}(\psi_2 - \psi_1)}{\dot{m}_{hot}(\psi_3 - \psi_4)} \quad (Eq 8.33)"
                       title="Click to copy LaTeX">
-                     <i>η</i>₂ = <span class="fraction"><span class="numerator"><span class="overdot"><i>m</i></span><sub>cold</sub>(<i>ψ</i>₂ - <i>ψ</i>₁)</span><span class="denominator"><span class="overdot"><i>m</i></span><sub>hot</sub>(<i>ψ</i>₃ - <i>ψ</i>₄)</span></span> &nbsp;&nbsp;&nbsp;(Eq 8.33)
+                      $$ \eta_2 = \frac{\dot{m}_{cold}(\psi_2 - \psi_1)}{\dot{m}_{hot}(\psi_3 - \psi_4)} \quad (Eq 8.33) $$
                  </div>
             </li>
-            <li><strong>General Formulation (using Exergy Destruction <span class="math-var">İ</span>):</strong>
-                 <br><span class="math-var">Φ<sub>source</sub></span> = Total rate of exergy input (from flows, heat, work).
-                 <br><span class="math-var">Ẇ<sub>ac</sub></span> (or <span class="math-var">Φ<sub>wanted</sub></span>) = Useful exergy output/effect.
+            <li><strong>General Formulation (using Exergy Destruction $\dot{I}$):</strong>
+                 <br>$\Phi_{source}$ = Total rate of exergy input (from flows, heat, work).
+                 <br>$\dot{W}_{ac}$ (or $\Phi_{wanted}$) = Useful exergy output/effect.
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{ac} = \\Phi_{source} - \\dot{I}_{cv}}')""
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\dot{W}_{ac} = \\Phi_{source} - \\dot{I}_{cv}}')"
                       data-latex="\dot{W}_{ac} = \Phi_{source} - \dot{I}_{cv} \quad (Eq 8.34)"
                       title="Click to copy LaTeX">
-                     <span class="overdot"><i>W</i></span><sub>ac</sub> = <i>Φ</i><sub>source</sub> - <span class="overdot"><i>I</i></span><sub>cv</sub> &nbsp;&nbsp;&nbsp;(Eq 8.34)
+                      $$ \dot{W}_{ac} = \Phi_{source} - \dot{I}_{cv} \quad (Eq 8.34) $$
                  </div>
-                 General Efficiency: <span class="math-var">η₂ = Φ<sub>wanted</sub> / Φ<sub>source</sub></span>
+                 General Efficiency: $\eta_2 = \Phi_{wanted} / \Phi_{source}$
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{\\eta_2 = \\frac{\\Phi_{source} - \\dot{I}_{cv}}{\\Phi_{source}} = 1 - \\frac{\\dot{I}_{cv}}{\\Phi_{source}}}')""
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\eta_2 = \\frac{\\Phi_{source} - \\dot{I}_{cv}}{\\Phi_{source}} = 1 - \\frac{\\dot{I}_{cv}}{\\Phi_{source}}}')"
                       data-latex="\eta_2 = \frac{\Phi_{source} - \dot{I}_{cv}}{\Phi_{source}} = 1 - \frac{\dot{I}_{cv}}{\Phi_{source}} \quad (Eq 8.35)"
                       title="Click to copy LaTeX">
-                     <i>η</i>₂ = <span class="fraction"><span class="numerator"><i>Φ</i><sub>source</sub> - <span class="overdot"><i>I</i></span><sub>cv</sub></span><span class="denominator"><i>Φ</i><sub>source</sub></span></span> = 1 - <span class="fraction"><span class="numerator"><span class="overdot"><i>I</i></span><sub>cv</sub></span><span class="denominator"><i>Φ</i><sub>source</sub></span></span> &nbsp;&nbsp;&nbsp;(Eq 8.35)
+                      $$ \eta_2 = \frac{\Phi_{source} - \dot{I}_{cv}}{\Phi_{source}} = 1 - \frac{\dot{I}_{cv}}{\Phi_{source}} \quad (Eq 8.35) $$
                  </div>
                 Efficiency is reduced from 100% directly by the ratio of exergy destroyed to exergy supplied.
             </li>
@@ -573,91 +617,91 @@
                  <strong>Cycle Efficiencies (Second Law Perspective):</strong>
                  <ul>
                      <li><strong>Heat Engine:</strong>
-                         <br>Work output <span class="math-var">WHE</span> is the desired exergy output.
-                         <br>Exergy input is from the heat source <span class="math-var">QH</span> at <span class="math-var">TH</span>: <span class="math-var">ΦH = QH (1 - T₀/TH)</span>.
+                         <br>Work output $W_{HE}$ is the desired exergy output.
+                         <br>Exergy input is from the heat source $Q_H$ at $T_H$: $\Phi_H = Q_H (1 - T_0/T_H)$.
                          <div class="formula-container"
-                              onclick="copyFormulaLatex(this, '\\color{white}{\\eta_{2,HE} = \\frac{W_{HE}}{\\Phi_H} = \\frac{W_{HE}}{Q_H (1 - T_0/T_H)}}')""
+                              onclick="copyFormulaLatex(this, '\\color{white}{\\eta_{2,HE} = \\frac{W_{HE}}{\\Phi_H} = \\frac{W_{HE}}{Q_H (1 - T_0/T_H)}}')"
                               data-latex="\eta_{2,HE} = \frac{W_{HE}}{\Phi_H} = \frac{W_{HE}}{Q_H (1 - T_0/T_H)} \quad (Eq 8.36)"
                               title="Click to copy LaTeX">
-                             <i>η</i><sub>2,HE</sub> = <span class="fraction"><span class="numerator"><i>W</i><sub>HE</sub></span><span class="denominator"><i>Φ</i><sub>H</sub></span></span> = <span class="fraction"><span class="numerator"><i>W</i><sub>HE</sub></span><span class="denominator"><i>Q</i><sub>H</sub> (1 - <i>T</i>₀/<i>T</i><sub>H</sub>)</span></span> &nbsp;&nbsp;&nbsp;(Eq 8.36)
+                              $$ \eta_{2,HE} = \frac{W_{HE}}{\Phi_H} = \frac{W_{HE}}{Q_H (1 - \frac{T_0}{T_H})} \quad (Eq 8.36) $$
                          </div>
-                         Relationship to <span class="math-var">η₁ = WHE / QH</span>: <span class="math-var">η₂ = η₁ / (1 - T₀/TH) = η₁ / η<sub>Carnot</sub>(TH,T₀)</span>. <span class="math-var">η₂</span> is always ≥ <span class="math-var">η₁</span>. It measures how well the engine performs compared to the best *possible* engine operating with that heat source relative to ambient.
+                         Relationship to $\eta_1 = W_{HE} / Q_H$: $\eta_2 = \eta_1 / (1 - T_0/T_H) = \eta_1 / \eta_{Carnot}(T_H,T_0)$. $\eta_2$ is always $\ge \eta_1$. It measures how well the engine performs compared to the best *possible* engine operating with that heat source relative to ambient.
                      </li>
                      <li><strong>Heat Pump:</strong>
-                         <br>Desired exergy output (heating): The exergy value of the heat delivered <span class="math-var">QH</span> at house temperature <span class="math-var">T<sub>H</sub></span>. <span class="math-var">ΦH = QH (1 - T₀/T<sub>H</sub>)</span>.
-                         <br>Exergy input: Work input <span class="math-var">WHP</span> (which is pure exergy).
+                         <br>Desired exergy output (heating): The exergy value of the heat delivered $Q_H$ at house temperature $T_H$. $\Phi_H = Q_H (1 - T_0/T_H)$.
+                         <br>Exergy input: Work input $W_{HP}$ (which is pure exergy).
                          <div class="formula-container"
-                              onclick="copyFormulaLatex(this, '\\color{white}{\\eta_{2,HP} = \\frac{\\Phi_H}{W_{HP}} = \\frac{Q_H (1 - T_0/T_H)}{W_{HP}}}')""
+                              onclick="copyFormulaLatex(this, '\\color{white}{\\eta_{2,HP} = \\frac{\\Phi_H}{W_{HP}} = \\frac{Q_H (1 - T_0/T_H)}{W_{HP}}}')"
                               data-latex="\eta_{2,HP} = \frac{\Phi_H}{W_{HP}} = \frac{Q_H (1 - T_0/T_H)}{W_{HP}} \quad (Eq 8.37)"
                               title="Click to copy LaTeX">
-                            <i>η</i><sub>2,HP</sub> = <span class="fraction"><span class="numerator"><i>Φ</i><sub>H</sub></span><span class="denominator"><i>W</i><sub>HP</sub></span></span> = <span class="fraction"><span class="numerator"><i>Q</i><sub>H</sub> (1 - <i>T</i>₀/<i>T</i><sub>H</sub>)</span><span class="denominator"><i>W</i><sub>HP</sub></span></span> &nbsp;&nbsp;&nbsp;(Eq 8.37)
+                             $$ \eta_{2,HP} = \frac{\Phi_H}{W_{HP}} = \frac{Q_H (1 - \frac{T_0}{T_H})}{W_{HP}} \quad (Eq 8.37) $$
                          </div>
-                         Relates to <span class="math-var">COP = QH / WHP</span>: <span class="math-var">η₂ = COP * (1 - T₀/T<sub>H</sub>)</span>.
+                         Relates to $COP = Q_H / W_{HP}$: $\eta_2 = COP \cdot (1 - T_0/T_H)$.
                      </li>
                  </ul>
              </li>
-            <li><strong>Exergy Destruction as Performance Measure:</strong> Analyzing where <span class="math-var">İ = T₀Ṡgen</span> is largest shows where the biggest losses in potential occur. E.g., large <span class="math-var">ΔT</span> between heat source and working fluid causes large <span class="math-var">İ</span>. Condensers reject lots of energy but often at low <span class="math-var">T</span> close to <span class="math-var">T₀</span>, so the *exergy* loss is small.</li>
+            <li><strong>Exergy Destruction as Performance Measure:</strong> Analyzing where $\dot{I} = T_0 \dot{S}_{gen}$ is largest shows where the biggest losses in potential occur. E.g., large $\Delta T$ between heat source and working fluid causes large $\dot{I}$. Condensers reject lots of energy but often at low $T$ close to $T_0$, so the <strong>exergy</strong> loss is small.</li>
         </ul>
 
         <p><strong>Example 8.7 (Turbine Efficiencies):</strong> [Summary]</p>
          <ul>
-             <li>Results: `η₁ ≈ 0.797`, `η₂ ≈ 0.817`.</li>
+             <li>Results: $\eta_1 \approx 0.797$, $\eta_2 \approx 0.817$.</li>
          </ul>
 
         <p><strong>Example 8.8 (Boiler - Heat Exchanger):</strong> [Summary]</p>
          <ul>
-             <li>Results: `η₂ ≈ 0.459`, `i ≈ 906.2 kJ/kg H₂O`.</li>
+             <li>Results: $\eta_2 \approx 0.459$, $i \approx 906.2 \, \text{kJ/kg H}_2\text{O}$.</li>
          </ul>
 
         <p><strong>Example 8.9 (Feedwater Heater Exergy Flows):</strong> [Summary]</p>
          <ul>
-             <li>Results: Exergy destruction `i = 62.0 kJ/kg`. Second Law efficiency `η₂ ≈ 0.67`.</li>
+             <li>Results: Exergy destruction $i = 62.0 \, \text{kJ/kg}$. Second Law efficiency $\eta_2 \approx 0.67$.</li>
          </ul>
 
         <h2>8.4 ENGINEERING APPLICATIONS</h2>
         <ul>
-            <li>Exergy analysis provides a deeper understanding than just energy analysis by accounting for the *quality* of energy and the *irreversibilities* that degrade performance.</li>
-            <li>Second Law efficiencies (<span class="math-var">η₂</span>) compare actual performance to the *theoretically best possible* given the constraints and the environment (<span class="math-var">T₀</span>), using the actual end states. First Law device efficiencies (<span class="math-var">η₁</span>) compare actual to an idealized (usually isentropic) process ending at a different state than the actual one. <span class="math-var">η₂</span> is often higher than <span class="math-var">η₁</span>.</li>
-            <li>The usefulness depends on experience – is 85% <span class="math-var">η₂</span> good? Depends on the device type and operating range.</li>
-            <li>Exergy analysis helps pinpoint *where* the largest losses (exergy destruction) occur in complex systems (like power plants), guiding efforts for improvement (e.g., minimizing <span class="math-var">ΔT</span> in heat transfer).</li>
+            <li>Exergy analysis provides a deeper understanding than just energy analysis by accounting for the <strong>quality</strong> of energy and the <strong>irreversibilities</strong> that degrade performance.</li>
+            <li>Second Law efficiencies ($\eta_2$) compare actual performance to the <strong>theoretically best possible</strong> given the constraints and the environment ($T_0$), using the actual end states. First Law device efficiencies ($\eta_1$) compare actual to an idealized (usually isentropic) process ending at a different state than the actual one. $\eta_2$ is often higher than $\eta_1$.</li>
+            <li>The usefulness depends on experience – is 85% $\eta_2$ good? Depends on the device type and operating range.</li>
+            <li>Exergy analysis helps pinpoint <strong>where</strong> the largest losses (exergy destruction) occur in complex systems (like power plants), guiding efforts for improvement (e.g., minimizing $\Delta T$ in heat transfer).</li>
         </ul>
 
         <h3>In-Text Concept Questions Explained:</h3>
         <ul>
             <li>**(a-e from Chap 7):** Covered previously.</li>
             <li><strong>f. Energy can be stored as U, PE, KE. Are those forms all 100% available?</strong>
-                <p>No. Only forms of energy that can be *fully* converted to work in a reversible process are 100% available (i.e., are pure exergy). Work (shaft, electrical) is 100% exergy. KE and PE are also forms of organized energy and can ideally be fully converted to work, so they are 100% exergy relative to a zero KE/PE reference. Internal energy (U) is associated with temperature and microscopic disorder. Its potential to do work depends on its temperature relative to <span class="math-var">T₀</span> and its entropy. Only a *part* of <span class="math-var">U</span> is available as exergy. Heat transfer is also not 100% available, as seen by the <span class="math-var">(1 - T₀/T)</span> factor.</p>
+                <p>No. Only forms of energy that can be <strong>fully</strong> converted to work in a reversible process are 100% available (i.e., are pure exergy). Work (shaft, electrical) is 100% exergy. KE and PE are also forms of organized energy and can ideally be fully converted to work, so they are 100% exergy relative to a zero KE/PE reference. Internal energy (U) is associated with temperature and microscopic disorder. Its potential to do work depends on its temperature relative to $T_0$ and its entropy. Only a <strong>part</strong> of $U$ is available as exergy. Heat transfer is also not 100% available, as seen by the $(1 - T_0/T)$ factor.</p>
             </li>
             <li><strong>g. We cannot create or destroy energy. Can we create or destroy exergy?</strong>
-                <p>We cannot create exergy (that would violate the 2nd law, requiring <span class="math-var">S<sub>gen</sub> < 0</span>). We *can* (and always do in real processes) **destroy** exergy. Exergy destruction is <span class="math-var">İ = T₀ S<sub>gen</sub></span>. Since <span class="math-var">S<sub>gen</sub> ≥ 0</span>, exergy is always decreasing or conserved (in the limit of reversible processes) for an isolated system.</p>
+                <p>We cannot create exergy (that would violate the 2nd law, requiring $S_{gen} < 0$). We <strong>can</strong> (and always do in real processes) <strong>destroy</strong> exergy. Exergy destruction is $\dot{I} = T_0 S_{gen}$. Since $S_{gen} \ge 0$, exergy is always decreasing or conserved (in the limit of reversible processes) for an isolated system.</p>
             </li>
             <li><strong>h. In a turbine, what is the source of exergy?</strong>
-                <p>The source is the <strong>flow exergy (<span class="math-var">ψᵢ</span>)</strong> of the high-pressure, high-temperature fluid entering the turbine. The turbine converts some of this flow exergy into shaft work exergy (<span class="math-var">Ẇ<sub>ac</sub></span>). Some is lost as exergy destruction (<span class="math-var">İ</span>), and the remaining flow exergy (<span class="math-var">ψₑ</span>) leaves with the exiting fluid.</p>
+                <p>The source is the <strong>flow exergy ($\psi_i$)</strong> of the high-pressure, high-temperature fluid entering the turbine. The turbine converts some of this flow exergy into shaft work exergy ($\dot{W}_{ac}$). Some is lost as exergy destruction ($\dot{I}$), and the remaining flow exergy ($\psi_e$) leaves with the exiting fluid.</p>
             </li>
             <li><strong>i. In a pump, what is the source of exergy and what gains exergy?</strong>
-                <p>The source is the <strong>shaft work input (<span class="math-var">|Ẇ<sub>ac</sub>|</span>)</strong>, which is pure exergy. The fluid <strong>gains exergy</strong> (<span class="math-var">ṁ(ψₑ - ψᵢ)</span>) as its pressure (and thus enthalpy and work potential) is increased. Some input exergy is also destroyed (<span class="math-var">İ</span>).</p>
+                <p>The source is the <strong>shaft work input ($|\dot{W}_{ac}|$)</strong>, which is pure exergy. The fluid <strong>gains exergy</strong> ($\dot{m}(\psi_e - \psi_i)$) as its pressure (and thus enthalpy and work potential) is increased. Some input exergy is also destroyed ($\dot{I}$).</p>
             </li>
             <li><strong>j. In a heat engine, what is the source of exergy?</strong>
-                <p>The source is the <strong>exergy associated with the heat transfer from the high-temperature source (<span class="math-var">Φ<sub>H</sub> = Q<sub>H</sub>(1 - T₀/T<sub>H</sub>)</span>)</strong>.</p>
+                <p>The source is the <strong>exergy associated with the heat transfer from the high-temperature source ($\Phi_H = Q_H(1 - T_0/T_H)$)</strong>.</p>
             </li>
             <li><strong>k. In a heat pump, what is the source of exergy?</strong>
-                <p>The source is the <strong>work input (<span class="math-var">W<sub>HP</sub></span>)</strong>. (Although it also utilizes low-exergy heat <span class="math-var">Q<sub>L</sub></span> from the cold reservoir).</p>
+                <p>The source is the <strong>work input ($W_{HP}$)</strong>. (Although it also utilizes low-exergy heat $Q_L$ from the cold reservoir).</p>
             </li>
             <li><strong>l. In Eq 8.36, ΦH was written for heat transfer. What if source is hot gas being cooled?</strong>
-                <p>Eq 8.36: <span class="math-var">W<sub>HE</sub> = η₂ * Φ<sub>H</sub> = η₂ * [Q<sub>H</sub> (1 - T₀/T<sub>H</sub>)]</span>.</p>
-                <p>If the source is a hot gas stream (<span class="math-var">ṁ<sub>gas</sub></span>) cooling from state 3 to state 4 to provide the energy <span class="math-var">Q̇<sub>H</sub> = ṁ<sub>gas</sub>(h₃ - h₄)</span> to the heat engine cycle, the exergy *input* is the decrease in the *flow exergy* of the gas:</p>
+                <p>Eq 8.36: $W_{HE} = \eta_2 \Phi_H = \eta_2 [Q_H (1 - T_0/T_H)]$.</p>
+                <p>If the source is a hot gas stream ($\dot{m}_{gas}$) cooling from state 3 to state 4 to provide the energy $\dot{Q}_H = \dot{m}_{gas}(h_3 - h_4)$ to the heat engine cycle, the exergy <strong>input</strong> is the decrease in the <strong>flow exergy</strong> of the gas:</p>
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{\\Phi_{source} = \\dot{m}_{gas}(\\psi_3 - \\psi_4) = \\dot{m}_{gas}[(h_3 - h_4) - T_0(s_3 - s_4)]}')""
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\Phi_{source} = \\dot{m}_{gas}(\\psi_3 - \\psi_4) = \\dot{m}_{gas}[(h_3 - h_4) - T_0(s_3 - s_4)]}')"
                       data-latex="\Phi_{source} = \dot{m}_{gas}(\psi_3 - \psi_4) = \dot{m}_{gas}[(h_3 - h_4) - T_0(s_3 - s_4)]"
                       title="Click to copy LaTeX">
-                     <i>Φ</i><sub>source</sub> = <span class="overdot"><i>m</i></span><sub>gas</sub>(<i>ψ</i>₃ - <i>ψ</i>₄) = <span class="overdot"><i>m</i></span><sub>gas</sub>[(<i>h</i>₃ - <i>h</i>₄) - <i>T</i>₀(<i>s</i>₃ - <i>s</i>₄)]
+                      $$ \Phi_{source} = \dot{m}_{gas}(\psi_3 - \psi_4) = \dot{m}_{gas}[(h_3 - h_4) - T_0(s_3 - s_4)] $$
                  </div>
                  <p>The second law efficiency would then be:</p>
                  <div class="formula-container"
-                      onclick="copyFormulaLatex(this, '\\color{white}{\\eta_2 = \\frac{W_{HE}}{\\dot{m}_{gas}(\\psi_3 - \\psi_4)}}')""
+                      onclick="copyFormulaLatex(this, '\\color{white}{\\eta_2 = \\frac{W_{HE}}{\\dot{m}_{gas}(\\psi_3 - \\psi_4)}}')"
                       data-latex="\eta_2 = \frac{W_{HE}}{\dot{m}_{gas}(\psi_3 - \psi_4)}"
                       title="Click to copy LaTeX">
-                     <i>η</i>₂ = <span class="fraction"><span class="numerator"><i>W</i><sub>HE</sub></span><span class="denominator"><span class="overdot"><i>m</i></span><sub>gas</sub>(<i>ψ</i>₃ - <i>ψ</i>₄)</span></span>
+                      $$ \eta_2 = \frac{W_{HE}}{\dot{m}_{gas}(\psi_3 - \psi_4)} $$
                  </div>
              </li>
         </ul>
@@ -678,7 +722,7 @@
      <div id="fontSizeDisplay">10px</div> <!-- Shows 10px based on JS variable -->
 
     <script>
-        // Formula Copy Function (Copies the colored LaTeX string passed as 2nd arg)
+        // Formula Copy Function
         function copyFormulaLatex(element, latexStringWithColor) {
             if (!latexStringWithColor) {
                 console.error('No LaTeX data found passed to copy function.');
@@ -704,19 +748,43 @@
             const display = document.getElementById('fontSizeDisplay');
             const htmlEl = document.documentElement;
 
-            // Configuration
-            let currentSize = 10; // Initial size set to 10px
+            let currentSize = 10; // Initial size
             const minSize = 10;
             const maxSize = 28;
             const step = 1;
             let displayTimeout = null;
+            let mathjaxTypesetTimeout = null; // For debouncing MathJax
 
-            // Function to update font size and show display
+            // Debounce function
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+
+            // Debounced MathJax typesetting function
+            const queueMathJaxTypeset = debounce(() => {
+                if (window.MathJax && MathJax.typesetPromise) {
+                    console.log("Debounced: Typesetting MathJax");
+                    MathJax.typesetPromise();
+                }
+            }, 250); // 250ms delay
+
             function updateFontSize(newSize) {
                 currentSize = Math.max(minSize, Math.min(maxSize, newSize));
                 htmlEl.style.setProperty('--base-font-size', currentSize + 'px');
                 display.textContent = currentSize + 'px';
                 display.classList.add('visible');
+
+                // Queue MathJax update after font size change
+                queueMathJaxTypeset();
+
                 if (displayTimeout) { clearTimeout(displayTimeout); }
                 displayTimeout = setTimeout(() => {
                     display.classList.remove('visible');
@@ -724,21 +792,17 @@
                 }, 1500);
             }
 
-            // Event Listeners
             if (minusBtn && plusBtn && display) {
                 minusBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    updateFontSize(currentSize - step);
+                    e.stopPropagation(); updateFontSize(currentSize - step);
                 });
                 plusBtn.addEventListener('click', (e) => {
-                     e.stopPropagation();
-                    updateFontSize(currentSize + step);
+                     e.stopPropagation(); updateFontSize(currentSize + step);
                 });
 
-                // Set initial state based on JS variable
-                 htmlEl.style.setProperty('--base-font-size', currentSize + 'px');
-                 display.textContent = currentSize + 'px'; // Update display text
-                 console.log("Font control initialized. Current size:", currentSize);
+                htmlEl.style.setProperty('--base-font-size', currentSize + 'px');
+                display.textContent = currentSize + 'px';
+                console.log("Font control initialized. Current size:", currentSize);
             } else {
                 console.error("Font control elements not found!");
             }

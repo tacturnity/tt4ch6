@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en" style="--base-font-size: 10px;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 5 Q&A</title> <!-- CHANGED TITLE -->
+
+    <!-- Google Fonts - Roboto Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+          tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true, tags: 'ams' },
+          options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'], ignoreHtmlClass: 'tex2jax_ignore', processHtmlClass: 'tex2jax_process' },
+          svg: { fontCache: 'global' },
+          startup: { ready: () => { console.log('MathJax ready.'); MathJax.startup.defaultReady(); MathJax.startup.promise.then(() => console.log('MathJax initial typeset complete.')); } }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* Basic Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* Keyframes */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Base Styles --- */
+        :root {
+            --accent-color: #F08080; /* Light Coral */
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --border-color: #555;
+            --header-bg: #2f2f2f;
+            --header-hover-bg: #3f3f3f;
+            --content-bg: #282828;
+            /* Indicator Colors */
+            --indicator-unvisited: transparent;
+            --indicator-answer: #f7dc6f;
+            --indicator-solution: #58d68d;
+            --indicator-visited-closed: var(--indicator-solution);
+            --anim-duration: 0.5s;
+            --anim-easing: cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        body {
+            font-family: 'Roboto Mono', monospace; color: var(--text-color); line-height: 1.7;
+            padding: 25px; background-color: var(--bg-color); min-height: 100vh;
+            font-size: var(--base-font-size); transition: font-size 0.2s ease-in-out;
+            padding-bottom: 80px; overflow-x: hidden;
+        }
+        body.no-font-transition { transition: none !important; }
+
+        /* Headings */
+        h1 {
+            font-size: 2.4em; color: var(--accent-color); font-weight: 700; padding-bottom: 12px;
+            margin: 1.5em auto; border-bottom: 3px solid var(--accent-color);
+            animation: fadeIn 0.8s ease-out both 0.1s; letter-spacing: -0.5px; text-align: center; max-width: 800px;
+        }
+
+        /* --- Accordion Styles --- */
+        .accordion { max-width: 900px; margin: 20px auto; }
+        .accordion-item {
+            border: 1px solid var(--border-color); border-radius: 8px;
+            overflow: hidden; margin-bottom: 25px; background-color: var(--content-bg);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .accordion-item:hover { border-color: #777; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); }
+        .accordion-header {
+            background-color: var(--header-bg); padding: 18px 25px; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: background-color 0.3s ease, border-color var(--anim-duration) var(--anim-easing);
+            border-bottom: 1px solid var(--border-color); position: relative; z-index: 2;
+        }
+        .accordion-item[data-state="collapsed"] .accordion-header { border-bottom-color: transparent; }
+        .accordion-header:hover { background-color: var(--header-hover-bg); }
+        .accordion-header h2 { margin: 0; font-size: 1.2em; color: var(--text-color); text-align: left; }
+
+        /* --- State Indicator --- */
+        .state-indicator {
+            width: 12px; height: 12px; border-radius: 50%;
+            background-color: var(--indicator-unvisited); display: inline-block; margin-left: 15px;
+            flex-shrink: 0; transition: background-color 0.3s ease; border: 1px solid var(--header-bg);
+        }
+        .accordion-item[data-state="state1"] .state-indicator { background-color: var(--indicator-answer); border-color: transparent; }
+        .accordion-item[data-state="state2"] .state-indicator { background-color: var(--indicator-solution); border-color: transparent; }
+        .accordion-item.visited[data-state="collapsed"] .state-indicator { background-color: var(--indicator-visited-closed); border-color: transparent; }
+
+
+        /* Content Area & Animations */
+        .accordion-content {
+            padding: 0 25px; max-height: 0; overflow: hidden;
+            transition: max-height var(--anim-duration) var(--anim-easing),
+                        padding-top var(--anim-duration) var(--anim-easing),
+                        padding-bottom var(--anim-duration) var(--anim-easing);
+            box-sizing: border-box; position: relative; z-index: 1;
+        }
+        .accordion-item:not([data-state="collapsed"]) .accordion-content { padding-top: 20px; }
+        .content-inner {
+            padding-bottom: 25px; opacity: 0; transform: translateY(10px);
+            transition: opacity 0.4s ease-out 0.15s, transform 0.4s ease-out 0.15s;
+        }
+        .accordion-item:not([data-state="collapsed"]) .content-inner { opacity: 1; transform: translateY(0); }
+
+        /* Content Blocks Structure & Styling */
+        .question-block, .final-answer-block, .solution-block {
+            margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed var(--border-color);
+        }
+        .content-inner > div:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .question-block strong, .final-answer-block strong, .solution-block strong {
+            color: var(--accent-color); display: block; margin-bottom: 8px; font-size: 1.1em;
+        }
+        p { margin-bottom: 1em; color: inherit; font-size: inherit; }
+        ul, ol { margin-left: 25px; margin-bottom: 1em; }
+        li { margin-bottom: 8px; font-size: inherit; }
+
+        /* Simplified Styling for MathJax containers */
+        mjx-container {
+            margin: 0.5em 0; /* Default vertical space around all rendered math */
+            text-align: left !important; /* Ensure left alignment */
+        }
+        mjx-container[display="true"] {
+             margin: 1em 0 !important; /* Slightly more vertical space for display math */
+        }
+
+
+        /* General Utility Styles */
+        .hidden { display: none !important; }
+
+        /* Footer & Font Control */
+        footer { text-align: center; margin-top: 70px; padding-bottom: 35px; font-size: 0.85em; color: #888888; animation: fadeIn 1s ease-out both 0.7s; }
+        .font-control { position: fixed; bottom: 0; left: 0; width: 100%; padding: 10px 25px; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; pointer-events: none; z-index: 10; }
+        .font-control-icon { font-size: 28px; font-weight: bold; color: #777; cursor: pointer; padding: 8px; transition: color 0.3s ease; pointer-events: auto; user-select: none; line-height: 1; display: inline-block; }
+        .font-control-icon:hover { color: var(--accent-color); }
+        #fontSizeDisplay { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); background-color: rgba(45, 45, 45, 0.9); color: #e0e0e0; padding: 6px 12px; border-radius: 5px; font-size: 13px; font-family: 'Roboto Mono', monospace; z-index: 11; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none; white-space: nowrap; }
+        #fontSizeDisplay.visible { opacity: 1; }
+
+        /* Simple Dark Theme Scrollbar for Page */
+        body::-webkit-scrollbar { width: 10px; }
+        body::-webkit-scrollbar-track { background: #2a2a2a; border-radius: 5px; }
+        body::-webkit-scrollbar-thumb { background-color: #777; border-radius: 5px; border: 2px solid #2a2a2a; background-clip: content-box; }
+        body::-webkit-scrollbar-thumb:hover { background-color: #999; }
+        html { scrollbar-width: thin; scrollbar-color: #777 #2a2a2a; }
+        @supports (scrollbar-gutter: stable) { html { scrollbar-gutter: stable; } }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Chapter 5 Q&A</h1> <!-- Updated Title -->
+    </header>
+
+    <div class="accordion">
+
+        <!-- Question 1 -->
+        <div class="accordion-item" data-state="collapsed">
+            <div class="accordion-header">
+                <h2>Question 1: Air Conditioner Performance</h2>
+                <span class="state-indicator" title="Status Indicator"></span>
+            </div>
+            <div class="accordion-content">
+                <div class="content-inner">
+                    <div class="question-block">
+                        <strong>Question:</strong>
+                        <p>
+                            A window air conditioner, as shown in the figure, rejects $6.2$ kW of heat ($\dot{Q}_H$) to the ambient surroundings while consuming $1.8$ kW of electrical power ($\dot{W}_{in}$). Determine the rate of cooling provided to the cool space ($\dot{Q}_L$) and the Coefficient of Performance (COP) of the air conditioner.
+                        </p>
+                    </div>
+                    <div class="final-answer-block hidden">
+                        <strong>Final Answer:</strong>
+                        <ul>
+                           <li>Rate of cooling ($\dot{Q}_L$) = $4.4$ kW</li>
+                           <li>Coefficient of Performance (COP) = $2.44$</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block hidden">
+                        <strong>Full Solution:</strong>
+                        <p><strong>1. Energy Balance:</strong></p>
+                        <p>An air conditioner (refrigerator) is a cyclic device. Applying the first law (energy balance) for a cycle operating in steady state: Energy In = Energy Out.</p>
+                        <ul>
+                            <li>Energy inputs: $\dot{W}_{in}$ and $\dot{Q}_L$.</li>
+                            <li>Energy output: $\dot{Q}_H$.</li>
+                        </ul>
+                        $$ \dot{W}_{in} + \dot{Q}_L = \dot{Q}_H $$
+                        <p><strong>2. Calculate Rate of Cooling ($\dot{Q}_L$):</strong></p>
+                        <ul>
+                            <li>Given: $\dot{W}_{in} = 1.8$ kW, $\dot{Q}_H = 6.2$ kW</li>
+                        </ul>
+                        $$ \dot{Q}_L = \dot{Q}_H - \dot{W}_{in} $$
+                        $$ \dot{Q}_L = 6.2 \text{ kW} - 1.8 \text{ kW} = 4.4 \text{ kW} $$
+                        <p><strong>3. Calculate Coefficient of Performance (COP):</strong></p>
+                        <p>COP for a refrigerator (air conditioner) is defined as desired output (cooling) divided by required input (work).</p>
+                        $$ COP_R = \frac{\dot{Q}_L}{\dot{W}_{in}} $$
+                        $$ COP_R = \frac{4.4 \text{ kW}}{1.8 \text{ kW}} = 2.444... \approx 2.44 $$
+                        <p><strong>Table Values Used:</strong> None needed.</p>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- End Question 1 -->
+
+        <!-- Question 2 -->
+        <div class="accordion-item" data-state="collapsed">
+            <div class="accordion-header">
+                <h2>Question 2: Heat Pump Minimum COP</h2>
+                <span class="state-indicator" title="Status Indicator"></span>
+            </div>
+            <div class="accordion-content">
+                <div class="content-inner">
+                    <div class="question-block">
+                        <strong>Question:</strong>
+                        <p>
+                            A heat pump driven by a $1.5$ kW motor is used to maintain a chicken hatchery at $35$°C. The hatchery loses heat to the colder ambient surroundings at a rate of $9$ kW. What is the minimum Coefficient of Performance (COP) that the heat pump must have to meet the heating requirement?
+                        </p>
+                    </div>
+                    <div class="final-answer-block hidden">
+                        <strong>Final Answer:</strong>
+                        <p>
+                            The minimum acceptable COP is $6.0$.
+                        </p>
+                    </div>
+                    <div class="solution-block hidden">
+                        <strong>Full Solution:</strong>
+                        <p><strong>1. Identify Needs:</strong> The heat pump must supply heat ($\dot{Q}_H$) equal to the heat loss.</p>
+                        <ul><li>Required $\dot{Q}_H = 9$ kW</li></ul>
+                        <p><strong>2. Identify Input:</strong> Assuming motor power is work input to the cycle:</p>
+                        <ul><li>$\dot{W}_{in} = 1.5$ kW</li></ul>
+                        <p><strong>3. Calculate Minimum COP:</strong></p>
+                        <p>COP of a heat pump: $COP_{HP} = \dot{Q}_H / \dot{W}_{in}$. The minimum acceptable COP is the one required to achieve the necessary heating rate with the available work input.</p>
+                        $$ \text{Minimum Acceptable } COP_{HP} = \frac{\text{Required } \dot{Q}_H}{\text{Available } \dot{W}_{in}} $$
+                        $$ \text{Minimum } COP_{HP} = \frac{9 \text{ kW}}{1.5 \text{ kW}} = 6.0 $$
+                        <p><strong>Table Values Used:</strong> None needed.</p>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- End Question 2 -->
+
+        <!-- Question 3 -->
+        <div class="accordion-item" data-state="collapsed">
+            <div class="accordion-header">
+                <h2>Question 3: Diesel Engine Exhaust Flow</h2>
+                <span class="state-indicator" title="Status Indicator"></span>
+            </div>
+            <div class="accordion-content">
+                <div class="content-inner">
+                    <div class="question-block">
+                        <strong>Question:</strong>
+                        <p>
+                            A large stationary diesel engine produces $15$ MW of power with a thermal efficiency of $40\%$. The exhaust gas, assumed to be air, exits the engine at $800$ K. The intake air is at $290$ K. Assuming the heat rejection occurs solely through the cooling of the exhaust gas down to the intake temperature, calculate the mass flow rate of the exhaust gas. Additionally, comment on the potential usability of the exhaust flow energy.
+                        </p>
+                    </div>
+                    <div class="final-answer-block hidden">
+                        <strong>Final Answer:</strong>
+                        <ul>
+                           <li>Mass flow rate $\dot{m} \approx 42.3$ kg/s.</li>
+                           <li>Yes, the exhaust flow energy can be used (high temperature).</li>
+                        </ul>
+                    </div>
+                    <div class="solution-block hidden">
+                        <strong>Full Solution:</strong>
+                        <p><strong>1. Engine Performance:</strong></p>
+                        <ul>
+                            <li>$\dot{W}_{out} = 15$ MW $= 15000$ kW</li>
+                            <li>$\eta_{th} = 40\% = 0.40$</li>
+                        </ul>
+                        <p><strong>2. Calculate Heat Input ($\dot{Q}_H$):</strong></p>
+                        $$ \eta_{th} = \frac{\dot{W}_{out}}{\dot{Q}_H} \implies \dot{Q}_H = \frac{\dot{W}_{out}}{\eta_{th}} $$
+                        $$ \dot{Q}_H = \frac{15 \text{ MW}}{0.40} = 37.5 \text{ MW} = 37500 \text{ kW} $$
+                        <p><strong>3. Calculate Heat Rejected ($\dot{Q}_L$):</strong></p>
+                        $$ \dot{Q}_H = \dot{W}_{out} + \dot{Q}_L \implies \dot{Q}_L = \dot{Q}_H - \dot{W}_{out} $$
+                        $$ \dot{Q}_L = 37.5 \text{ MW} - 15 \text{ MW} = 22.5 \text{ MW} = 22500 \text{ kW} $$
+                        <p><strong>4. Relate Heat Rejection to Exhaust Cooling:</strong></p>
+                        <p>Assume $\dot{Q}_L$ is entirely due to exhaust cooling from $T_{exhaust}=800$ K to $T_{intake}=290$ K.</p>
+                        $$ \dot{Q}_L = \dot{m} (h_{exhaust} - h_{intake}) $$
+                        <p><strong>5. Get Enthalpy Values (Table A.7.1, Air):</strong></p>
+                        <ul>
+                            <li>$h(800 \text{ K}) = 822.20$ kJ/kg</li>
+                            <li>$h(290 \text{ K}) = 290.43$ kJ/kg</li>
+                        </ul>
+                        <p><strong>6. Calculate Mass Flow Rate ($\dot{m}$):</strong></p>
+                        $$ \dot{m} = \frac{\dot{Q}_L}{h_{exhaust} - h_{intake}} $$
+                        $$ \dot{m} = \frac{22500 \text{ kW}}{(822.20 - 290.43) \text{ kJ/kg}} = \frac{22500}{531.77} \frac{\text{kJ/s}}{\text{kJ/kg}} $$
+                        $$ \dot{m} = 42.31 \text{ kg/s} \approx 42.3 \text{ kg/s} $$
+                        <p><strong>7. Usability of Exhaust Energy:</strong></p>
+                        <p>Yes. The exhaust gas at $800$ K is significantly hotter than the ambient, containing substantial thermal energy (high enthalpy) that represents a potential for further work extraction (e.g., bottoming cycle) or for heating purposes.</p>
+                        <p><strong>Table Values Used Summary:</strong> A.7.1 (Air enthalpies).</p>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- End Question 3 -->
+
+        <!-- Question 4 -->
+        <div class="accordion-item" data-state="collapsed">
+             <div class="accordion-header">
+                 <h2>Question 4: Heat Pump Minimum Power</h2>
+                 <span class="state-indicator" title="Status Indicator"></span>
+             </div>
+             <div class="accordion-content">
+                 <div class="content-inner">
+                     <div class="question-block">
+                         <strong>Question:</strong>
+                         <p>
+                            A large heat pump is required to "upgrade" $5$ MW of heat available at $85$°C to be delivered as useful heating at $150$°C. What is the minimum theoretical power input required to drive this heat pump?
+                         </p>
+                     </div>
+                     <div class="final-answer-block hidden">
+                         <strong>Final Answer:</strong>
+                         <p>
+                             The minimum power input is $0.907$ MW (or $907$ kW).
+                         </p>
+                     </div>
+                     <div class="solution-block hidden">
+                         <strong>Full Solution:</strong>
+                         <p><strong>1. Identify Process & Temperatures:</strong> Heat pump transferring heat $Q_L$ from $T_L$ to $T_H$.</p>
+                         <ul>
+                             <li>Low-temperature source: $T_L = 85$°C $= 358.15$ K</li>
+                             <li>High-temperature sink (delivery): $T_H = 150$°C $= 423.15$ K</li>
+                         </ul>
+                         <p><strong>2. Heat Flow:</strong> "Upgrade 5 MW of heat *at* 85°C" implies the heat *extracted* from the source is $5$ MW.</p>
+                         <ul><li>$\dot{Q}_L = 5$ MW</li></ul>
+                         <p><strong>3. Minimum Work (Reversible Cycle):</strong> Corresponds to a Carnot heat pump operating between $T_L$ and $T_H$.</p>
+                         <p>The Coefficient of Performance for the equivalent reversible *refrigerator* operating between these temperatures is:</p>
+                         $$ COP_{R,rev} = \frac{T_L}{T_H - T_L} = \frac{358.15 \text{ K}}{(423.15 - 358.15) \text{ K}} = \frac{358.15}{65.0} = 5.51 $$
+                         <p><strong>4. Calculate Minimum Work Input ($\dot{W}_{in,min}$):</strong></p>
+                         <p>The definition of refrigerator COP relates the heat removed from the cold space ($\dot{Q}_L$) to the work input ($\dot{W}_{in}$). For the minimum work (reversible case):</p>
+                         $$ COP_{R,rev} = \frac{\dot{Q}_L}{\dot{W}_{in,min}} $$
+                         $$ \dot{W}_{in,min} = \frac{\dot{Q}_L}{COP_{R,rev}} $$
+                         $$ \dot{W}_{in,min} = \frac{5 \text{ MW}}{5.51} = 0.9074 \text{ MW} \approx 0.907 \text{ MW} $$
+                         <p><strong>Table Values Used:</strong> None needed.</p>
+                     </div>
+                 </div>
+             </div>
+         </div> <!-- End Question 4 -->
+
+         <!-- Question 5 -->
+         <div class="accordion-item" data-state="collapsed">
+             <div class="accordion-header">
+                 <h2>Question 5: Thermal Storage & Heat Engine</h2>
+                 <span class="state-indicator" title="Status Indicator"></span>
+             </div>
+             <div class="accordion-content">
+                 <div class="content-inner">
+                     <div class="question-block">
+                         <strong>Question:</strong>
+                         <p>
+                             A thermal storage system uses a $2$ m³ bed of granite rock. The rock bed is heated to $400$ K using solar energy. A heat engine operates using the rock bed as the high-temperature source ($\dot{Q}_H$) and rejects heat ($\dot{Q}_L$) to the ambient environment at $290$ K. As the engine operates, the rock bed cools down, and the process stops when the rock bed reaches $290$ K. Determine: <br>
+                             a) The total energy (heat) the rock bed can supply to the heat engine. <br>
+                             b) The heat engine efficiency at the beginning of the process (when rock is $400$ K). <br>
+                             c) The heat engine efficiency at the end of the process (when rock is $290$ K).
+                         </p>
+                     </div>
+                     <div class="final-answer-block hidden">
+                         <strong>Final Answer:</strong>
+                         <p>
+                             a) Total Energy supplied $Q_{H,total} \approx 538$ MJ. <br>
+                             b) Initial Efficiency $\eta_{initial} \approx 27.5\%$. <br>
+                             c) Final Efficiency $\eta_{final} = 0\%$.
+                         </p>
+                     </div>
+                     <div class="solution-block hidden">
+                         <strong>Full Solution:</strong>
+                         <p><strong>1. Rock Bed Properties:</strong></p>
+                         <ul>
+                             <li>Volume $V = 2$ m³</li>
+                             <li>Density $\rho \approx 2750$ kg/m³ (Table A.3)</li>
+                             <li>Specific Heat $C_p \approx 0.89$ kJ/kg-K (Table A.3)</li>
+                             <li>Mass $m = \rho V = 2750 \times 2 = 5500$ kg</li>
+                         </ul>
+                         <p><strong>2. Temperatures:</strong></p>
+                         <ul>
+                             <li>Initial rock temp $T_{H,initial} = 400$ K</li>
+                             <li>Final rock temp $T_{H,final} = 290$ K</li>
+                             <li>Ambient (low temp sink) $T_L = 290$ K</li>
+                         </ul>
+                         <p><strong>3. Total Energy Supplied ($Q_{H,total}$):</strong></p>
+                         <p>Heat transferred *from* the rock bed as it cools.</p>
+                         $$ Q_{H,total} = m C_p (T_{H,initial} - T_{H,final}) $$
+                         $$ Q_{H,total} = 5500 \text{ kg} \times 0.89 \frac{\text{kJ}}{\text{kg-K}} \times (400 - 290) \text{ K} $$
+                         $$ Q_{H,total} = 4895 \times 110 = 538450 \text{ kJ} \approx 538 \text{ MJ} $$
+                         <p><strong>4. Initial Heat Engine Efficiency ($\eta_{initial}$):</strong></p>
+                         <p>Maximum possible (Carnot) efficiency uses instantaneous source temperature $T_H$. At the beginning, $T_H = T_{H,initial} = 400$ K.</p>
+                         $$ \eta_{initial} = 1 - \frac{T_L}{T_{H,initial}} = 1 - \frac{290 \text{ K}}{400 \text{ K}} = 1 - 0.725 = 0.275 = 27.5\% $$
+                         <p><strong>5. Final Heat Engine Efficiency ($\eta_{final}$):</strong></p>
+                          <p>At the end, $T_H = T_{H,final} = 290$ K.</p>
+                         $$ \eta_{final} = 1 - \frac{T_L}{T_{H,final}} = 1 - \frac{290 \text{ K}}{290 \text{ K}} = 1 - 1 = 0 = 0\% $$
+                         <p><strong>Table Values Used Summary:</strong> A.3 (Granite density and Cp).</p>
+                     </div>
+                 </div>
+             </div>
+         </div> <!-- End Question 5 -->
+
+         <!-- Question 6 -->
+         <div class="accordion-item" data-state="collapsed">
+              <div class="accordion-header">
+                  <h2>Question 6: R-134a Cooling and Freezer Work</h2>
+                  <span class="state-indicator" title="Status Indicator"></span>
+              </div>
+              <div class="accordion-content">
+                  <div class="content-inner">
+                      <div class="question-block">
+                          <strong>Question:</strong>
+                          <p>
+                              A steel bottle with a volume $V = 0.1$ m³ contains R-134a initially at $T_1 = 20$°C and $P_1 = 200$ kPa. The bottle is placed inside a deep freezer where it cools down to $T_2 = -20$°C. The freezer operates within a room where the ambient temperature is $T_{amb} = 20$°C, and the freezer maintains an inside temperature of $T_{frez} = -20$°C. Find: <br>
+                              a) The amount of energy (heat $Q_L$) that must be removed from the R-134a. <br>
+                              b) The minimum amount of work input ($W_{min}$) required for the freezer to accomplish this cooling process. <br>
+                              State any assumptions clearly.
+                          </p>
+                      </div>
+                      <div class="final-answer-block hidden">
+                          <strong>Final Answer:</strong>
+                          <p>
+                              a) Heat removed from R-134a, $Q_L \approx 62.3$ kJ. <br>
+                              b) Minimum work input to freezer, $W_{min} \approx 9.84$ kJ.
+                          </p>
+                      </div>
+                      <div class="solution-block hidden">
+                          <strong>Full Solution:</strong>
+                          <p><strong>Assumptions:</strong></p>
+                          <ul>
+                              <li>R-134a is the system undergoing a constant volume process.</li>
+                              <li>Freezer operates as a cyclic device between $T_{frez}$ and $T_{amb}$.</li>
+                              <li>Minimum work corresponds to a reversible (Carnot) refrigeration cycle.</li>
+                          </ul>
+                          <p><strong>1. Initial State (State 1):</strong></p>
+                          <ul>
+                              <li>$T_1 = 20$°C, $P_1 = 200$ kPa. State is superheated vapor (Table B.5.2).</li>
+                              <li>$v_1 = 0.11436$ m³/kg, $u_1 = 395.27$ kJ/kg.</li>
+                          </ul>
+                          <p><strong>2. Calculate Mass (m):</strong></p>
+                          $$ m = \frac{V}{v_1} = \frac{0.1 \text{ m³}}{0.11436 \text{ m³/kg}} = 0.8744 \text{ kg} $$
+                          <p><strong>3. Final State (State 2):</strong></p>
+                          <ul>
+                              <li>$T_2 = -20$°C, $v_2 = v_1 = 0.11436$ m³/kg.</li>
+                              <li>Check Table B.5.1 at -20°C: $v_f = 0.000738$, $v_g = 0.14649$. Since $v_f < v_2 < v_g$, state 2 is saturated mixture.</li>
+                          </ul>
+                           <p><strong>4. Calculate Quality ($x_2$) and Internal Energy ($u_2$):</strong></p>
+                           <ul>
+                              <li>$v_{fg} = v_g - v_f = 0.14649 - 0.000738 = 0.145752$ m³/kg</li>
+                              <li>$u_{fg} = 192.85$ kJ/kg (from table)</li>
+                           </ul>
+                           $$ x_2 = \frac{v_2 - v_f}{v_{fg}} = \frac{0.11436 - 0.000738}{0.145752} = \frac{0.113622}{0.145752} = 0.77956 $$
+                           $$ u_2 = u_f + x_2 u_{fg} = 173.65 + 0.77956 \times 192.85 = 173.65 + 150.39 = 324.04 \text{ kJ/kg} $$
+                           <p><strong>5. Calculate Heat Removed from R-134a ($Q_L$):</strong></p>
+                           <p>First Law for R-134a (constant volume, W=0): $Q_{out} = U_1 - U_2 = m(u_1 - u_2)$.</p>
+                           $$ Q_L = Q_{out} = 0.8744 \text{ kg} \times (395.27 - 324.04) \frac{\text{kJ}}{\text{kg}} $$
+                           $$ Q_L = 0.8744 \times 71.23 = 62.27 \text{ kJ} \approx 62.3 \text{ kJ} $$
+                           <p><strong>6. Calculate Minimum Freezer Work ($W_{min}$):</strong></p>
+                           <ul>
+                              <li>Freezer removes $Q_L = 62.27$ kJ.</li>
+                              <li>$T_L = T_{frez} = -20$°C $= 253.15$ K</li>
+                              <li>$T_H = T_{amb} = 20$°C $= 293.15$ K</li>
+                           </ul>
+                           <p>Minimum work for a reversible refrigerator (Carnot):</p>
+                           $$ COP_{R,rev} = \frac{T_L}{T_H - T_L} = \frac{253.15}{293.15 - 253.15} = \frac{253.15}{40.0} = 6.32875 $$
+                           $$ W_{min} = \frac{Q_L}{COP_{R,rev}} = \frac{62.27 \text{ kJ}}{6.32875} = 9.839 \text{ kJ} \approx 9.84 \text{ kJ} $$
+                           <p><strong>Table Values Used Summary:</strong> B.5.1, B.5.2 (R-134a).</p>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 6 -->
+
+          <!-- Question 7 -->
+          <div class="accordion-item" data-state="collapsed">
+              <div class="accordion-header">
+                  <h2>Question 7: Air Carnot Cycle Performance</h2>
+                  <span class="state-indicator" title="Status Indicator"></span>
+              </div>
+              <div class="accordion-content">
+                  <div class="content-inner">
+                      <div class="question-block">
+                          <strong>Question:</strong>
+                          <p>
+                              An ideal gas Carnot cycle using air in a piston-cylinder has a high temperature of $T_H = 1200$ K and rejects heat at a low temperature of $T_L = 400$ K. During the isothermal heat addition process (1->2), the volume triples ($V_2 = 3V_1$). Find the specific heat added ($q_H$), the specific heat rejected ($q_L$), and the overall cycle efficiency ($\eta_{th}$).
+                          </p>
+                      </div>
+                      <div class="final-answer-block hidden">
+                          <strong>Final Answer:</strong>
+                          <ul>
+                              <li>$\eta_{th} = 66.7\%$</li>
+                              <li>$q_H \approx 378.4$ kJ/kg</li>
+                              <li>$|q_L| \approx 126.1$ kJ/kg (magnitude of heat rejected)</li>
+                          </ul>
+                      </div>
+                      <div class="solution-block hidden">
+                          <strong>Full Solution:</strong>
+                          <p><strong>1. Cycle Efficiency:</strong></p>
+                          <p>Carnot efficiency depends only on absolute temperatures:</p>
+                          $$ \eta_{th} = 1 - \frac{T_L}{T_H} = 1 - \frac{400 \text{ K}}{1200 \text{ K}} = 1 - \frac{1}{3} = \frac{2}{3} \approx 0.6667 = 66.7\% $$
+                          <p><strong>2. Specific Heat Added ($q_H$):</strong></p>
+                          <p>Occurs during reversible isothermal expansion 1->2 at $T_H$. For ideal gas, $Q=W$ for isothermal process.</p>
+                          $$ q_H = w_{12} = \int_1^2 P dv = \int_1^2 \frac{RT_H}{v} dv = R T_H \ln(\frac{v_2}{v_1}) $$
+                          <p>Given $V_2 = 3V_1$, so $v_2 = 3v_1$. Use $R_{air} = 0.287$ kJ/kg-K (Table A.5).</p>
+                          $$ q_H = 0.287 \frac{\text{kJ}}{\text{kg-K}} \times 1200 \text{ K} \times \ln(3) $$
+                          $$ q_H = 344.4 \times 1.0986 = 378.38 \frac{\text{kJ}}{\text{kg}} \approx 378.4 \frac{\text{kJ}}{\text{kg}} $$
+                          <p><strong>3. Specific Heat Rejected ($q_L$):</strong></p>
+                           <p>Occurs during reversible isothermal compression 3->4 at $T_L$. For ideal gas Carnot cycle, $v_2/v_1 = v_3/v_4$.</p>
+                          $$ |q_L| = w_{34} = R T_L \ln(\frac{v_3}{v_4}) = R T_L \ln(\frac{v_2}{v_1}) $$
+                          $$ |q_L| = 0.287 \frac{\text{kJ}}{\text{kg-K}} \times 400 \text{ K} \times \ln(3) $$
+                          $$ |q_L| = 114.8 \times 1.0986 = 126.12 \frac{\text{kJ}}{\text{kg}} \approx 126.1 \frac{\text{kJ}}{\text{kg}} $$
+                          <p><strong>4. Check using Efficiency:</strong></p>
+                          $$ \eta_{th} = \frac{W_{net}}{q_H} = \frac{q_H - |q_L|}{q_H} = \frac{378.38 - 126.12}{378.38} = \frac{252.26}{378.38} = 0.6666... $$
+                          <p>Matches efficiency calculated from temperatures.</p>
+                          <p><strong>Table Values Used Summary:</strong> A.5 (R for Air).</p>
+                      </div>
+                  </div>
+              </div>
+          </div> <!-- End Question 7 -->
+
+          <!-- Question 8 -->
+          <div class="accordion-item" data-state="collapsed">
+              <div class="accordion-header">
+                  <h2>Question 8: Cycle Possibility Check</h2>
+                  <span class="state-indicator" title="Status Indicator"></span>
+              </div>
+              <div class="accordion-content">
+                  <div class="content-inner">
+                      <div class="question-block">
+                          <strong>Question:</strong>
+                          <p>
+                              A cyclic machine receives $\dot{Q}_H = 6$ kW of heat from a reservoir at $T_H = 1000$ K and rejects $\dot{Q}_L = 125$ kJ? (*Assume Q_L=1.25kW based on W*) **Wait, the units are inconsistent. Let's assume Q_L = 1.25 kW** of heat to a reservoir at $T_L = 400$ K. The cycle produces $\dot{W}_{out} = 2$ kW? (*Assume W=2kW based on Q_H=6, Q_L=4?*) **Let's use the values given explicitly in part (a) from the source text: Q̇_H = 6 kW, Q̇_L = 4 kW, Ẇ = 2 kW.**
+                              <br>
+                              A cyclic machine receives $\dot{Q}_H = 6$ kW from a reservoir at $T_H = 1000$ K and rejects $\dot{Q}_L = 4$ kW to a reservoir at $T_L = 400$ K. The cycle produces $\dot{W}_{out} = 2$ kW of work output. Determine if this cycle is reversible, irreversible, or impossible.
+                              **(Original parts b, c, d omitted as only part a is relevant to the question text provided)**
+                          </p>
+                      </div>
+                      <div class="final-answer-block hidden">
+                          <strong>Final Answer:</strong>
+                          <p>
+                              The cycle is **Irreversible** (but possible).
+                          </p>
+                      </div>
+                      <div class="solution-block hidden">
+                          <strong>Full Solution:</strong>
+                          <p><strong>1. Check First Law (Energy Conservation):</strong></p>
+                           <ul><li>Given: $\dot{Q}_H = 6$ kW, $\dot{Q}_L = 4$ kW (heat rejected), $\dot{W} = 2$ kW (output).</li></ul>
+                           <p>For a cycle: $\dot{Q}_H = \dot{W} + \dot{Q}_L$.</p>
+                           <p>Check: $6 \text{ kW} = 2 \text{ kW} + 4 \text{ kW} \implies 6 \text{ kW} = 6 \text{ kW}$. **Satisfied.**</p>
+                           <p><strong>2. Check Second Law (Clausius Inequality):</strong></p>
+                           <p>For any cycle: $\oint (\frac{\delta Q}{T})_b \le 0$. For this cycle:</p>
+                           $$ \frac{\dot{Q}_H}{T_H} - \frac{|\dot{Q}_L|}{T_L} \le 0 $$
+                           <ul>
+                              <li>$T_H = 1000$ K</li>
+                              <li>$T_L = 400$ K</li>
+                           </ul>
+                           $$ \frac{6 \text{ kW}}{1000 \text{ K}} - \frac{4 \text{ kW}}{400 \text{ K}} = 0.006 - 0.01 = -0.004 \frac{\text{kW}}{\text{K}} $$
+                           <p>Since $-0.004 < 0$, the Clausius Inequality is **satisfied**. The cycle is possible.</p>
+                           <p><strong>3. Determine Reversibility:</strong></p>
+                           <p>If the cycle were reversible, the Clausius sum would be exactly zero. Since it is less than zero ($-0.004$), the cycle is **Irreversible**.</p>
+                           <p>(Alternatively, compare efficiency: $\eta = \dot{W} / \dot{Q}_H = 2/6 = 1/3 \approx 33.3\%$. $\eta_{Carnot} = 1 - T_L/T_H = 1 - 400/1000 = 0.6 = 60\%$. Since $\eta < \eta_{Carnot}$, the cycle is possible and irreversible).</p>
+                           <p><strong>Table Values Used:</strong> None needed.</p>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 8 -->
+
+           <!-- Question 9 -->
+           <div class="accordion-item" data-state="collapsed">
+               <div class="accordion-header">
+                   <h2>Question 9: Engine Driven Air Conditioner</h2>
+                   <span class="state-indicator" title="Status Indicator"></span>
+               </div>
+               <div class="accordion-content">
+                   <div class="content-inner">
+                       <div class="question-block">
+                           <strong>Question:</strong>
+                           <p>
+                               A car engine with $\eta_{eng} = 33\%$ drives an air conditioner (A/C) unit. On a day when the outside air (ambient) is at $35$°C, the A/C takes this air, cools it to $5$°C, and delivers it to a duct. The A/C unit requires $\dot{W}_{in} = 2$ kW of power input. The A/C's actual COP is half the COP of a corresponding Carnot refrigeration unit operating between the outside air temperature and the cooled air temperature. Find: <br>
+                               a) The extra rate of fuel energy ($\dot{Q}_{fuel,extra}$) consumed by the engine just to drive the A/C. <br>
+                               b) The actual COP of the A/C unit. <br>
+                               c) The mass flow rate ($\dot{m}_{air}$) of cold air the A/C unit provides.
+                           </p>
+                       </div>
+                       <div class="final-answer-block hidden">
+                           <strong>Final Answer:</strong>
+                           <p>
+                               a) $\dot{Q}_{fuel,extra} \approx 6.06$ kW. <br>
+                               b) $COP_{actual} \approx 4.64$. <br>
+                               c) $\dot{m}_{air} \approx 0.308$ kg/s.
+                           </p>
+                       </div>
+                       <div class="solution-block hidden">
+                           <strong>Full Solution:</strong>
+                           <p><strong>1. Temperatures:</strong></p>
+                           <ul>
+                              <li>Outside air / High Temp for A/C: $T_H = 35$°C $= 308.15$ K</li>
+                              <li>Cooled air / Low Temp for A/C: $T_L = 5$°C $= 278.15$ K</li>
+                           </ul>
+                           <p><strong>2. A/C Performance:</strong></p>
+                           <ul><li>Work input: $\dot{W}_{in} = 2$ kW</li></ul>
+                           <p>Carnot COP (Refrigerator):</p>
+                           $$ COP_{R,Carnot} = \frac{T_L}{T_H - T_L} = \frac{278.15 \text{ K}}{(308.15 - 278.15) \text{ K}} = \frac{278.15}{30} = 9.2717 $$
+                           <p>Actual COP:</p>
+                           $$ COP_{actual} = 0.5 \times COP_{R,Carnot} = 0.5 \times 9.2717 = 4.63585 \approx 4.64 $$
+                           <p><strong>3. Rate of Cooling ($\dot{Q}_L$):</strong></p>
+                           $$ COP_{actual} = \frac{\dot{Q}_L}{\dot{W}_{in}} \implies \dot{Q}_L = COP_{actual} \times \dot{W}_{in} $$
+                           $$ \dot{Q}_L = 4.63585 \times 2 \text{ kW} = 9.2717 \text{ kW} \approx 9.27 \text{ kW} $$
+                           <p><strong>4. Extra Fuel Consumption:</strong></p>
+                           $$ \eta_{eng} = \frac{\dot{W}_{in}}{\dot{Q}_{fuel,extra}} \implies \dot{Q}_{fuel,extra} = \frac{\dot{W}_{in}}{\eta_{eng}} $$
+                           $$ \dot{Q}_{fuel,extra} = \frac{2 \text{ kW}}{0.33} = 6.0606 \text{ kW} \approx 6.06 \text{ kW} $$
+                           <p><strong>5. Mass Flow Rate of Cooled Air:</strong></p>
+                           <p>The cooling load $\dot{Q}_L$ cools the air stream from $T_H$ to $T_L$. Use $C_p = 1.004$ kJ/kg-K (Table A.5).</p>
+                           $$ \dot{Q}_L = \dot{m}_{air} C_p (T_H - T_L) \implies \dot{m}_{air} = \frac{\dot{Q}_L}{C_p (T_H - T_L)} $$
+                           $$ \dot{m}_{air} = \frac{9.2717 \text{ kW}}{1.004 \frac{\text{kJ}}{\text{kg-K}} \times (35 - 5) \text{ K}} $$
+                           $$ \dot{m}_{air} = \frac{9.2717}{1.004 \times 30} = \frac{9.2717}{30.12} = 0.3078 \frac{\text{kg}}{\text{s}} \approx 0.308 \frac{\text{kg}}{\text{s}} $$
+                           <p><strong>Table Values Used Summary:</strong> A.5 (Cp for Air).</p>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 9 -->
+
+           <!-- Question 10 -->
+           <div class="accordion-item" data-state="collapsed">
+               <div class="accordion-header">
+                   <h2>Question 10: Ocean Thermal Power Plant</h2>
+                   <span class="state-indicator" title="Status Indicator"></span>
+               </div>
+               <div class="accordion-content">
+                   <div class="content-inner">
+                       <div class="question-block">
+                           <strong>Question:</strong>
+                           <p>
+                               An ocean thermal power plant operates using warm surface water at $20$°C as the high-temperature source and cold deep water at $5$°C as the low-temperature sink. <br>
+                               a) What is the maximum possible thermal efficiency? <br>
+                               b) If the plant produces a total power output of $5$ MW, what is the minimum rate at which energy must be extracted from the warm surface water ($\dot{Q}_H$)?
+                           </p>
+                       </div>
+                       <div class="final-answer-block hidden">
+                           <strong>Final Answer:</strong>
+                           <p>
+                               a) Maximum Efficiency $\eta_{max} = 5.12\%$. <br>
+                               b) Minimum Heat Extraction Rate $\dot{Q}_{H,min} \approx 97.7$ MW.
+                           </p>
+                       </div>
+                       <div class="solution-block hidden">
+                           <strong>Full Solution:</strong>
+                           <p><strong>1. Temperatures:</strong></p>
+                           <ul>
+                               <li>High-temperature source: $T_H = 20$°C $= 293.15$ K</li>
+                               <li>Low-temperature sink: $T_L = 5$°C $= 278.15$ K</li>
+                           </ul>
+                           <p><strong>2. Maximum Efficiency (Carnot):</strong></p>
+                           $$ \eta_{max} = \eta_{Carnot} = 1 - \frac{T_L}{T_H} = 1 - \frac{278.15 \text{ K}}{293.15 \text{ K}} $$
+                           $$ \eta_{max} = 1 - 0.94883 = 0.05117 \approx 5.12\% $$
+                           <p><strong>3. Minimum Heat Input ($\dot{Q}_{H,min}$):</strong></p>
+                           <ul><li>Power output $\dot{W}_{out} = 5$ MW.</li></ul>
+                           <p>For maximum efficiency, $\eta_{max} = \dot{W}_{out} / \dot{Q}_{H,min}$.</p>
+                           $$ \dot{Q}_{H,min} = \frac{\dot{W}_{out}}{\eta_{max}} = \frac{5 \text{ MW}}{0.05117} $$
+                           $$ \dot{Q}_{H,min} = 97.71 \text{ MW} \approx 97.7 \text{ MW} $$
+                           <p><strong>Table Values Used:</strong> None needed.</p>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 10 -->
+
+           <!-- Question 11 -->
+           <div class="accordion-item" data-state="collapsed">
+                <div class="accordion-header">
+                    <h2>Question 11: A/C Maximum Ambient Temperature</h2>
+                    <span class="state-indicator" title="Status Indicator"></span>
+                </div>
+                <div class="accordion-content">
+                    <div class="content-inner">
+                        <div class="question-block">
+                            <strong>Question:</strong>
+                            <p>
+                                An air conditioner maintains a house at $T_L = 20$°C using a maximum power input of $\dot{W}_{in,max} = 1.2$ kW. The house gains heat from the ambient surroundings at a rate of $\dot{Q}_{gain} = 0.6 \frac{\text{kW}}{\text{K}} \times (T_H - T_L)$, where $T_H$ is the outside ambient temperature. The actual COP of the air conditioner is $0.6$ times the theoretical maximum (Carnot) COP. Find the maximum outside temperature ($T_H$) for which the air conditioner can maintain the house at $20$°C.
+                            </p>
+                        </div>
+                        <div class="final-answer-block hidden">
+                            <strong>Final Answer:</strong>
+                            <p>
+                                The maximum outside temperature is $T_H \approx 38.8$ °C ($311.9$ K).
+                            </p>
+                        </div>
+                        <div class="solution-block hidden">
+                            <strong>Full Solution:</strong>
+                            <p><strong>1. Cooling Requirement:**</p>
+                            <p>To maintain $T_L = 20$°C $= 293.15$ K, A/C cooling rate $\dot{Q}_{L,cooling}$ must equal heat gain $\dot{Q}_{gain}$.</p>
+                            $$ \dot{Q}_{L,cooling} = \dot{Q}_{gain} = 0.6 \frac{\text{kW}}{\text{K}} \times (T_H - T_L) $$
+                            <p><strong>2. Actual A/C Performance:**</p>
+                            $$ \dot{Q}_{L,cooling} = COP_{actual} \times \dot{W}_{in,max} $$
+                            <p><strong>3. Relate Actual COP to Carnot COP:</strong></p>
+                            $$ COP_{Carnot} = \frac{T_L}{T_H - T_L} $$
+                            $$ COP_{actual} = 0.6 \times COP_{Carnot} = 0.6 \times \frac{T_L}{T_H - T_L} $$
+                            <p><strong>4. Set up Equation:**</p>
+                            <p>Set $\dot{Q}_{L,cooling}$ (from COP) equal to $\dot{Q}_{gain}$:</p>
+                            $$ \left[ 0.6 \times \frac{T_L}{T_H - T_L} \right] \times \dot{W}_{in,max} = 0.6 \frac{\text{kW}}{\text{K}} \times (T_H - T_L) $$
+                            <p><strong>5. Solve for $T_H$:</strong></p>
+                            <p>Let $\Delta T = T_H - T_L$. Substitute known values ($T_L=293.15$ K, $\dot{W}_{in,max}=1.2$ kW).</p>
+                            $$ \left[ 0.6 \times \frac{293.15}{\Delta T} \right] \times 1.2 = 0.6 \times \Delta T $$
+                            <p>The $0.6$ factor cancels on both sides:</p>
+                            $$ \frac{293.15 \times 1.2}{\Delta T} = \Delta T $$
+                            $$ (\Delta T)^2 = 293.15 \times 1.2 = 351.78 \text{ K}^2 $$
+                            $$ \Delta T = \sqrt{351.78} = 18.756 \text{ K} $$
+                            $$ T_H - T_L = 18.756 \text{ K} $$
+                            $$ T_H = T_L + 18.756 \text{ K} = 293.15 \text{ K} + 18.756 \text{ K} = 311.906 \text{ K} $$
+                            $$ T_H \approx 311.9 \text{ K} \approx 38.8 \text{ °C} $$
+                            <p><strong>Table Values Used:</strong> None needed.</p>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- End Question 11 -->
+
+            <!-- Question 12 -->
+            <div class="accordion-item" data-state="collapsed">
+                <div class="accordion-header">
+                    <h2>Question 12: Combined HE and Refrigerator</h2>
+                    <span class="state-indicator" title="Status Indicator"></span>
+                </div>
+                <div class="accordion-content">
+                    <div class="content-inner">
+                        <div class="question-block">
+                            <strong>Question:</strong>
+                            <p>
+                                We want to provide refrigeration at $T_{cold} = -20$°C. We have a high-temperature reservoir at $T_{res} = 220$°C and the ambient temperature is $T_{amb} = 35$°C. A heat engine (HE) operates between $T_{res}$ and $T_{amb}$, and its work output is used to drive a refrigerator (Ref) operating between $T_{cold}$ and $T_{amb}$. Assuming all processes are reversible (Carnot cycles), determine the ratio of the heat transferred from the high-temperature reservoir ($\dot{Q}_{H1}$) to the heat transferred from the low-temperature refrigerated space ($\dot{Q}_L$).
+                            </p>
+                        </div>
+                        <div class="final-answer-block hidden">
+                            <strong>Final Answer:</strong>
+                            <p>
+                                The ratio $\dot{Q}_{H1} / \dot{Q}_L$ is approximately $0.579$.
+                            </p>
+                        </div>
+                        <div class="solution-block hidden">
+                            <strong>Full Solution:</strong>
+                            <p><strong>1. Temperatures (Absolute):</strong></p>
+                            <ul>
+                                <li>$T_{res} = 220$°C $= 493.15$ K</li>
+                                <li>$T_{amb} = 35$°C $= 308.15$ K</li>
+                                <li>$T_{cold} = -20$°C $= 253.15$ K</li>
+                            </ul>
+                            <p><strong>2. Reversible Heat Engine (HE):</strong> Operates between $T_{res}$ and $T_{amb}$.</p>
+                            $$ \eta_{HE} = 1 - \frac{T_{amb}}{T_{res}} = 1 - \frac{308.15}{493.15} = 1 - 0.62488 = 0.37512 $$
+                            <p>Work output: $\dot{W} = \eta_{HE} \times \dot{Q}_{H1} = 0.37512 \times \dot{Q}_{H1}$</p>
+                            <p><strong>3. Reversible Refrigerator (Ref):</strong> Operates between $T_{cold}$ and $T_{amb}$.</p>
+                            $$ COP_R = \frac{T_{cold}}{T_{amb} - T_{cold}} = \frac{253.15}{308.15 - 253.15} = \frac{253.15}{55.0} = 4.6027 $$
+                            <p>Work input: $\dot{W} = \frac{\dot{Q}_L}{COP_R} = \frac{\dot{Q}_L}{4.6027}$</p>
+                            <p><strong>4. Equate Work:</strong> $\dot{W}_{HE} = \dot{W}_{Ref}$.</p>
+                            $$ 0.37512 \times \dot{Q}_{H1} = \frac{\dot{Q}_L}{4.6027} $$
+                            <p><strong>5. Find Ratio $\dot{Q}_{H1} / \dot{Q}_L$:</strong></p>
+                            $$ \frac{\dot{Q}_{H1}}{\dot{Q}_L} = \frac{1}{4.6027 \times 0.37512} = \frac{1}{1.72657} $$
+                            $$ \frac{\dot{Q}_{H1}}{\dot{Q}_L} = 0.57919 \approx 0.579 $$
+                            <p><strong>Table Values Used:</strong> None needed.</p>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- End Question 12 -->
+
+             <!-- Question 13 -->
+            <div class="accordion-item" data-state="collapsed">
+                 <div class="accordion-header">
+                     <h2>Question 13: Combined HE and HP using Waste Heat</h2>
+                     <span class="state-indicator" title="Status Indicator"></span>
+                 </div>
+                 <div class="accordion-content">
+                     <div class="content-inner">
+                         <div class="question-block">
+                             <strong>Question:</strong>
+                             <p>
+                                 A combined system consists of a heat engine driving a heat pump. Waste energy at $T_W = 50$°C is available. A portion of this waste energy ($\dot{Q}_{W1}$) acts as the heat source for the heat engine, which rejects heat at $T_L = 30$°C and produces work $\dot{W}$. The remaining waste energy ($\dot{Q}_{W2}$) serves as the heat source (low temperature) for the heat pump. The heat pump uses the work $\dot{W}$ produced by the engine and delivers heat $\dot{Q}_H$ at $T_H = 150$°C. The total waste energy available is $\dot{Q}_{W,total} = \dot{Q}_{W1} + \dot{Q}_{W2} = 5$ MW. Assuming both the heat engine and heat pump are reversible (Carnot), find the rate of energy delivered by the heat pump at the high temperature ($\dot{Q}_H$).
+                             </p>
+                         </div>
+                         <div class="final-answer-block hidden">
+                             <strong>Final Answer:</strong>
+                             <p>
+                                 The rate of energy delivered is $\dot{Q}_H \approx 1.09$ MW.
+                             </p>
+                         </div>
+                         <div class="solution-block hidden">
+                             <strong>Full Solution:</strong>
+                             <p><strong>1. Temperatures (Absolute):</strong></p>
+                             <ul>
+                                 <li>Waste Source: $T_W = 50$°C $= 323.15$ K</li>
+                                 <li>HE Sink: $T_{L,HE} = 30$°C $= 303.15$ K</li>
+                                 <li>HP Sink (Delivery): $T_{H,HP} = 150$°C $= 423.15$ K</li>
+                                 <li>HP Source: $T_{source,HP} = T_W = 323.15$ K</li>
+                             </ul>
+                             <p><strong>2. System Configuration & Energy Flows:</strong></p>
+                             <ul>
+                                 <li>$\dot{Q}_{W1} + \dot{Q}_{W2} = 5$ MW</li>
+                                 <li>Reversible HE: $\dot{W} = \dot{Q}_{W1} \eta_{HE} = \dot{Q}_{W1} (1 - T_{L,HE} / T_W)$</li>
+                                 <li>Reversible HP: $\dot{W} = \dot{Q}_H / COP_{HP} = \dot{Q}_H / [T_{H,HP} / (T_{H,HP} - T_{source,HP})]$</li>
+                             </ul>
+                             <p><strong>3. Calculate Efficiencies/COP:</strong></p>
+                             <ul>
+                                 <li>$\eta_{HE} = 1 - 303.15 / 323.15 = 1 - 0.9381 = 0.06189$</li>
+                                 <li>$COP_{HP} = 423.15 / (423.15 - 323.15) = 423.15 / 100 = 4.2315$</li>
+                             </ul>
+                             <p><strong>4. Relate Heat Flows via Work:</strong></p>
+                             $$ \dot{W} = 0.06189 \dot{Q}_{W1} $$
+                             $$ \dot{W} = \frac{\dot{Q}_H}{4.2315} $$
+                             <p>Equating work: $0.06189 \dot{Q}_{W1} = \dot{Q}_H / 4.2315$</p>
+                             <p><strong>5. Relate Heat Flows via Energy Balance on HP:</strong></p>
+                             $$ \dot{Q}_H = \dot{W} + \dot{Q}_{W2} $$
+                             <p><strong>6. Solve the System of Equations:</strong></p>
+                             <p>Substitute $\dot{W}$ from HE into HP energy balance:</p>
+                             $$ \dot{Q}_H = (0.06189 \dot{Q}_{W1}) + \dot{Q}_{W2} $$
+                             <p>Use $\dot{Q}_{W2} = 5 - \dot{Q}_{W1}$:</p>
+                             $$ \dot{Q}_H = 0.06189 \dot{Q}_{W1} + (5 - \dot{Q}_{W1}) = 5 - 0.93811 \dot{Q}_{W1} $$
+                             <p>From work equality: $\dot{Q}_{W1} = \frac{\dot{Q}_H}{4.2315 \times 0.06189} = \frac{\dot{Q}_H}{0.26189}$</p>
+                             <p>Substitute this $\dot{Q}_{W1}$ into the expression for $\dot{Q}_H$:</p>
+                             $$ \dot{Q}_H = 5 - 0.93811 \left( \frac{\dot{Q}_H}{0.26189} \right) $$
+                             $$ \dot{Q}_H = 5 - 3.582 \dot{Q}_H $$
+                             $$ \dot{Q}_H (1 + 3.582) = 5 $$
+                             $$ 4.582 \dot{Q}_H = 5 $$
+                             $$ \dot{Q}_H = \frac{5}{4.582} = 1.0912 \text{ MW} \approx 1.09 \text{ MW} $$
+                             <p><strong>Table Values Used:</strong> None needed.</p>
+                         </div>
+                     </div>
+                 </div>
+             </div> <!-- End Question 13 -->
+
+             <!-- Question 14 -->
+             <div class="accordion-item" data-state="collapsed">
+                  <div class="accordion-header">
+                      <h2>Question 14: Carnot Engine Optimal Temperature</h2>
+                      <span class="state-indicator" title="Status Indicator"></span>
+                  </div>
+                  <div class="accordion-content">
+                      <div class="content-inner">
+                          <div class="question-block">
+                              <strong>Question:</strong>
+                              <p>
+                                  A Carnot heat engine receives energy $\dot{Q}_H$ from a reservoir at temperature $T_{res}$ via a heat exchanger. The rate of heat transfer through the heat exchanger is proportional to the temperature difference: $\dot{Q}_H = K(T_{res} - T_H)$, where $T_H$ is the high temperature of the Carnot cycle and $K$ is a constant. The engine rejects heat $\dot{Q}_L$ at a fixed low temperature $T_L$. To maximize the work output $\dot{W}$ of the engine, show that the optimal high temperature $T_H$ for the cycle should be selected as $T_H = \sqrt{T_L T_{res}}$.
+                              </p>
+                          </div>
+                          <div class="final-answer-block hidden">
+                              <strong>Final Answer:</strong>
+                              <p>
+                                  The derivation showing $T_H = \sqrt{T_L T_{res}}$ for maximum work is presented in the solution.
+                              </p>
+                          </div>
+                          <div class="solution-block hidden">
+                              <strong>Full Solution:</strong>
+                              <p><strong>1. Work Output Expression:</strong></p>
+                              <p>Work output $\dot{W} = \eta_{Carnot} \times \dot{Q}_H$.</p>
+                              <ul>
+                                  <li>$\eta_{Carnot} = 1 - \frac{T_L}{T_H}$</li>
+                                  <li>$\dot{Q}_H = K (T_{res} - T_H)$</li>
+                              </ul>
+                              $$ \dot{W}(T_H) = \left(1 - \frac{T_L}{T_H}\right) K (T_{res} - T_H) $$
+                              <p><strong>2. Expand Work Expression:</strong></p>
+                              $$ \dot{W}(T_H) = K \left( T_{res} - T_H - \frac{T_L T_{res}}{T_H} + \frac{T_L T_H}{T_H} \right) $$
+                              $$ \dot{W}(T_H) = K \left[ T_{res} - T_H - T_L T_{res} T_H^{-1} + T_L \right] $$
+                              <p><strong>3. Maximize Work (Calculus):</strong></p>
+                              <p>Find the derivative of $\dot{W}$ with respect to $T_H$ and set it to zero. Treat $K, T_{res}, T_L$ as constants.</p>
+                              $$ \frac{d\dot{W}}{dT_H} = K \left[ 0 - 1 - T_L T_{res} (-1) T_H^{-2} + 0 \right] $$
+                              $$ \frac{d\dot{W}}{dT_H} = K \left[ -1 + \frac{T_L T_{res}}{T_H^2} \right] $$
+                              <p><strong>4. Set Derivative to Zero:</strong></p>
+                              $$ K \left[ -1 + \frac{T_L T_{res}}{T_H^2} \right] = 0 $$
+                              <p>Since $K \neq 0$:</p>
+                              $$ -1 + \frac{T_L T_{res}}{T_H^2} = 0 $$
+                              $$ 1 = \frac{T_L T_{res}}{T_H^2} $$
+                              $$ T_H^2 = T_L T_{res} $$
+                              $$ T_H = \sqrt{T_L T_{res}} \quad \text{(Q.E.D.)} $$
+                              <p><strong>5. Conclusion:</strong> The work output is maximized when $T_H$ is the geometric mean of $T_L$ and $T_{res}$.</p>
+                              <p><strong>Table Values Used:</strong> None needed.</p>
+                          </div>
+                      </div>
+                  </div>
+              </div> <!-- End Question 14 -->
+
+              <!-- Question 15 -->
+             <div class="accordion-item" data-state="collapsed">
+                  <div class="accordion-header">
+                      <h2>Question 15: Heat Engine Cycle Possibility</h2>
+                      <span class="state-indicator" title="Status Indicator"></span>
+                  </div>
+                  <div class="accordion-content">
+                      <div class="content-inner">
+                          <div class="question-block">
+                              <strong>Question:</strong>
+                              <p>
+                                  For each of the following cases describing a heat engine, determine if the First Law (Energy Conservation) is satisfied and if the Second Law is violated. <br>
+                                  a) $\dot{Q}_H = 6$ kW, $\dot{Q}_L = 4$ kW, $\dot{W} = 2$ kW <br>
+                                  b) $\dot{Q}_H = 6$ kW, $\dot{Q}_L = 0$ kW, $\dot{W} = 6$ kW <br>
+                                  c) $\dot{Q}_H = 6$ kW, $\dot{Q}_L = -2$ kW, $\dot{W} = -5$ kW <br>
+                                  d) $\dot{Q}_H = 6$ kW, $\dot{Q}_L = 6$ kW, $\dot{W} = 0$ kW
+                              </p>
+                          </div>
+                          <div class="final-answer-block hidden">
+                              <strong>Final Answer:</strong>
+                              <p>
+                                  a) First Law: Satisfied. Second Law: Not violated (Possible Irreversible). <br>
+                                  b) First Law: Satisfied. Second Law: Violated (unless $T_L = 0$ K). <br>
+                                  c) First Law: Violated. Second Law: Cannot evaluate properly (Impossible by 1st Law). <br>
+                                  d) First Law: Satisfied. Second Law: Not violated (Possible Irreversible).
+                              </p>
+                          </div>
+                          <div class="solution-block hidden">
+                              <strong>Full Solution:</strong>
+                              <p><strong>General Principles:</strong></p>
+                              <ul>
+                                  <li>First Law: $\dot{Q}_H = \dot{W} + \dot{Q}_L$ (Assuming $\dot{Q}_L$ is magnitude rejected).</li>
+                                  <li>Second Law: Requires $\eta = \dot{W} / \dot{Q}_H \le \eta_{Carnot} < 1$ (for $T_L > 0$) and $\dot{Q}_L \ge 0$.</li>
+                              </ul>
+                              <p><strong>(a) $\dot{Q}_H = 6$ kW, $\dot{Q}_L = 4$ kW, $\dot{W} = 2$ kW</strong></p>
+                              <ul>
+                                 <li>First Law: $6 = 2 + 4$? Yes. **Satisfied.**</li>
+                                 <li>Second Law: $\eta = 2/6 = 1/3$. Since $0 < \eta < 1$, this is possible if $T_L/T_H = 2/3$. $\dot{Q}_L > 0$. **Not violated.** (Possible Irreversible or Reversible)</li>
+                              </ul>
+                              <p><strong>(b) $\dot{Q}_H = 6$ kW, $\dot{Q}_L = 0$ kW, $\dot{W} = 6$ kW</strong></p>
+                              <ul>
+                                  <li>First Law: $6 = 6 + 0$? Yes. **Satisfied.**</li>
+                                  <li>Second Law: $\eta = 6/6 = 1$. This violates the Kelvin-Planck statement (requires $\eta < 1$) unless the heat sink is at absolute zero ($T_L = 0$ K). **Violated (unless $T_L = 0$ K).**</li>
+                              </ul>
+                              <p><strong>(c) $\dot{Q}_H = 6$ kW, $\dot{Q}_L = -2$ kW, $\dot{W} = -5$ kW</strong></p>
+                              <ul>
+                                  <li>First Law: Does $6 = (-5) + (-2)$? No, $6 \neq -7$. **Violated.**</li>
+                                  <li>Second Law: Cannot evaluate meaningfully as energy is not conserved.</li>
+                              </ul>
+                              <p><strong>(d) $\dot{Q}_H = 6$ kW, $\dot{Q}_L = 6$ kW, $\dot{W} = 0$ kW</strong></p>
+                              <ul>
+                                  <li>First Law: $6 = 0 + 6$? Yes. **Satisfied.**</li>
+                                  <li>Second Law: $\eta = 0/6 = 0$. This represents complete irreversibility (e.g., heat flowing directly from high to low T without work). It does not violate the principle that efficiency must be *less than or equal to* the Carnot efficiency (which is < 1). **Not violated.** (Possible Irreversible)</li>
+                              </ul>
+                              <p><strong>Table Values Used:</strong> None needed.</p>
+                          </div>
+                      </div>
+                  </div>
+              </div> <!-- End Question 15 -->
+
+              <!-- Question 16 -->
+             <div class="accordion-item" data-state="collapsed">
+                  <div class="accordion-header">
+                      <h2>Question 16: Clausius Inequality Check</h2>
+                      <span class="state-indicator" title="Status Indicator"></span>
+                  </div>
+                  <div class="accordion-content">
+                      <div class="content-inner">
+                          <div class="question-block">
+                              <strong>Question:</strong>
+                              <p>
+                                  A heat engine receives $\dot{Q}_H = 6$ kW from a source at $T_H = 250$°C and rejects heat to a sink at $T_L = 30$°C. Examine the following three cases with respect to the inequality of Clausius: <br>
+                                  (a) Work output $\dot{W} = 6$ kW <br>
+                                  (b) Work output $\dot{W} = 0$ kW <br>
+                                  (c) The engine operates as a Carnot cycle.
+                              </p>
+                          </div>
+                          <div class="final-answer-block hidden">
+                              <strong>Final Answer:</strong>
+                              <p>
+                                  (a) Ẇ=6kW: Violates Clausius Inequality (Impossible). <br>
+                                  (b) Ẇ=0kW: Satisfies Clausius Inequality (Possible Irreversible). <br>
+                                  (c) Carnot Cycle: Satisfies Clausius Inequality as equality (Reversible).
+                              </p>
+                          </div>
+                          <div class="solution-block hidden">
+                              <strong>Full Solution:</strong>
+                              <p><strong>1. Temperatures:</strong></p>
+                              <ul>
+                                  <li>$T_H = 250$°C $= 523.15$ K</li>
+                                  <li>$T_L = 30$°C $= 303.15$ K</li>
+                              </ul>
+                              <p><strong>2. Inequality of Clausius:</strong> For a cycle operating between two reservoirs:</p>
+                              $$ \oint (\frac{\delta Q}{T})_b = \frac{\dot{Q}_H}{T_H} - \frac{|\dot{Q}_L|}{T_L} \le 0 $$
+                              <p><strong>3. Heat Flows:</strong> $\dot{Q}_H = 6$ kW. First Law: $|\dot{Q}_L| = \dot{Q}_H - \dot{W}$.</p>
+                              <p><strong>(a) $\dot{W} = 6$ kW</strong></p>
+                              <ul>
+                                 <li>$|\dot{Q}_L| = 6 - 6 = 0$ kW.</li>
+                                 <li>Clausius Check: $\frac{6}{523.15} - \frac{0}{303.15} = 0.01147 - 0 = +0.01147$ kW/K.</li>
+                                 <li>Since $> 0$, this **violates** the Clausius Inequality (Impossible).</li>
+                              </ul>
+                              <p><strong>(b) $\dot{W} = 0$ kW</strong></p>
+                              <ul>
+                                  <li>$|\dot{Q}_L| = 6 - 0 = 6$ kW.</li>
+                                  <li>Clausius Check: $\frac{6}{523.15} - \frac{6}{303.15} = 0.01147 - 0.01979 = -0.00832$ kW/K.</li>
+                                  <li>Since $< 0$, this **satisfies** the Clausius Inequality (Possible Irreversible).</li>
+                              </ul>
+                              <p><strong>(c) Carnot Cycle</strong></p>
+                              <ul>
+                                 <li>For a reversible Carnot cycle, the Clausius sum is exactly zero. $\oint (\delta Q/T)_b = 0$.</li>
+                                 <li>Carnot work: $\eta_{Carnot} = 1 - T_L/T_H = 1 - 303.15/523.15 = 0.42056$.
+                                     <br>$\dot{W}_{Carnot} = \eta_{Carnot} \times \dot{Q}_H = 0.42056 \times 6 = 2.523$ kW.
+                                 </li>
+                                 <li>Carnot heat rejected: $|\dot{Q}_L|_{Carnot} = \dot{Q}_H - \dot{W}_{Carnot} = 6 - 2.523 = 3.477$ kW.</li>
+                                 <li>Clausius Check: $\frac{6}{523.15} - \frac{3.477}{303.15} = 0.01147 - 0.01147 = 0$.</li>
+                                 <li>This **satisfies** the Clausius Inequality as an equality (Reversible).</li>
+                              </ul>
+                              <p><strong>Table Values Used:</strong> None needed.</p>
+                          </div>
+                      </div>
+                  </div>
+              </div> <!-- End Question 16 -->
+
+    </div> <!-- End Accordion Container -->
+
+
+    <footer> <!-- Optional Footer --> </footer>
+
+     <!-- Font Size Control Icons HTML -->
+     <div class="font-control">
+         <span class="font-control-icon" id="fontMinusBtn" title="Decrease font size">-</span>
+         <span class="font-control-icon" id="fontPlusBtn" title="Increase font size">+</span>
+     </div>
+     <div id="fontSizeDisplay">10px</div>
+
+    <script>
+        // --- Debounce Function ---
+        function debounce(func, wait) { let timeout; return function(...args) { const later = () => { clearTimeout(timeout); func.apply(this, args); }; clearTimeout(timeout); timeout = setTimeout(later, wait); }; }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const htmlEl = document.documentElement;
+            const bodyEl = document.body;
+
+            // --- Font Size Control & Hold ---
+            const minusBtn = document.getElementById('fontMinusBtn');
+            const plusBtn = document.getElementById('fontPlusBtn');
+            const display = document.getElementById('fontSizeDisplay');
+            let currentSize = 10; const minSize = 10; const maxSize = 28; const step = 1;
+            let displayTimeout = null; let holdTimeout = null; let holdInterval = null;
+            const initialHoldDelay = 400; const repeatInterval = 100;
+            const mathJaxDebounceDelay = 350;
+
+            const queueMathJaxTypeset = debounce(() => {
+                if (window.MathJax && MathJax.typesetPromise) {
+                    console.log("Debounced: Typesetting MathJax for body");
+                    MathJax.typesetPromise([bodyEl]).catch((err) => console.error('MathJax typesetting error:', err));
+                 }
+            }, mathJaxDebounceDelay);
+
+            const handleFontResizeEnd = debounce(() => {
+                console.log("Font resize finished.");
+                queueMathJaxTypeset();
+            }, mathJaxDebounceDelay);
+
+            function updateFontSize(newSize) {
+                const oldSize = currentSize;
+                currentSize = Math.max(minSize, Math.min(maxSize, newSize));
+                if (currentSize !== oldSize) {
+                    htmlEl.style.setProperty('--base-font-size', currentSize + 'px');
+                    display.textContent = currentSize + 'px'; display.classList.add('visible');
+                    if (displayTimeout) { clearTimeout(displayTimeout); }
+                    displayTimeout = setTimeout(() => { display.classList.remove('visible'); displayTimeout = null; }, 1500);
+                    handleFontResizeEnd(); return true;
+                } return false;
+            }
+            function stopHolding() {
+                bodyEl.classList.remove('no-font-transition');
+                if (holdTimeout) { clearTimeout(holdTimeout); holdTimeout = null; }
+                if (holdInterval) { clearInterval(holdInterval); holdInterval = null; }
+                handleFontResizeEnd();
+            }
+            function startHolding(direction) {
+                bodyEl.classList.add('no-font-transition'); updateFontSize(currentSize + direction * step);
+                if (holdTimeout) clearTimeout(holdTimeout); if (holdInterval) clearInterval(holdInterval);
+                holdTimeout = setTimeout(() => { holdInterval = setInterval(() => { if (!updateFontSize(currentSize + direction * step)) { stopHolding(); } }, repeatInterval); }, initialHoldDelay);
+            }
+            if (minusBtn && plusBtn && display) {
+                minusBtn.addEventListener('mousedown', (e) => { e.preventDefault(); startHolding(-1); });
+                plusBtn.addEventListener('mousedown', (e) => { e.preventDefault(); startHolding(1); });
+                window.addEventListener('mouseup', stopHolding);
+                minusBtn.addEventListener('mouseleave', stopHolding); plusBtn.addEventListener('mouseleave', stopHolding);
+                htmlEl.style.setProperty('--base-font-size', currentSize + 'px'); display.textContent = currentSize + 'px';
+                console.log("Font control initialized. Current size:", currentSize);
+            } else { console.error("Font control elements not found!"); }
+
+
+            // --- Accordion Logic (with State Indicator & MathJax Trigger - Robust Measurement) ---
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                const content = item.querySelector('.accordion-content');
+                const innerContent = content.querySelector('.content-inner');
+                const finalAnswerBlock = innerContent.querySelector('.final-answer-block');
+                const solutionBlock = innerContent.querySelector('.solution-block');
+
+
+                header.addEventListener('click', () => {
+                    const currentState = item.getAttribute('data-state');
+                    let nextState;
+
+                    if (currentState === 'collapsed') {
+                        if (!item.classList.contains('visited')) { item.classList.add('visited'); }
+                        nextState = 'state1';
+                    } else if (currentState === 'state1') {
+                        nextState = 'state2';
+                    } else { // state2
+                        nextState = 'collapsed';
+                    }
+
+                    item.setAttribute('data-state', nextState);
+                    console.log(`Item state changed to: ${nextState}`);
+
+                    const isCollapsed = nextState === 'collapsed';
+                    const showAnswer = nextState === 'state1';
+                    const showSolution = nextState === 'state2';
+
+                    // Toggle visibility of answer/solution blocks
+                    if (finalAnswerBlock) finalAnswerBlock.classList.toggle('hidden', !showAnswer);
+                    if (solutionBlock) solutionBlock.classList.toggle('hidden', !showSolution);
+
+
+                    // --- Expansion/Collapse Logic ---
+                    if (!isCollapsed) {
+                        // --- EXPANDING ---
+                        content.style.maxHeight = 'none'; // Allow natural height measurement
+                        let mathJaxPromise = Promise.resolve();
+                        if (window.MathJax && MathJax.typesetPromise) {
+                            console.log(`Queueing MathJax for item: ${header.querySelector('h2').textContent.trim()}`);
+                            mathJaxPromise = MathJax.typesetPromise([innerContent]).catch(err => {
+                                console.error('MathJax typesetting error during expand:', err);
+                            });
+                        } else { console.warn("MathJax not available for typesetting during expand."); }
+
+                        mathJaxPromise.then(() => {
+                            console.log("MathJax finished for item. Preparing height calculation.");
+                            requestAnimationFrame(() => {
+                                requestAnimationFrame(() => { // Double rAF waits for layout calculation
+                                    const style = window.getComputedStyle(content);
+                                    const paddingTop = parseFloat(style.paddingTop) || 0;
+                                    const paddingBottom = parseFloat(style.paddingBottom) || 0;
+                                    const innerHeight = innerContent.offsetHeight;
+                                    const totalHeight = innerHeight + paddingTop + paddingBottom;
+                                    console.log(`Calculated totalHeight after MathJax & rAF: ${totalHeight}px`);
+                                    if (totalHeight <= (paddingTop + paddingBottom)) {
+                                         console.warn("Calculated height is zero or only padding! Check content visibility/rendering.");
+                                     }
+                                     content.style.maxHeight = '0px'; // Prepare for transition
+                                     requestAnimationFrame(() => { // Apply final height in next frame
+                                         content.style.maxHeight = totalHeight + 'px';
+                                         console.log(`Applied maxHeight: ${totalHeight}px`);
+                                     });
+                                 });
+                             });
+                         });
+
+                    } else {
+                        // --- COLLAPSING ---
+                        if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                           content.style.maxHeight = '0px';
+                           console.log("Collapsing: Set maxHeight to 0px");
+                        }
+                    }
+                });
+            });
+            console.log("Accordion logic (Robust Measurement) with state indicators and MathJax applied.");
+
+
+            // --- Initial MathJax Typeset on Load ---
+             if (window.MathJax) {
+                 MathJax.startup.promise.then(() => {
+                     console.log("Queueing initial MathJax typeset after load");
+                     MathJax.typesetPromise([bodyEl]).catch((err) => console.error('MathJax initial typesetting error:', err));
+                 });
+             }
+
+        }); // End DOMContentLoaded
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en" style="--base-font-size: 10px;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 6 Q&A</title> <!-- CHANGE THIS TITLE -->
+
+    <!-- Google Fonts - Roboto Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+          tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true, tags: 'ams' },
+          options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'], ignoreHtmlClass: 'tex2jax_ignore', processHtmlClass: 'tex2jax_process' },
+          svg: { fontCache: 'global' },
+          startup: { ready: () => { console.log('MathJax ready.'); MathJax.startup.defaultReady(); MathJax.startup.promise.then(() => console.log('MathJax initial typeset complete.')); } }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* Basic Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* Keyframes */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Base Styles --- */
+        :root {
+            --accent-color: #F08080; /* Light Coral */
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --border-color: #555;
+            --header-bg: #2f2f2f;
+            --header-hover-bg: #3f3f3f;
+            --content-bg: #282828;
+            /* Indicator Colors */
+            --indicator-unvisited: transparent;
+            --indicator-answer: #f7dc6f;
+            --indicator-solution: #58d68d;
+            --indicator-visited-closed: var(--indicator-solution);
+            --anim-duration: 0.5s;
+            --anim-easing: cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        body {
+            font-family: 'Roboto Mono', monospace; color: var(--text-color); line-height: 1.7;
+            padding: 25px; background-color: var(--bg-color); min-height: 100vh;
+            font-size: var(--base-font-size); transition: font-size 0.2s ease-in-out;
+            padding-bottom: 80px; overflow-x: hidden;
+        }
+        body.no-font-transition { transition: none !important; }
+
+        /* Headings */
+        h1 {
+            font-size: 2.4em; color: var(--accent-color); font-weight: 700; padding-bottom: 12px;
+            margin: 1.5em auto; border-bottom: 3px solid var(--accent-color);
+            animation: fadeIn 0.8s ease-out both 0.1s; letter-spacing: -0.5px; text-align: center; max-width: 800px;
+        }
+
+        /* --- Accordion Styles --- */
+        .accordion { max-width: 900px; margin: 20px auto; }
+        .accordion-item {
+            border: 1px solid var(--border-color); border-radius: 8px;
+            overflow: hidden; margin-bottom: 25px; background-color: var(--content-bg);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .accordion-item:hover { border-color: #777; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); }
+        .accordion-header {
+            background-color: var(--header-bg); padding: 18px 25px; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: background-color 0.3s ease, border-color var(--anim-duration) var(--anim-easing);
+            border-bottom: 1px solid var(--border-color); position: relative; z-index: 2;
+        }
+        .accordion-item[data-state="collapsed"] .accordion-header { border-bottom-color: transparent; }
+        .accordion-header:hover { background-color: var(--header-hover-bg); }
+        .accordion-header h2 { margin: 0; font-size: 1.2em; color: var(--text-color); text-align: left; }
+
+        /* --- State Indicator --- */
+        .state-indicator {
+            width: 12px; height: 12px; border-radius: 50%;
+            background-color: var(--indicator-unvisited); display: inline-block; margin-left: 15px;
+            flex-shrink: 0; transition: background-color 0.3s ease; border: 1px solid var(--header-bg);
+        }
+        .accordion-item[data-state="state1"] .state-indicator { background-color: var(--indicator-answer); border-color: transparent; }
+        .accordion-item[data-state="state2"] .state-indicator { background-color: var(--indicator-solution); border-color: transparent; }
+        .accordion-item.visited[data-state="collapsed"] .state-indicator { background-color: var(--indicator-visited-closed); border-color: transparent; }
+
+
+        /* Content Area & Animations */
+        .accordion-content {
+            padding: 0 25px; max-height: 0; overflow: hidden;
+            transition: max-height var(--anim-duration) var(--anim-easing),
+                        padding-top var(--anim-duration) var(--anim-easing),
+                        padding-bottom var(--anim-duration) var(--anim-easing);
+            box-sizing: border-box; position: relative; z-index: 1;
+        }
+        .accordion-item:not([data-state="collapsed"]) .accordion-content { padding-top: 20px; }
+        .content-inner {
+            padding-bottom: 25px; opacity: 0; transform: translateY(10px);
+            transition: opacity 0.4s ease-out 0.15s, transform 0.4s ease-out 0.15s;
+        }
+        .accordion-item:not([data-state="collapsed"]) .content-inner { opacity: 1; transform: translateY(0); }
+
+        /* Content Blocks Structure & Styling */
+        .question-block, .final-answer-block, .solution-block {
+            margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed var(--border-color);
+        }
+        .content-inner > div:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .question-block strong, .final-answer-block strong, .solution-block strong {
+            color: var(--accent-color); display: block; margin-bottom: 8px; font-size: 1.1em;
+        }
+        p { margin-bottom: 1em; color: inherit; font-size: inherit; }
+        ul, ol { margin-left: 25px; margin-bottom: 1em; }
+        li { margin-bottom: 8px; font-size: inherit; }
+
+        /* Simplified Styling for MathJax containers */
+        mjx-container {
+            margin: 0.5em 0; /* Default vertical space around all rendered math */
+            text-align: left !important; /* Ensure left alignment */
+        }
+        mjx-container[display="true"] {
+             margin: 1em 0 !important; /* Slightly more vertical space for display math */
+        }
+
+
+        /* General Utility Styles */
+        .hidden { display: none !important; }
+
+        /* Footer & Font Control */
+        footer { text-align: center; margin-top: 70px; padding-bottom: 35px; font-size: 0.85em; color: #888888; animation: fadeIn 1s ease-out both 0.7s; }
+        .font-control { position: fixed; bottom: 0; left: 0; width: 100%; padding: 10px 25px; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; pointer-events: none; z-index: 10; }
+        .font-control-icon { font-size: 28px; font-weight: bold; color: #777; cursor: pointer; padding: 8px; transition: color 0.3s ease; pointer-events: auto; user-select: none; line-height: 1; display: inline-block; }
+        .font-control-icon:hover { color: var(--accent-color); }
+        #fontSizeDisplay { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); background-color: rgba(45, 45, 45, 0.9); color: #e0e0e0; padding: 6px 12px; border-radius: 5px; font-size: 13px; font-family: 'Roboto Mono', monospace; z-index: 11; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none; white-space: nowrap; }
+        #fontSizeDisplay.visible { opacity: 1; }
+
+        /* Simple Dark Theme Scrollbar for Page */
+        body::-webkit-scrollbar { width: 10px; }
+        body::-webkit-scrollbar-track { background: #2a2a2a; border-radius: 5px; }
+        body::-webkit-scrollbar-thumb { background-color: #777; border-radius: 5px; border: 2px solid #2a2a2a; background-clip: content-box; }
+        body::-webkit-scrollbar-thumb:hover { background-color: #999; }
+        html { scrollbar-width: thin; scrollbar-color: #777 #2a2a2a; }
+        @supports (scrollbar-gutter: stable) { html { scrollbar-gutter: stable; } }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Chapter 6 Q&A</h1> <!-- Updated Title -->
+    </header>
+
+    <div class="accordion">
+
+        <!-- Question 1 -->
+        <div class="accordion-item" data-state="collapsed">
+            <div class="accordion-header">
+                <h2>Question 1: Specific Entropy Determination</h2>
+                <span class="state-indicator" title="Status Indicator"></span>
+            </div>
+            <div class="accordion-content">
+                <div class="content-inner">
+                    <div class="question-block">
+                        <strong>Question:</strong>
+                        <p>
+                            Determine the specific entropy ($s$) for the following states and represent the states on P-v and T-s diagrams relative to saturation lines: <br>
+                            (a) Nitrogen (N₂) at $P = 2000$ kPa, $T = 120$ K <br>
+                            (b) Nitrogen (N₂) at $T = 120$ K, $v = 0.0050$ m³/kg <br>
+                            (c) R-410A at $T = 25$°C, $v = 0.01$ m³/kg
+                        </p>
+                    </div>
+                    <div class="final-answer-block hidden">
+                        <strong>Final Answer:</strong>
+                        <p>
+                            (a) $s \approx 4.7193$ kJ/kg-K <br>
+                            (b) $s \approx 4.2425$ kJ/kg-K <br>
+                            (c) $s \approx 0.7620$ kJ/kg-K
+                        </p>
+                    </div>
+                    <div class="solution-block hidden">
+                        <strong>Full Solution:</strong>
+                        <p><strong>(a) Nitrogen, P = 2000 kPa, T = 120 K</strong></p>
+                        <ol>
+                            <li><strong>Check Phase:</strong> From Table B.6.1, at $T = 120$ K, $P_{sat} = 2513.0$ kPa. Since the given $P (2000 \text{ kPa}) < P_{sat}$, the state is superheated vapor.</li>
+                            <li><strong>Find Entropy:</strong> Use Table B.6.2 (Superheated Nitrogen). At $P = 2000$ kPa and $T = 120$ K: $s = 4.7193$ kJ/kg-K.</li>
+                        </ol>
+                         <p><strong>(b) Nitrogen, T = 120 K, v = 0.0050 m³/kg</strong></p>
+                        <ol>
+                            <li><strong>Check Phase:</strong> From Table B.6.1, at $T = 120$ K: $v_f = 0.001915$ m³/kg, $v_g = 0.00799$ m³/kg. Since $v_f < v < v_g$, the state is a saturated liquid-vapor mixture.</li>
+                            <li><strong>Find Quality (x):</strong> $v_{fg} = v_g - v_f = 0.00799 - 0.001915 = 0.006075$ m³/kg.
+                                $$ x = \frac{v - v_f}{v_{fg}} = \frac{0.0050 - 0.001915}{0.006075} = \frac{0.003085}{0.006075} \approx 0.5078 $$
+                            </li>
+                            <li><strong>Find Entropy:</strong> $s_{fg} = 0.7659$ kJ/kg-K.
+                                $$ s = s_f + x s_{fg} = 3.8536 + (0.5078 \times 0.7659) $$
+                                $$ s = 3.8536 + 0.3889 = 4.2425 \text{ kJ/kg-K} $$
+                            </li>
+                        </ol>
+                        <p><strong>(c) R-410A, T = 25°C, v = 0.01 m³/kg</strong></p>
+                        <ol>
+                           <li><strong>Check Phase:</strong> From Table B.4.1, at $T = 25$°C: $v_f = 0.000944$ m³/kg, $v_g = 0.01514$ m³/kg. Since $v_f < v < v_g$, the state is a saturated liquid-vapor mixture.</li>
+                           <li><strong>Find Quality (x):</strong> $v_{fg} = v_g - v_f = 0.01514 - 0.000944 = 0.014196$ m³/kg.
+                               $$ x = \frac{v - v_f}{v_{fg}} = \frac{0.01 - 0.000944}{0.014196} = \frac{0.009056}{0.014196} \approx 0.6379 $$
+                           </li>
+                           <li><strong>Find Entropy:</strong> $s_{fg} = 0.6253$ kJ/kg-K.
+                               $$ s = s_f + x s_{fg} = 0.3631 + (0.6379 \times 0.6253) $$
+                               $$ s = 0.3631 + 0.3989 = 0.7620 \text{ kJ/kg-K} $$
+                           </li>
+                        </ol>
+                         <p><strong>Diagrams:</strong></p>
+                         <ul>
+                            <li><strong>P-v Diagram:</strong>
+                                <ul>
+                                   <li>Draw the saturation dome (liquid-vapor).</li>
+                                   <li>State (a): In the superheated region, at P=2000 kPa. T=120K isotherm will cross into this region.</li>
+                                   <li>State (b): Inside the saturation dome, on the T=120K isotherm, at v=0.0050 (between vf and vg for 120K).</li>
+                                   <li>State (c): Inside the saturation dome, on the T=25°C=298.15K isotherm, at v=0.01 (between vf and vg for 25°C).</li>
+                               </ul>
+                           </li>
+                            <li><strong>T-s Diagram:</strong>
+                                <ul>
+                                   <li>Draw the saturation dome.</li>
+                                   <li>State (a): In the superheated region, at T=120 K, s=4.7193.</li>
+                                   <li>State (b): Inside the saturation dome, on the T=120K isotherm, at s=4.2425 (between sf and sg for 120K).</li>
+                                   <li>State (c): Inside the saturation dome, on the T=25°C=298.15K isotherm, at s=0.7620 (between sf and sg for 25°C).</li>
+                               </ul>
+                           </li>
+                         </ul>
+                         <p><strong>Table Values Used Summary:</strong> B.6.1, B.6.2 (Nitrogen), B.4.1 (R-410A).</p>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- End Question 1 -->
+
+        <!-- Question 2 -->
+        <div class="accordion-item" data-state="collapsed">
+            <div class="accordion-header">
+                <h2>Question 2: Water Constant-P Heating Entropy Change</h2>
+                <span class="state-indicator" title="Status Indicator"></span>
+            </div>
+            <div class="accordion-content">
+                <div class="content-inner">
+                    <div class="question-block">
+                        <strong>Question:</strong>
+                        <p>
+                            Two kilograms of water, initially at $200$ kPa with a quality of $25\%$, undergoes a constant-pressure process where its temperature is raised by $20$°C. Calculate the total change in entropy ($\Delta S$) for this process. Represent the process on P-v and T-v diagrams.
+                        </p>
+                    </div>
+                    <div class="final-answer-block hidden">
+                        <strong>Final Answer:</strong>
+                        <p>
+                            The total change in entropy is $\Delta S = 8.60$ kJ/K.
+                        </p>
+                    </div>
+                    <div class="solution-block hidden">
+                        <strong>Full Solution:</strong>
+                        <p><strong>1. Initial State (State 1):</strong></p>
+                        <ul>
+                            <li>$P_1 = 200$ kPa</li>
+                            <li>$x_1 = 0.25$</li>
+                            <li>From Table B.1.2 at 200 kPa: $T_1 = T_{sat} = 120.23$°C.</li>
+                            <li>$s_f = 1.5300$ kJ/kg-K, $s_{fg} = 5.5970$ kJ/kg-K</li>
+                            <li>$s_1 = s_f + x_1 s_{fg} = 1.5300 + 0.25 \times 5.5970 = 1.5300 + 1.39925 = 2.92925$ kJ/kg-K</li>
+                        </ul>
+                        <p><strong>2. Final State (State 2):</strong></p>
+                        <ul>
+                            <li>Process is constant pressure, so $P_2 = P_1 = 200$ kPa.</li>
+                            <li>Temperature is raised by $20$°C: $T_2 = T_1 + 20 \text{°C} = 120.23 \text{°C} + 20 \text{°C} = 140.23$°C.</li>
+                            <li>At $P_2 = 200$ kPa, $T_{sat} = 120.23$°C. Since $T_2 (140.23°C) > T_{sat}$, the final state is superheated vapor.</li>
+                            <li>Find $s_2$ by interpolating in Table B.1.3 at $P=200$ kPa between $T_{sat}=120.23$°C ($s_g=7.1271$) and $T=150$°C ($s=7.2795$).
+                                $$ s_2 = 7.1271 + \frac{140.23 - 120.23}{150 - 120.23} \times (7.2795 - 7.1271) $$
+                                $$ s_2 = 7.1271 + \frac{20}{29.77} \times 0.1524 $$
+                                $$ s_2 = 7.1271 + 0.6718 \times 0.1524 = 7.1271 + 0.1024 = 7.2295 \text{ kJ/kg-K} $$
+                            </li>
+                         </ul>
+                        <p><strong>3. Change in Entropy:</strong></p>
+                        $$ \Delta S = m (s_2 - s_1) $$
+                        $$ \Delta S = 2 \text{ kg} \times (7.2295 - 2.92925) \frac{\text{kJ}}{\text{kg-K}} $$
+                        $$ \Delta S = 2 \times 4.30025 = 8.6005 \frac{\text{kJ}}{\text{K}} \approx 8.60 \text{ kJ/K} $$
+                        <p><strong>4. Diagrams:</strong></p>
+                        <ul>
+                            <li><strong>P-v Diagram:</strong> Draw the saturation dome. State 1 is inside the dome at P=200 kPa, with $v_1 = v_f + x_1 v_{fg}$. State 2 is in the superheated region at P=200 kPa and T=140.23°C. The process is a horizontal line (constant P) moving right from state 1 to state 2.</li>
+                            <li><strong>T-v Diagram:</strong> Draw the saturation dome. State 1 is inside the dome on the T=120.23°C isotherm. State 2 is in the superheated region at T=140.23°C. The process path curves upwards and to the right from state 1 to state 2, following the constant P=200 kPa isobar.</li>
+                        </ul>
+                        <p><strong>Table Values Used Summary:</strong> B.1.2, B.1.3 (Water).</p>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- End Question 2 -->
+
+         <!-- Question 3 -->
+         <div class="accordion-item" data-state="collapsed">
+             <div class="accordion-header">
+                 <h2>Question 3: Ammonia Carnot Cycle Analysis</h2>
+                 <span class="state-indicator" title="Status Indicator"></span>
+             </div>
+             <div class="accordion-content">
+                 <div class="content-inner">
+                     <div class="question-block">
+                         <strong>Question:</strong>
+                         <p>
+                             A Carnot engine uses ammonia as the working fluid. The high-temperature heat addition occurs at $T_H = 60$°C, during which the ammonia changes from saturated liquid to saturated vapor. Heat rejection occurs at a constant low temperature ($T_L$) corresponding to a pressure of $P_L = 190$ kPa. Find: <br>
+                             a) The low temperature $T_L$. <br>
+                             b) The thermal efficiency of the cycle ($\eta_{th}$). <br>
+                             c) The heat added per kilogram ($q_H$). <br>
+                             d) The specific entropy ($s$) at the state corresponding to the beginning of the heat rejection process (State 3). <br>
+                             e) Represent the cycle on a T-s diagram.
+                         </p>
+                     </div>
+                     <div class="final-answer-block hidden">
+                         <strong>Final Answer:</strong>
+                         <p>
+                             a) $T_L \approx -20.0$ °C ($253.15$ K). <br>
+                             b) $\eta_{th} \approx 24.0\%$. <br>
+                             c) $q_H \approx 997.0$ kJ/kg. <br>
+                             d) $s_3 \approx 4.6577$ kJ/kg-K.
+                         </p>
+                     </div>
+                     <div class="solution-block hidden">
+                         <strong>Full Solution:</strong>
+                         <p><strong>1. Cycle States & Processes:</strong></p>
+                         <ul>
+                             <li>1 -> 2: Isothermal heat addition at $T_H = 60$°C (Sat liquid to Sat vapor).</li>
+                             <li>2 -> 3: Isentropic expansion (Sat vapor at $T_H$ to mixture at $T_L$).</li>
+                             <li>3 -> 4: Isothermal heat rejection at $T_L$ (mixture at $T_L$ to mixture/sat liquid at $T_L$).</li>
+                             <li>4 -> 1: Isentropic compression (mixture/sat liquid at $T_L$ to Sat liquid at $T_H$).</li>
+                         </ul>
+                         <p><strong>2. Find Low Temperature ($T_L$):</strong></p>
+                         <p>Heat rejection occurs at $P_L = 190$ kPa. $T_L = T_{sat}(P_L)$. From Table B.2.1 (Saturated Ammonia), at $P = 190.2$ kPa, $T_{sat} = -20.0$ °C.</p>
+                         <ul><li>$T_L = -20.0$ °C $= 253.15$ K.</li></ul>
+                         <p><strong>3. Calculate Thermal Efficiency ($\eta_{th}$):</strong></p>
+                         <p>For a Carnot cycle: $\eta_{th} = 1 - T_L / T_H$.</p>
+                         <ul>
+                             <li>$T_H = 60$°C $= 333.15$ K</li>
+                             <li>$T_L = 253.15$ K</li>
+                         </ul>
+                         $$ \eta_{th} = 1 - \frac{253.15}{333.15} = 1 - 0.75986 = 0.24014 \approx 24.0\% $$
+                         <p><strong>4. Calculate Heat Added ($q_H$):</strong></p>
+                         <p>Heat addition (1->2) is phase change at $T_H = 60$°C.</p>
+                         <p>From Table B.2.1 at 60°C:</p>
+                         <ul><li>$q_H = h_{fg} = 997.0$ kJ/kg.</li></ul>
+                         <p><strong>5. Find Entropy at Start of Heat Rejection (State 3):</strong></p>
+                         <p>Process 2 -> 3 is isentropic expansion from state 2 (sat vapor at $T_H$). Therefore, $s_3 = s_2$.</p>
+                         <p>From Table B.2.1 at 60°C:</p>
+                         <ul><li>$s_2 = s_g = 4.6577$ kJ/kg-K.</li></ul>
+                         <p>So, $s_3 = 4.6577$ kJ/kg-K.</p>
+                         <p><strong>6. T-s Diagram:</strong></p>
+                         <ul>
+                             <li>Draw the saturation dome for ammonia.</li>
+                             <li>Draw horizontal lines at $T_H = 60$°C and $T_L = -20$°C.</li>
+                             <li>State 1: Saturated liquid point on the $T_H$ line ($s \approx 1.6652$).</li>
+                             <li>State 2: Saturated vapor point on the $T_H$ line ($s = 4.6577$).</li>
+                             <li>Process 1->2: Horizontal line segment from state 1 to state 2.</li>
+                             <li>Process 2->3: Vertical line (isentropic) downwards from state 2 to intersect the $T_L$ line. State 3 is inside the dome ($s=4.6577$).</li>
+                             <li>Process 3->4: Horizontal line segment along $T_L$, moving left.</li>
+                             <li>Process 4->1: Vertical line (isentropic) upwards from state 4 ($s \approx 1.6652$) to state 1. State 4 is inside the dome.</li>
+                         </ul>
+                         <p><strong>Table Values Used Summary:</strong> B.2.1 (Ammonia).</p>
+                     </div>
+                 </div>
+             </div>
+         </div> <!-- End Question 3 -->
+
+          <!-- Question 4 -->
+          <div class="accordion-item" data-state="collapsed">
+              <div class="accordion-header">
+                  <h2>Question 4: Water Phase Change Work & Heat</h2>
+                  <span class="state-indicator" title="Status Indicator"></span>
+              </div>
+              <div class="accordion-content">
+                  <div class="content-inner">
+                      <div class="question-block">
+                          <strong>Question:</strong>
+                          <p>
+                              A piston-cylinder device, maintaining a constant pressure, initially contains $0.1$ kg of saturated liquid water at $125$°C. The water is then heated in a reversible process until it becomes saturated vapor. <br>
+                              a) Find the work done during this process. <br>
+                              b) Find the heat transfer using the first law (energy equation). <br>
+                              c) Find the heat transfer using the second law (entropy equation). <br>
+                              d) Compare the heat transfer values obtained from both methods.
+                          </p>
+                      </div>
+                      <div class="final-answer-block hidden">
+                          <strong>Final Answer:</strong>
+                          <p>
+                              a) Work $W \approx 17.86$ kJ. <br>
+                              b) Heat transfer (Energy Eq.) $Q \approx 218.85$ kJ. <br>
+                              c) Heat transfer (Entropy Eq.) $Q \approx 218.83$ kJ. <br>
+                              d) The heat transfer values are essentially the same.
+                          </p>
+                      </div>
+                      <div class="solution-block hidden">
+                          <strong>Full Solution:</strong>
+                          <p><strong>1. Identify States:</strong></p>
+                          <ul>
+                              <li>State 1: Sat. Liquid, $T_1 = 125$°C, $x_1 = 0$. $m = 0.1$ kg.</li>
+                              <li>State 2: Sat. Vapor, $T_2 = 125$°C, $x_2 = 1$. $m = 0.1$ kg.</li>
+                              <li>Process: Constant pressure, reversible heating. $P = P_{sat}(125°C)$.</li>
+                          </ul>
+                          <p><strong>2. Get Properties (Table B.1.1 at 125°C):</strong></p>
+                          <ul>
+                              <li>$P = 232.1$ kPa</li>
+                              <li>$v_1 = v_f = 0.001065$ m³/kg</li>
+                              <li>$v_2 = v_g = 0.77059$ m³/kg</li>
+                              <li>$u_1 = u_f = 524.72$ kJ/kg</li>
+                              <li>$u_2 = u_g = 2534.63$ kJ/kg</li>
+                              <li>$s_1 = s_f = 1.5812$ kJ/kg-K</li>
+                              <li>$s_2 = s_g = 7.0774$ kJ/kg-K</li>
+                          </ul>
+                          <p><strong>3. Calculate Work (Constant Pressure):</strong></p>
+                          $$ W = \int P dV = P (V_2 - V_1) = m P (v_2 - v_1) $$
+                          $$ W = 0.1 \text{ kg} \times 232.1 \text{ kPa} \times (0.77059 - 0.001065) \frac{\text{m³}}{\text{kg}} $$
+                          $$ W = 23.21 \times 0.769525 \text{ kPa} \cdot \text{m³} $$
+                          $$ W = 17.8606 \text{ kJ} \approx 17.86 \text{ kJ} $$
+                          <p><strong>4. Calculate Heat Transfer (Energy Equation):</strong></p>
+                          <p>For constant pressure, reversible process: $Q = \Delta H = m(h_2 - h_1) = m h_{fg}$.</p>
+                          <p>Alternatively, $Q = \Delta U + W = m(u_2 - u_1) + W$.</p>
+                          $$ Q = 0.1 \text{ kg} \times (2534.63 - 524.72) \frac{\text{kJ}}{\text{kg}} + 17.8606 \text{ kJ} $$
+                          $$ Q = 0.1 \times 2009.91 + 17.8606 = 200.991 + 17.8606 = 218.85 \text{ kJ} $$
+                          <p><strong>5. Calculate Heat Transfer (Entropy Equation):</strong></p>
+                          <p>For a reversible, isothermal process: $Q = \int T dS = T \Delta S = T m (s_2 - s_1)$.</p>
+                          <ul><li>$T = 125$°C $= 398.15$ K</li></ul>
+                          $$ Q = 398.15 \text{ K} \times 0.1 \text{ kg} \times (7.0774 - 1.5812) \frac{\text{kJ}}{\text{kg-K}} $$
+                          $$ Q = 39.815 \times 5.4962 = 218.83 \text{ kJ} $$
+                          <p><strong>6. Compare Heat Transfer:</strong></p>
+                          <p>Q (Energy Eq.) = $218.85$ kJ. Q (Entropy Eq.) = $218.83$ kJ. The values are essentially the same, confirming consistency for a reversible process.</p>
+                          <p><strong>Table Values Used Summary:</strong> B.1.1 (Water).</p>
+                      </div>
+                  </div>
+              </div>
+          </div> <!-- End Question 4 -->
+
+          <!-- Question 5 -->
+          <div class="accordion-item" data-state="collapsed">
+              <div class="accordion-header">
+                  <h2>Question 5: Reversible Isothermal Water Expansion</h2>
+                  <span class="state-indicator" title="Status Indicator"></span>
+              </div>
+              <div class="accordion-content">
+                  <div class="content-inner">
+                      <div class="question-block">
+                          <strong>Question:</strong>
+                          <p>
+                              A piston-cylinder device contains $2$ kg of water, initially at $200$°C and $10$ MPa. The piston is moved slowly, allowing the water to expand in a reversible isothermal process until the pressure reaches $200$ kPa. Heat transfer occurs with an ambient environment which is also at $200$°C. Calculate: <br>
+                              a) The total heat transfer ($Q$) during the process. <br>
+                              b) The total work ($W$) done during the process. <br>
+                              c) Represent the process on P-v and T-s diagrams.
+                          </p>
+                      </div>
+                      <div class="final-answer-block hidden">
+                          <strong>Final Answer:</strong>
+                          <p>
+                              a) Heat Transfer $Q \approx 4910$ kJ. <br>
+                              b) Total Work $W \approx 1290$ kJ.
+                          </p>
+                      </div>
+                      <div class="solution-block hidden">
+                          <strong>Full Solution:</strong>
+                          <p><strong>1. Identify States:</strong></p>
+                          <ul>
+                              <li>State 1: $T_1 = 200$°C, $P_1 = 10$ MPa. $m = 2$ kg. From Table B.1.4 (Compressed Liquid): $v_1 = 0.001153$ m³/kg, $u_1 = 844.49$ kJ/kg, $s_1 = 2.3178$ kJ/kg-K.</li>
+                              <li>State 2: $T_2 = T_1 = 200$°C, $P_2 = 200$ kPa. Check Table B.1.2: $P_{sat}(200°C) = 1553.8$ kPa. Since $P_2 < P_{sat}$, state 2 is superheated vapor. From Table B.1.3: $v_2 = 1.08034$ m³/kg, $u_2 = 2654.39$ kJ/kg, $s_2 = 7.5066$ kJ/kg-K.</li>
+                          </ul>
+                          <p><strong>2. Process:</strong> Reversible, isothermal expansion at $T = 200$°C $= 473.15$ K.</p>
+                          <p><strong>3. Calculate Heat Transfer (Q):</strong></p>
+                          <p>For a reversible, isothermal process: $Q = T \Delta S = T m (s_2 - s_1)$.</p>
+                          $$ Q = 473.15 \text{ K} \times 2 \text{ kg} \times (7.5066 - 2.3178) \frac{\text{kJ}}{\text{kg-K}} $$
+                          $$ Q = 946.3 \times 5.1888 = 4909.90 \text{ kJ} \approx 4910 \text{ kJ} $$
+                          <p><strong>4. Calculate Work (W):</strong></p>
+                          <p>First Law: $\Delta U = Q - W \implies W = Q - \Delta U$.</p>
+                          $$ \Delta U = m (u_2 - u_1) = 2 \text{ kg} \times (2654.39 - 844.49) \frac{\text{kJ}}{\text{kg}} $$
+                          $$ \Delta U = 2 \times 1809.9 = 3619.8 \text{ kJ} $$
+                          $$ W = Q - \Delta U = 4909.90 \text{ kJ} - 3619.8 \text{ kJ} = 1290.1 \text{ kJ} \approx 1290 \text{ kJ} $$
+                          <p><strong>5. Diagrams:</strong></p>
+                          <ul>
+                              <li><strong>P-v Diagram:</strong> Draw saturation dome. State 1 is in compressed liquid region (P=10MPa, T=200C). State 2 is in superheated region (P=200kPa, T=200C). The path is the T=200°C isotherm, curving down and right from state 1 to state 2.</li>
+                              <li><strong>T-s Diagram:</strong> Draw saturation dome. State 1 is left of dome at T=200C, s=2.3178. State 2 is right of dome at T=200C, s=7.5066. The path is a horizontal line at T=200°C from state 1 to state 2.</li>
+                          </ul>
+                           <p><strong>Table Values Used Summary:</strong> B.1.4, B.1.3 (Water).</p>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 5 -->
+
+           <!-- Question 6 -->
+           <div class="accordion-item" data-state="collapsed">
+               <div class="accordion-header">
+                   <h2>Question 6: Steel & Aluminum Thermal Equilibrium</h2>
+                   <span class="state-indicator" title="Status Indicator"></span>
+               </div>
+               <div class="accordion-content">
+                   <div class="content-inner">
+                       <div class="question-block">
+                           <strong>Question:</strong>
+                           <p>
+                               A $4$ kg piece of steel, initially at $250$°C, and a $3$ kg block of aluminum, initially at $25$°C, are brought into thermal contact and isolated from the surroundings. Assuming constant specific heats, find the final equilibrium temperature and the total change in entropy for the process.
+                           </p>
+                       </div>
+                       <div class="final-answer-block hidden">
+                           <strong>Final Answer:</strong>
+                           <p>
+                               a) Final Temperature $T_f \approx 116.2$ °C ($389.3$ K). <br>
+                               b) Total Entropy Change $\Delta S_{total} \approx 0.177$ kJ/K.
+                           </p>
+                       </div>
+                       <div class="solution-block hidden">
+                           <strong>Full Solution:</strong>
+                           <p><strong>1. System:</strong> Steel block + Aluminum block. Isolated ($Q=0$), $W=0$.</p>
+                           <p><strong>2. Energy Balance:</strong> $\Delta U_{steel} + \Delta U_{aluminum} = 0$.</p>
+                           <p>Assuming constant specific heats, $\Delta U \approx m C_p \Delta T$ for solids:</p>
+                           $$ m_s C_{p,s} (T_f - T_{s1}) + m_{al} C_{p,al} (T_f - T_{al1}) = 0 $$
+                           <p><strong>3. Given Values & Properties (Table A.3):</strong></p>
+                           <ul>
+                              <li>Steel (use 304 St Steel): $m_s = 4$ kg, $T_{s1} = 250$°C $= 523.15$ K, $C_{p,s} = 0.46$ kJ/kg-K.</li>
+                              <li>Aluminum: $m_{al} = 3$ kg, $T_{al1} = 25$°C $= 298.15$ K, $C_{p,al} = 0.90$ kJ/kg-K.</li>
+                           </ul>
+                           <p><strong>4. Solve for Final Temperature ($T_f$):</strong></p>
+                           $$ 4 \times 0.46 \times (T_f - 523.15) + 3 \times 0.90 \times (T_f - 298.15) = 0 $$
+                           $$ 1.84 (T_f - 523.15) + 2.70 (T_f - 298.15) = 0 $$
+                           $$ 1.84 T_f - 962.596 + 2.70 T_f - 805.005 = 0 $$
+                           $$ 4.54 T_f = 1767.601 $$
+                           $$ T_f = \frac{1767.601}{4.54} = 389.34 \text{ K} \approx 116.2 \text{ °C} $$
+                           <p><strong>5. Calculate Entropy Changes:</strong></p>
+                           <p>For solids with constant specific heat: $\Delta S = m C_p \ln(T_f / T_i)$.</p>
+                           <ul>
+                               <li>Steel: $\Delta S_{steel} = 4 \times 0.46 \times \ln(\frac{389.34}{523.15}) = 1.84 \times \ln(0.74424) = 1.84 \times (-0.2954) = -0.5435$ kJ/K</li>
+                               <li>Aluminum: $\Delta S_{aluminum} = 3 \times 0.90 \times \ln(\frac{389.34}{298.15}) = 2.70 \times \ln(1.3058) = 2.70 \times 0.2668 = 0.7204$ kJ/K</li>
+                           </ul>
+                           $$ \Delta S_{total} = \Delta S_{steel} + \Delta S_{aluminum} = -0.5435 + 0.7204 = 0.1769 \text{ kJ/K} \approx 0.177 \text{ kJ/K} $$
+                           <p>(Since $\Delta S_{total} > 0$, the process is irreversible, as expected).</p>
+                           <p><strong>Table Values Used Summary:</strong> A.3 (Specific Heats).</p>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 6 -->
+
+           <!-- Question 7 -->
+           <div class="accordion-item" data-state="collapsed">
+               <div class="accordion-header">
+                   <h2>Question 7: Iron Cooling Entropy Changes</h2>
+                   <span class="state-indicator" title="Status Indicator"></span>
+               </div>
+               <div class="accordion-content">
+                   <div class="content-inner">
+                       <div class="question-block">
+                           <strong>Question:</strong>
+                           <p>
+                               A $50$ kg block of iron, initially at $500$ K, is placed in the open atmosphere which is at a constant temperature of $285$ K. The iron block eventually cools down to thermal equilibrium with the atmosphere. Assuming an average specific heat capacity of $0.45$ kJ/kg-K for iron, determine the entropy change for: <br>
+                               (a) the iron block ($\Delta S_{iron}$). <br>
+                               (b) the atmosphere ($\Delta S_{atm}$).
+                           </p>
+                       </div>
+                       <div class="final-answer-block hidden">
+                           <strong>Final Answer:</strong>
+                           <p>
+                               (a) $\Delta S_{iron} \approx -12.65$ kJ/K. <br>
+                               (b) $\Delta S_{atm} \approx +16.97$ kJ/K.
+                           </p>
+                       </div>
+                       <div class="solution-block hidden">
+                           <strong>Full Solution:</strong>
+                           <p><strong>1. Identify System & States:</strong></p>
+                           <ul>
+                              <li>System 1: Iron block. $m = 50$ kg, $C_p = 0.45$ kJ/kg-K. $T_i = 500$ K, $T_f = 285$ K.</li>
+                              <li>System 2: Atmosphere (Surroundings). $T_{atm} = 285$ K (constant).</li>
+                           </ul>
+                           <p><strong>2. Entropy Change of Iron Block ($\Delta S_{iron}$):</strong></p>
+                           $$ \Delta S_{iron} = m C_p \ln(\frac{T_f}{T_i}) $$
+                           $$ \Delta S_{iron} = 50 \text{ kg} \times 0.45 \frac{\text{kJ}}{\text{kg-K}} \times \ln(\frac{285 \text{ K}}{500 \text{ K}}) $$
+                           $$ \Delta S_{iron} = 22.5 \frac{\text{kJ}}{\text{K}} \times \ln(0.57) = 22.5 \times (-0.56206) $$
+                           $$ \Delta S_{iron} = -12.646 \text{ kJ/K} \approx -12.65 \text{ kJ/K} $$
+                           <p><strong>3. Heat Transfer (Q):</strong></p>
+                           <p>Heat transferred <strong>from</strong> the iron block to the atmosphere:</p>
+                           $$ Q_{out,iron} = m C_p (T_i - T_f) $$
+                           $$ Q_{out,iron} = 50 \text{ kg} \times 0.45 \frac{\text{kJ}}{\text{kg-K}} \times (500 \text{ K} - 285 \text{ K}) $$
+                           $$ Q_{out,iron} = 22.5 \frac{\text{kJ}}{\text{K}} \times 215 \text{ K} = 4837.5 \text{ kJ} $$
+                           <p><strong>4. Entropy Change of Atmosphere ($\Delta S_{atm}$):</strong></p>
+                           <p>The atmosphere receives heat $Q_{atm} = Q_{out,iron} = 4837.5$ kJ at a constant temperature $T_{atm} = 285$ K.</p>
+                           $$ \Delta S_{atm} = \frac{Q_{atm}}{T_{atm}} $$
+                           $$ \Delta S_{atm} = \frac{4837.5 \text{ kJ}}{285 \text{ K}} = 16.974 \frac{\text{kJ}}{\text{K}} \approx 16.97 \text{ kJ/K} $$
+                           <p>(Note: Total entropy generation is $\Delta S_{iron} + \Delta S_{atm} = -12.65 + 16.97 = +4.32$ kJ/K > 0, indicating irreversibility).</p>
+                           <p><strong>Table Values Used Summary:</strong> None required (Cp given).</p>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 7 -->
+
+           <!-- Question 8 -->
+           <div class="accordion-item" data-state="collapsed">
+               <div class="accordion-header">
+                   <h2>Question 8: R-410A Constant Volume Heating</h2>
+                   <span class="state-indicator" title="Status Indicator"></span>
+               </div>
+               <div class="accordion-content">
+                   <div class="content-inner">
+                       <div class="question-block">
+                           <strong>Question:</strong>
+                           <p>
+                               R-410A, initially at $300$ kPa and $20$°C, is heated in a rigid container (constant volume process) to a final temperature of $220$°C. Evaluate the change in specific entropy ($\Delta s$) using: <br>
+                               a) Values from Table B.4. <br>
+                               b) The ideal gas assumption with a constant specific heat $C_v = 0.695$ kJ/kg-K.
+                           </p>
+                       </div>
+                       <div class="final-answer-block hidden">
+                           <strong>Final Answer:</strong>
+                           <p>
+                               a) $\Delta s$ (Table B.4) $\approx 0.4319$ kJ/kg-K. <br>
+                               b) $\Delta s$ (Ideal Gas) $\approx 0.3614$ kJ/kg-K.
+                           </p>
+                       </div>
+                       <div class="solution-block hidden">
+                           <strong>Full Solution:</strong>
+                           <p><strong>(a) Using Table B.4:</strong></p>
+                           <ol>
+                               <li><strong>Find State 1 Properties:</strong> At $P_1=300$ kPa, $T_1=20$°C. From Table B.4.2 (Superheated R-410A):
+                                   <ul><li>$v_1 = 0.10720$ m³/kg</li><li>$s_1 = 1.2485$ kJ/kg-K</li></ul>
+                               </li>
+                               <li><strong>Find State 2 Properties:</strong> Constant volume process, so $v_2 = v_1 = 0.10720$ m³/kg. $T_2 = 220$°C. We need to find $s_2$ at ($v_2=0.10720$, $T_2=220$°C). This requires double interpolation in Table B.4.2 at $T=220$°C.
+                                   <br>First find pressure $P_2$ where $v=0.10720$ at $T=220$°C by interpolating between $P=500$ kPa ($v=0.11558$) and $P=600$ kPa ($v=0.09104$).
+                                   $$ P_2 = 500 + \frac{0.10720 - 0.11558}{0.09104 - 0.11558} \times (600 - 500) = 500 + \frac{-0.00838}{-0.02454} \times 100 \approx 534.15 \text{ kPa} $$
+                                   Now interpolate for $s_2$ at $P_2=534.15$ kPa and $T_2=220$°C. Find $s$ at $P=500$ kPa and $P=600$ kPa first.
+                                   <br>$s(500 \text{kPa}, 220°C) \approx 1.7125 + 0.5(1.6646-1.7125) = 1.68855$ kJ/kg-K (by interpolating between 400 and 600 kPa)
+                                   <br>$s(600 \text{kPa}, 220°C) = 1.6646$ kJ/kg-K
+                                   $$ s_2 = 1.68855 + \frac{534.15 - 500}{600 - 500} \times (1.6646 - 1.68855) $$
+                                   $$ s_2 = 1.68855 + 0.3415 \times (-0.02395) = 1.68855 - 0.00818 = 1.68037 \text{ kJ/kg-K} $$
+                               </li>
+                               <li><strong>Calculate Δs:</strong>
+                                   $$ \Delta s = s_2 - s_1 = 1.68037 - 1.2485 = 0.43187 \text{ kJ/kg-K} \approx 0.4319 \text{ kJ/kg-K} $$
+                               </li>
+                           </ol>
+                           <p><strong>(b) Using Ideal Gas with constant $C_v$:</strong></p>
+                            <ol>
+                               <li>Temperatures: $T_1 = 20$°C $= 293.15$ K, $T_2 = 220$°C $= 493.15$ K.</li>
+                               <li>Ideal Gas Entropy Change (Constant Volume): $\Delta s = C_v \ln(T_2/T_1)$.</li>
+                               <li>Calculate $\Delta s$: Use $C_v = 0.695$ kJ/kg-K (given).
+                                    $$ \Delta s = 0.695 \frac{\text{kJ}}{\text{kg-K}} \times \ln(\frac{493.15 \text{ K}}{293.15 \text{ K}}) $$
+                                    $$ \Delta s = 0.695 \times \ln(1.6822) = 0.695 \times 0.5200 = 0.3614 \text{ kJ/kg-K} $$
+                               </li>
+                           </ol>
+                           <p><strong>Comparison:</strong> The ideal gas model ($\Delta s \approx 0.3614$) significantly differs from the result using real fluid tables ($\Delta s \approx 0.4319$), indicating R-410A deviates noticeably from ideal gas behavior under these conditions.</p>
+                           <p><strong>Table Values Used Summary:</strong> B.4.2 (R-410A). $C_v$ given.</p>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 8 -->
+
+           <!-- Question 9 -->
+           <div class="accordion-item" data-state="collapsed">
+               <div class="accordion-header">
+                   <h2>Question 9: Isentropic Compression of Oxygen</h2>
+                   <span class="state-indicator" title="Status Indicator"></span>
+               </div>
+               <div class="accordion-content">
+                   <div class="content-inner">
+                       <div class="question-block">
+                           <strong>Question:</strong>
+                           <p>
+                               Oxygen gas (O₂) in a piston-cylinder device initially at $300$ K, $100$ kPa, and with a volume of $0.1$ m³ is compressed in a reversible adiabatic (isentropic) process to a final temperature of $700$ K. Find the final pressure ($P_2$) and final volume ($V_2$) using: <br>
+                               a) Constant specific heats from Table A.5. <br>
+                               b) Variable specific heats using Table A.8.
+                           </p>
+                       </div>
+                       <div class="final-answer-block hidden">
+                           <strong>Final Answer:</strong>
+                           <p>
+                               a) Using Table A.5: $P_2 \approx 1555$ kPa, $V_2 \approx 0.0118$ m³. <br>
+                               b) Using Table A.8: $P_2 \approx 2320$ kPa, $V_2 \approx 0.0101$ m³.
+                           </p>
+                       </div>
+                       <div class="solution-block hidden">
+                           <strong>Full Solution:</strong>
+                           <p><strong>(a) Using Table A.5 (Constant Specific Heats):</strong></p>
+                           <ol>
+                               <li><strong>Process:</strong> Isentropic. Ideal gas, constant $k=1.393$ (Table A.5 for O₂).</li>
+                               <li><strong>Isentropic Relations:</strong>
+                                    <br>$P_2 = P_1 (\frac{T_2}{T_1})^{\frac{k}{k-1}}$
+                                    <br>$V_2 = V_1 (\frac{T_1}{T_2})^{\frac{1}{k-1}}$
+                               </li>
+                               <li><strong>Calculate Exponents:</strong>
+                                   <br>$k/(k-1) = 1.393 / 0.393 \approx 3.5445$
+                                   <br>$1/(k-1) = 1 / 0.393 \approx 2.5445$
+                               </li>
+                               <li><strong>Calculate Final Pressure ($P_2$):</strong>
+                                   $$ P_2 = 100 \text{ kPa} \times (\frac{700 \text{ K}}{300 \text{ K}})^{3.5445} = 100 \times (2.3333)^{3.5445} $$
+                                   $$ P_2 = 100 \times 15.547 = 1554.7 \text{ kPa} \approx 1555 \text{ kPa} $$
+                               </li>
+                               <li><strong>Calculate Final Volume ($V_2$):</strong>
+                                   $$ V_2 = 0.1 \text{ m³} \times (\frac{300 \text{ K}}{700 \text{ K}})^{2.5445} = 0.1 \times (0.42857)^{2.5445} $$
+                                   $$ V_2 = 0.1 \times 0.1183 = 0.01183 \text{ m³} \approx 0.0118 \text{ m³} $$
+                               </li>
+                           </ol>
+                           <p><strong>(b) Using Table A.8 (Variable Specific Heats):</strong></p>
+                           <ol>
+                               <li><strong>Process:</strong> Isentropic ($s_2 = s_1$). Ideal gas.</li>
+                               <li><strong>Entropy Relation:</strong> $s_2 - s_1 = 0 = s^\circ(T_2) - s^\circ(T_1) - R \ln(P_2/P_1)$.</li>
+                               <li><strong>Get Properties:</strong> $R = 0.2598$ kJ/kg-K (Table A.8).
+                                    <br>$s^\circ(T_1=300 \text{ K}) = 6.4168$ kJ/kg-K
+                                    <br>$s^\circ(T_2=700 \text{ K}) = 7.2336$ kJ/kg-K
+                               </li>
+                               <li><strong>Calculate Final Pressure ($P_2$):</strong>
+                                   $$ R \ln(\frac{P_2}{P_1}) = s^\circ(T_2) - s^\circ(T_1) $$
+                                   $$ 0.2598 \ln(\frac{P_2}{100}) = 7.2336 - 6.4168 = 0.8168 $$
+                                   $$ \ln(\frac{P_2}{100}) = \frac{0.8168}{0.2598} = 3.14396 $$
+                                   $$ \frac{P_2}{100} = e^{3.14396} = 23.195 $$
+                                   $$ P_2 = 2319.5 \text{ kPa} \approx 2320 \text{ kPa} $$
+                               </li>
+                               <li><strong>Calculate Final Volume ($V_2$):</strong> Use Ideal Gas Law $P V = m R T$. First find mass $m$.
+                                   <br>$m = \frac{P_1 V_1}{R T_1} = \frac{100 \text{ kPa} \times 0.1 \text{ m³}}{0.2598 \frac{\text{kJ}}{\text{kg-K}} \times 300 \text{ K}} = \frac{10}{77.94} = 0.1283$ kg
+                                   $$ V_2 = \frac{m R T_2}{P_2} = \frac{0.1283 \text{ kg} \times 0.2598 \frac{\text{kJ}}{\text{kg-K}} \times 700 \text{ K}}{2319.5 \text{ kPa}} $$
+                                   $$ V_2 = \frac{23.32}{2319.5} = 0.01005 \text{ m³} \approx 0.0101 \text{ m³} $$
+                               </li>
+                           </ol>
+                           <p><strong>Table Values Used Summary:</strong> A.5 (k for O₂), A.8 (s° for O₂).</p>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 9 -->
+
+           <!-- Question 10 -->
+           <div class="accordion-item" data-state="collapsed">
+               <div class="accordion-header">
+                   <h2>Question 10: Methane Isentropic Compression Work</h2>
+                   <span class="state-indicator" title="Status Indicator"></span>
+               </div>
+               <div class="accordion-content">
+                   <div class="content-inner">
+                       <div class="question-block">
+                           <strong>Question:</strong>
+                           <p>
+                               A cylinder/piston device contains $1$ kg of methane (CH₄) gas, initially at $100$ kPa and $20$°C. The gas is compressed reversibly and adiabatically to a final pressure of $800$ kPa. Assuming methane behaves as an ideal gas with constant heat capacities, calculate the work required for this process.
+                           </p>
+                       </div>
+                       <div class="final-answer-block hidden">
+                           <strong>Final Answer:</strong>
+                           <p>
+                               The work required (input) is $W_{in} \approx 343$ kJ.
+                           </p>
+                       </div>
+                       <div class="solution-block hidden">
+                           <strong>Full Solution:</strong>
+                           <p><strong>1. Process:</strong> Reversible adiabatic (isentropic) compression. Ideal gas, constant $C_p, C_v, k$.</p>
+                           <p><strong>2. States:</strong></p>
+                           <ul>
+                               <li>State 1: $P_1=100$ kPa, $T_1 = 20$°C $= 293.15$ K. $m = 1$ kg.</li>
+                               <li>State 2: $P_2 = 800$ kPa.</li>
+                           </ul>
+                           <p><strong>3. Find Final Temperature ($T_2$):</strong></p>
+                           <p>Use isentropic relation: $T_2/T_1 = (P_2/P_1)^{(k-1)/k}$. From Table A.5 for Methane: $k = 1.299$.</p>
+                           <ul><li>$(k-1)/k = (1.299-1)/1.299 = 0.299 / 1.299 \approx 0.23018$.</li></ul>
+                           $$ T_2 = T_1 \left(\frac{P_2}{P_1}\right)^{0.23018} = 293.15 \text{ K} \times (\frac{800}{100})^{0.23018} $$
+                           $$ T_2 = 293.15 \times (8)^{0.23018} = 293.15 \times 1.6756 = 491.2 \text{ K} $$
+                           <p><strong>4. Calculate Work (W):</strong></p>
+                           <p>For an adiabatic process in a closed system: $\Delta U = Q - W$. Since $Q=0$, $W = -\Delta U = -(U_2 - U_1) = m(u_1 - u_2)$.</p>
+                           <p>For ideal gas with constant specific heats: $W = m C_v (T_1 - T_2)$.</p>
+                           <p>From Table A.5: $R = 0.5183$ kJ/kg-K, $C_{p0} = 2.254$ kJ/kg-K. $C_v = C_p - R = 2.254 - 0.5183 = 1.7357$ kJ/kg-K.</p>
+                           $$ W = 1 \text{ kg} \times 1.7357 \frac{\text{kJ}}{\text{kg-K}} \times (293.15 - 491.2) \text{ K} $$
+                           $$ W = 1.7357 \times (-198.05) = -343.76 \text{ kJ} $$
+                           <p>The work required (input) is $W_{in} = -W \approx 343.8$ kJ.</p>
+                           <p>(Alternatively using $W = \frac{mR(T_2 - T_1)}{1-k} = \frac{1 \times 0.5183 \times (491.2 - 293.15)}{1 - 1.299} = \frac{102.63}{-0.299} = -343.24$ kJ).</p>
+                           <p>Using the $C_v$ value gives $\approx 343.8$ kJ input.</p>
+                           <p><strong>Table Values Used Summary:</strong> A.5 (R, Cp, k for Methane).</p>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 10 -->
+
+           <!-- Question 11 -->
+           <div class="accordion-item" data-state="collapsed">
+               <div class="accordion-header">
+                   <h2>Question 11: Ammonia Spring-Loaded Piston Process</h2>
+                   <span class="state-indicator" title="Status Indicator"></span>
+               </div>
+               <div class="accordion-content">
+                   <div class="content-inner">
+                       <div class="question-block">
+                           <strong>Question:</strong>
+                           <p>
+                               One kilogram of ammonia (NH₃) is contained in a spring-loaded piston-cylinder assembly. Initially, it is saturated liquid at $-20$°C. Heat is added from a reservoir at $100$°C until the ammonia reaches a final state of $800$ kPa and $70$°C. Assuming the process is internally reversible, find: <br>
+                               a) The work done ($W$). <br>
+                               b) The heat transfer ($Q$). <br>
+                               c) The entropy generation ($S_{gen}$). <br>
+                               d) Represent the process on a P-v diagram.
+                           </p>
+                       </div>
+                       <div class="final-answer-block hidden">
+                           <strong>Final Answer:</strong>
+                           <p>
+                               a) Work $W \approx 97.8$ kJ. <br>
+                               b) Heat Transfer $Q \approx 1466.4$ kJ. <br>
+                               c) Total Entropy Generation $S_{gen} \approx 1.326$ kJ/K.
+                           </p>
+                       </div>
+                       <div class="solution-block hidden">
+                           <strong>Full Solution:</strong>
+                            <p><strong>1. Identify States:</strong></p>
+                            <ul>
+                               <li>State 1: Sat. Liquid, $T_1=-20$°C. $m=1$kg. From Table B.2.1: $P_1=190.2$ kPa, $v_1=v_f=0.001504$ m³/kg, $u_1=u_f=88.76$ kJ/kg, $s_1=s_f=0.3657$ kJ/kg-K.</li>
+                               <li>State 2: $P_2=800$ kPa, $T_2=70$°C. Superheated. From Table B.2.2: $v_2=0.19896$ m³/kg, $u_2=1457.4$ kJ/kg, $s_2=5.6219$ kJ/kg-K.</li>
+                            </ul>
+                            <p><strong>2. Process:</strong> Spring-loaded piston (linear P-V), internally reversible. Heat from reservoir $T_H = 100$°C $= 373.15$ K.</p>
+                            <p><strong>3. Calculate Work (W):</strong></p>
+                            <p>For a linear P-V process: $W = \int P dV = \text{Area} = \frac{1}{2} (P_1 + P_2) (V_2 - V_1) = \frac{1}{2} (P_1 + P_2) m (v_2 - v_1)$</p>
+                            $$ W = 0.5 \times (190.2 + 800) \text{ kPa} \times 1 \text{ kg} \times (0.19896 - 0.001504) \frac{\text{m³}}{\text{kg}} $$
+                            $$ W = 0.5 \times 990.2 \times 0.197456 \text{ kPa} \cdot \text{m³} $$
+                            $$ W = 97.76 \text{ kJ} $$
+                            <p><strong>4. Calculate Heat Transfer (Q):</strong></p>
+                            <p>First Law: $Q = \Delta U + W = m(u_2 - u_1) + W$</p>
+                            $$ Q = 1 \text{ kg} \times (1457.4 - 88.76) \frac{\text{kJ}}{\text{kg}} + 97.76 \text{ kJ} $$
+                            $$ Q = 1368.64 + 97.76 = 1466.4 \text{ kJ} $$
+                            <p><strong>5. Calculate Entropy Generation ($S_{gen}$):</strong></p>
+                            <p>Process is internally reversible, so $S_{gen}$ is only due to external heat transfer across $\Delta T$.</p>
+                            $$ S_{gen} = \Delta S_{total} = \Delta S_{sys} + \Delta S_{surr} $$
+                            <ul>
+                                <li>$\Delta S_{sys} = m(s_2 - s_1) = 1 \text{ kg} \times (5.6219 - 0.3657) \frac{\text{kJ}}{\text{kg-K}} = 5.2562$ kJ/K</li>
+                                <li>Heat leaves reservoir: $Q_{H,out} = -Q = -1466.4$ kJ</li>
+                                <li>$\Delta S_{surr} = \frac{Q_{H,out}}{T_H} = \frac{-1466.4 \text{ kJ}}{373.15 \text{ K}} = -3.930$ kJ/K</li>
+                            </ul>
+                            $$ S_{gen} = \Delta S_{sys} + \Delta S_{surr} = 5.2562 - 3.930 = 1.3262 \frac{\text{kJ}}{\text{K}} \approx 1.326 \text{ kJ/K} $$
+                            <p><strong>6. P-v Diagram:</strong></p>
+                            <ul>
+                                <li>Draw saturation dome for ammonia.</li>
+                                <li>Plot State 1 (Sat liquid, P=190.2, v=0.001504).</li>
+                                <li>Plot State 2 (Superheated, P=800, v=0.19896).</li>
+                                <li>Draw a straight line connecting State 1 and State 2.</li>
+                            </ul>
+                            <p><strong>Table Values Used Summary:</strong> B.2.1, B.2.2 (Ammonia).</p>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 11 -->
+
+           <!-- Question 12 -->
+           <div class="accordion-item" data-state="collapsed">
+               <div class="accordion-header">
+                   <h2>Question 12: Adiabatic Mixing of Air</h2>
+                   <span class="state-indicator" title="Status Indicator"></span>
+               </div>
+               <div class="accordion-content">
+                   <div class="content-inner">
+                       <div class="question-block">
+                           <strong>Question:</strong>
+                           <p>
+                               One kilogram of air at $300$ K is mixed adiabatically ($Q=0$) with one kilogram of air at $400$ K in a process occurring at a constant pressure of $100$ kPa. Assuming the process is internally reversible and specific heats are constant, find: <br>
+                               a) The final equilibrium temperature ($T_f$). <br>
+                               b) The entropy generation during the process ($S_{gen}$).
+                           </p>
+                       </div>
+                       <div class="final-answer-block hidden">
+                           <strong>Final Answer:</strong>
+                           <p>
+                               a) Final Temperature $T_f = 350$ K. <br>
+                               b) Entropy Generation $S_{gen} \approx 0.0207$ kJ/K.
+                           </p>
+                       </div>
+                       <div class="solution-block hidden">
+                           <strong>Full Solution:</strong>
+                           <p><strong>1. System:</strong> Combined mass of air ($m_A=1$kg, $m_B=1$kg). Constant Pressure $P=100$kPa, Adiabatic $Q=0$.</p>
+                           <p><strong>2. Energy Balance:</strong> Assuming steady flow mixing or constant pressure closed system, $\Delta H = Q - W_{shaft} = 0$.</p>
+                           $$ H_{final} - (H_{A,initial} + H_{B,initial}) = 0 $$
+                           $$ (m_A + m_B) h_f = m_A h_A + m_B h_B $$
+                           <p>Assuming constant $C_p$: $(m_A + m_B) C_p T_f = m_A C_p T_A + m_B C_p T_B$</p>
+                           $$ (m_A + m_B) T_f = m_A T_A + m_B T_B $$
+                           <p><strong>3. Calculate Final Temperature ($T_f$):</strong></p>
+                           $$ (1 \text{ kg} + 1 \text{ kg}) T_f = 1 \text{ kg} \times 300 \text{ K} + 1 \text{ kg} \times 400 \text{ K} $$
+                           $$ 2 T_f = 700 \text{ K} \implies T_f = 350 \text{ K} $$
+                           <p><strong>4. Calculate Entropy Generation ($S_{gen}$):</strong></p>
+                           <p>For an adiabatic process, $S_{gen} = \Delta S_{total} = \Delta S_A + \Delta S_B$.</p>
+                           <p>For an ideal gas, constant pressure process: $\Delta S = m [C_p \ln(T_f/T_i) - R \ln(P_f/P_i)]$. Here $P_f = P_i = 100$ kPa (partial pressures change but total pressure is constant during ideal mixing).</p>
+                           $$ \Delta S = m C_p \ln(\frac{T_f}{T_i}) $$
+                           <p>Use $C_p = 1.004$ kJ/kg-K (Table A.5).</p>
+                           <ul>
+                              <li>$\Delta S_A = 1 \text{ kg} \times 1.004 \frac{\text{kJ}}{\text{kg-K}} \times \ln(\frac{350 \text{ K}}{300 \text{ K}}) = 1.004 \times \ln(1.1667) = 1.004 \times 0.15415 = 0.15477$ kJ/K</li>
+                              <li>$\Delta S_B = 1 \text{ kg} \times 1.004 \frac{\text{kJ}}{\text{kg-K}} \times \ln(\frac{350 \text{ K}}{400 \text{ K}}) = 1.004 \times \ln(0.875) = 1.004 \times (-0.13353) = -0.13406$ kJ/K</li>
+                           </ul>
+                           $$ S_{gen} = \Delta S_A + \Delta S_B = 0.15477 - 0.13406 = 0.02071 \frac{\text{kJ}}{\text{K}} \approx 0.0207 \text{ kJ/K} $$
+                           <p>(Note: Mixing at different temperatures is inherently irreversible, so $S_{gen} > 0$ is expected, even if the problem stated "internally reversible" which likely applied only to the streams *before* mixing.)</p>
+                           <p><strong>Table Values Used Summary:</strong> A.5 (Cp for Air).</p>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 12 -->
+
+           <!-- Question 13 -->
+           <div class="accordion-item" data-state="collapsed">
+               <div class="accordion-header">
+                   <h2>Question 13: Heater Entropy Fluxes & Generation</h2>
+                   <span class="state-indicator" title="Status Indicator"></span>
+               </div>
+               <div class="accordion-content">
+                   <div class="content-inner">
+                       <div class="question-block">
+                           <strong>Question:</strong>
+                           <p>
+                               A room is maintained at a steady temperature of $22$°C by an electrical heater consuming $1500$ W. The outside ambient air is at $5$°C. Determine: <br>
+                               a) The rate of entropy flux out of the room air (due to heat loss). <br>
+                               b) The rate of entropy flux into the ambient air. <br>
+                               c) The total rate of entropy generation.
+                           </p>
+                       </div>
+                       <div class="final-answer-block hidden">
+                           <strong>Final Answer:</strong>
+                           <p>
+                               a) Entropy flux out of room air $\dot{S}_{flux,out,room} = -5.08$ W/K. <br>
+                               b) Entropy flux into ambient air $\dot{S}_{flux,in,amb} = +5.39$ W/K. <br>
+                               c) Total rate of entropy generation $\dot{S}_{gen,total} = 0.31$ W/K.
+                           </p>
+                       </div>
+                       <div class="solution-block hidden">
+                           <strong>Full Solution:</strong>
+                           <p><strong>1. Temperatures:</strong></p>
+                           <ul>
+                              <li>$T_{room} = 22$°C $= 295.15$ K</li>
+                              <li>$T_{amb} = 5$°C $= 278.15$ K</li>
+                           </ul>
+                           <p><strong>2. Energy Balance (Steady State):</strong></p>
+                           <p>Electrical work input $\dot{W}_{elec} = 1500$ W must equal heat loss $\dot{Q}_{loss}$ from room to ambient.</p>
+                           <ul><li>$\dot{Q}_{loss} = 1500$ W.</li></ul>
+                           <p><strong>3. Entropy Flux out of Room Air (a):</strong></p>
+                           <p>Associated with heat $\dot{Q}_{loss}$ leaving the room boundary at $T_{room}$.</p>
+                           $$ \dot{S}_{flux,out,room} = -\frac{\dot{Q}_{loss}}{T_{room}} = -\frac{1500 \text{ W}}{295.15 \text{ K}} = -5.082 \frac{\text{W}}{\text{K}} \approx -5.08 \text{ W/K} $$
+                           <p><strong>4. Entropy Flux into Ambient Air (b):</strong></p>
+                           <p>Associated with heat $\dot{Q}_{loss}$ entering the ambient air boundary at $T_{amb}$.</p>
+                           $$ \dot{S}_{flux,in,amb} = +\frac{\dot{Q}_{loss}}{T_{amb}} = +\frac{1500 \text{ W}}{278.15 \text{ K}} = +5.392 \frac{\text{W}}{\text{K}} \approx +5.39 \text{ W/K} $$
+                           <p><strong>5. Total Rate of Entropy Generation (c):</strong></p>
+                           <p>Consider the combined system of room air + wall + ambient air where the heat transfer occurs. The overall process is the conversion of electrical work (zero entropy) into heat transferred between $T_{room}$ and $T_{amb}$. Alternatively, consider the universe.</p>
+                           <p>Method 1: $\dot{S}_{gen,total} = \Delta \dot{S}_{room} + \Delta \dot{S}_{heater} + \Delta \dot{S}_{wall} + \Delta \dot{S}_{ambient}$. At steady state, $\Delta \dot{S}$ for room, heater, wall are zero.</p>
+                           <p>$\dot{S}_{gen,total} = \Delta \dot{S}_{ambient} = \dot{S}_{flux,in,amb} = +5.392$ W/K ? No, this ignores the source of the heat.</p>
+                           <p>Method 2: Entropy generated due to heat transfer across $\Delta T$. Consider the heat $\dot{Q}_{loss}$ flowing from $T_{room}$ to $T_{amb}$.</p>
+                           $$ \dot{S}_{gen, heat\_transfer} = \dot{Q}_{loss} (\frac{1}{T_{amb}} - \frac{1}{T_{room}}) $$
+                           $$ \dot{S}_{gen, heat\_transfer} = 1500 \text{ W} \times (\frac{1}{278.15 \text{ K}} - \frac{1}{295.15 \text{ K}}) $$
+                           $$ \dot{S}_{gen, heat\_transfer} = 1500 \times (0.003595 - 0.003388) = 1500 \times 0.000207 = 0.3105 \text{ W/K} \approx 0.31 \text{ W/K} $$
+                           <p>(This is the entropy generated *due to the heat transfer* across the temperature difference. The irreversible conversion of electrical work to heat inside the room also generates entropy, but the question focuses on the fluxes related to the heat loss.)</p>
+                           <p><strong>Table Values Used Summary:</strong> None required.</p>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 13 -->
+
+           <!-- Question 14 -->
+           <div class="accordion-item" data-state="collapsed">
+               <div class="accordion-header">
+                   <h2>Question 14: Ammonia Polytropic Process</h2>
+                   <span class="state-indicator" title="Status Indicator"></span>
+               </div>
+               <div class="accordion-content">
+                   <div class="content-inner">
+                       <div class="question-block">
+                           <strong>Question:</strong>
+                           <p>
+                               A device processes $2$ kg of ammonia (NH₃) from an initial state of $150$ kPa, $-20$°C to a final state of $400$ kPa, $80$°C in a polytropic process ($Pv^n = \text{constant}$). Assuming the process is internally reversible, find: <br>
+                               a) The polytropic exponent $n$. <br>
+                               b) The work done ($W$). <br>
+                               c) The heat transfer ($Q$). <br>
+                               d) The total entropy generated, assuming heat transfer occurs with a source at $100$°C.
+                           </p>
+                       </div>
+                       <div class="final-answer-block hidden">
+                           <strong>Final Answer:</strong>
+                           <p>
+                               a) $n \approx 1.905$ <br>
+                               b) Work $W \approx -156.9$ kJ (Work done *on* the system). <br>
+                               c) Heat Transfer $Q \approx 184.3$ kJ. <br>
+                               d) Total Entropy Generation $S_{gen} \approx 0.701$ kJ/K.
+                           </p>
+                       </div>
+                       <div class="solution-block hidden">
+                           <strong>Full Solution:</strong>
+                           <p><strong>1. Identify States:</strong></p>
+                           <ul>
+                               <li>State 1: $P_1=150$ kPa, $T_1=-20$°C. Superheated. From B.2.2: $v_1=0.7977$ m³/kg, $u_1=1303.3$ kJ/kg, $s_1=5.7465$ kJ/kg-K.</li>
+                               <li>State 2: $P_2=400$ kPa, $T_2=80$°C. Superheated. From B.2.2: $v_2=0.47666$ m³/kg, $u_2=1473.9$ kJ/kg, $s_2=6.3437$ kJ/kg-K.</li>
+                               <li>Mass $m = 2$ kg. Reservoir $T_H = 100$°C $= 373.15$ K.</li>
+                           </ul>
+                           <p><strong>2. Find Polytropic Exponent (n):</strong></p>
+                           <p>For $Pv^n = \text{constant}$: $P_1 v_1^n = P_2 v_2^n \implies \frac{P_2}{P_1} = (\frac{v_1}{v_2})^n$.</p>
+                           $$ n = \frac{\ln(P_2/P_1)}{\ln(v_1/v_2)} $$
+                           $$ n = \frac{\ln(400/150)}{\ln(0.7977 / 0.47666)} = \frac{\ln(2.6667)}{\ln(1.6735)} = \frac{0.98085}{0.5149} \approx 1.9049 $$
+                           <p><strong>3. Calculate Work (W):</strong></p>
+                           <p>For an internally reversible polytropic process ($n \neq 1$):</p>
+                           $$ W = \frac{m(P_2 v_2 - P_1 v_1)}{1 - n} $$
+                           <ul>
+                              <li>$P_1 v_1 = 150 \times 0.7977 = 119.655$ kJ/kg</li>
+                              <li>$P_2 v_2 = 400 \times 0.47666 = 190.664$ kJ/kg</li>
+                           </ul>
+                           $$ W = \frac{2 \text{ kg} \times (190.664 - 119.655) \frac{\text{kJ}}{\text{kg}}}{1 - 1.9049} $$
+                           $$ W = \frac{2 \times 71.009}{-0.9049} = \frac{142.018}{-0.9049} = -156.94 \text{ kJ} \approx -156.9 \text{ kJ} $$
+                           <p>(Negative sign indicates work is done *on* the system).</p>
+                           <p><strong>4. Calculate Heat Transfer (Q):</strong></p>
+                           <p>First Law: $Q = \Delta U + W = m(u_2 - u_1) + W$.</p>
+                           $$ Q = 2 \text{ kg} \times (1473.9 - 1303.3) \frac{\text{kJ}}{\text{kg}} + (-156.94 \text{ kJ}) $$
+                           $$ Q = 2 \times 170.6 - 156.94 = 341.2 - 156.94 = 184.26 \text{ kJ} \approx 184.3 \text{ kJ} $$
+                           <p><strong>5. Calculate Entropy Generation ($S_{gen}$):</strong></p>
+                           <p>$S_{gen} = \Delta S_{total} = \Delta S_{sys} + \Delta S_{surr}$. Process is internally reversible, so generation is due to external heat transfer.</p>
+                           <ul>
+                               <li>$\Delta S_{sys} = m(s_2 - s_1) = 2 \text{ kg} \times (6.3437 - 5.7465) \frac{\text{kJ}}{\text{kg-K}} = 2 \times 0.5972 = 1.1944$ kJ/K</li>
+                               <li>Heat leaves reservoir: $Q_{H,out} = -Q = -184.26$ kJ</li>
+                               <li>$\Delta S_{surr} = \frac{Q_{H,out}}{T_H} = \frac{-184.26 \text{ kJ}}{373.15 \text{ K}} = -0.4938$ kJ/K</li>
+                           </ul>
+                           $$ S_{gen} = \Delta S_{sys} + \Delta S_{surr} = 1.1944 - 0.4938 = 0.7006 \frac{\text{kJ}}{\text{K}} \approx 0.701 \text{ kJ/K} $$
+                           <p><strong>6. P-v Diagram:</strong></p>
+                           <ul>
+                               <li>Draw saturation dome for ammonia.</li>
+                               <li>Plot State 1 (Superheated, P=150, v=0.7977).</li>
+                               <li>Plot State 2 (Superheated, P=400, v=0.47666).</li>
+                               <li>Draw a curve representing $Pv^{1.905} = \text{constant}$ connecting State 1 and State 2.</li>
+                           </ul>
+                           <p><strong>Table Values Used Summary:</strong> B.2.2 (Ammonia).</p>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 14 -->
+
+    </div> <!-- End Accordion Container -->
+
+
+    <footer> <!-- Optional Footer --> </footer>
+
+     <!-- Font Size Control Icons HTML -->
+     <div class="font-control">
+         <span class="font-control-icon" id="fontMinusBtn" title="Decrease font size">-</span>
+         <span class="font-control-icon" id="fontPlusBtn" title="Increase font size">+</span>
+     </div>
+     <div id="fontSizeDisplay">10px</div>
+
+    <script>
+        // --- Debounce Function ---
+        function debounce(func, wait) { let timeout; return function(...args) { const later = () => { clearTimeout(timeout); func.apply(this, args); }; clearTimeout(timeout); timeout = setTimeout(later, wait); }; }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const htmlEl = document.documentElement;
+            const bodyEl = document.body;
+
+            // --- Font Size Control & Hold ---
+            const minusBtn = document.getElementById('fontMinusBtn');
+            const plusBtn = document.getElementById('fontPlusBtn');
+            const display = document.getElementById('fontSizeDisplay');
+            let currentSize = 10; const minSize = 10; const maxSize = 28; const step = 1;
+            let displayTimeout = null; let holdTimeout = null; let holdInterval = null;
+            const initialHoldDelay = 400; const repeatInterval = 100;
+            const mathJaxDebounceDelay = 350;
+
+            const queueMathJaxTypeset = debounce(() => {
+                if (window.MathJax && MathJax.typesetPromise) {
+                    console.log("Debounced: Typesetting MathJax for body");
+                    MathJax.typesetPromise([bodyEl]).catch((err) => console.error('MathJax typesetting error:', err));
+                 }
+            }, mathJaxDebounceDelay);
+
+            const handleFontResizeEnd = debounce(() => {
+                console.log("Font resize finished.");
+                queueMathJaxTypeset();
+            }, mathJaxDebounceDelay);
+
+            function updateFontSize(newSize) {
+                const oldSize = currentSize;
+                currentSize = Math.max(minSize, Math.min(maxSize, newSize));
+                if (currentSize !== oldSize) {
+                    htmlEl.style.setProperty('--base-font-size', currentSize + 'px');
+                    display.textContent = currentSize + 'px'; display.classList.add('visible');
+                    if (displayTimeout) { clearTimeout(displayTimeout); }
+                    displayTimeout = setTimeout(() => { display.classList.remove('visible'); displayTimeout = null; }, 1500);
+                    handleFontResizeEnd(); return true;
+                } return false;
+            }
+            function stopHolding() {
+                bodyEl.classList.remove('no-font-transition');
+                if (holdTimeout) { clearTimeout(holdTimeout); holdTimeout = null; }
+                if (holdInterval) { clearInterval(holdInterval); holdInterval = null; }
+                handleFontResizeEnd();
+            }
+            function startHolding(direction) {
+                bodyEl.classList.add('no-font-transition'); updateFontSize(currentSize + direction * step);
+                if (holdTimeout) clearTimeout(holdTimeout); if (holdInterval) clearInterval(holdInterval);
+                holdTimeout = setTimeout(() => { holdInterval = setInterval(() => { if (!updateFontSize(currentSize + direction * step)) { stopHolding(); } }, repeatInterval); }, initialHoldDelay);
+            }
+            if (minusBtn && plusBtn && display) {
+                minusBtn.addEventListener('mousedown', (e) => { e.preventDefault(); startHolding(-1); });
+                plusBtn.addEventListener('mousedown', (e) => { e.preventDefault(); startHolding(1); });
+                window.addEventListener('mouseup', stopHolding);
+                minusBtn.addEventListener('mouseleave', stopHolding); plusBtn.addEventListener('mouseleave', stopHolding);
+                htmlEl.style.setProperty('--base-font-size', currentSize + 'px'); display.textContent = currentSize + 'px';
+                console.log("Font control initialized. Current size:", currentSize);
+            } else { console.error("Font control elements not found!"); }
+
+
+            // --- Accordion Logic (with State Indicator & MathJax Trigger - Robust Measurement) ---
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                const content = item.querySelector('.accordion-content');
+                const innerContent = content.querySelector('.content-inner');
+                const finalAnswerBlock = innerContent.querySelector('.final-answer-block');
+                const solutionBlock = innerContent.querySelector('.solution-block');
+
+
+                header.addEventListener('click', () => {
+                    const currentState = item.getAttribute('data-state');
+                    let nextState;
+
+                    if (currentState === 'collapsed') {
+                        if (!item.classList.contains('visited')) { item.classList.add('visited'); }
+                        nextState = 'state1';
+                    } else if (currentState === 'state1') {
+                        nextState = 'state2';
+                    } else { // state2
+                        nextState = 'collapsed';
+                    }
+
+                    item.setAttribute('data-state', nextState);
+                    console.log(`Item state changed to: ${nextState}`);
+
+                    const isCollapsed = nextState === 'collapsed';
+                    const showAnswer = nextState === 'state1';
+                    const showSolution = nextState === 'state2';
+
+                    // Toggle visibility of answer/solution blocks
+                    if (finalAnswerBlock) finalAnswerBlock.classList.toggle('hidden', !showAnswer);
+                    if (solutionBlock) solutionBlock.classList.toggle('hidden', !showSolution);
+
+
+                    // --- Expansion/Collapse Logic ---
+                    if (!isCollapsed) {
+                        // --- EXPANDING ---
+                        content.style.maxHeight = 'none'; // Allow natural height measurement
+                        let mathJaxPromise = Promise.resolve();
+                        if (window.MathJax && MathJax.typesetPromise) {
+                            console.log(`Queueing MathJax for item: ${header.querySelector('h2').textContent.trim()}`);
+                            mathJaxPromise = MathJax.typesetPromise([innerContent]).catch(err => {
+                                console.error('MathJax typesetting error during expand:', err);
+                            });
+                        } else { console.warn("MathJax not available for typesetting during expand."); }
+
+                        mathJaxPromise.then(() => {
+                            console.log("MathJax finished for item. Preparing height calculation.");
+                            requestAnimationFrame(() => {
+                                requestAnimationFrame(() => { // Double rAF waits for layout calculation
+                                    const style = window.getComputedStyle(content);
+                                    const paddingTop = parseFloat(style.paddingTop) || 0;
+                                    const paddingBottom = parseFloat(style.paddingBottom) || 0;
+                                    const innerHeight = innerContent.offsetHeight;
+                                    const totalHeight = innerHeight + paddingTop + paddingBottom;
+                                    console.log(`Calculated totalHeight after MathJax & rAF: ${totalHeight}px`);
+                                    if (totalHeight <= (paddingTop + paddingBottom)) {
+                                         console.warn("Calculated height is zero or only padding! Check content visibility/rendering.");
+                                     }
+                                     content.style.maxHeight = '0px'; // Prepare for transition
+                                     requestAnimationFrame(() => { // Apply final height in next frame
+                                         content.style.maxHeight = totalHeight + 'px';
+                                         console.log(`Applied maxHeight: ${totalHeight}px`);
+                                     });
+                                 });
+                             });
+                         });
+
+                    } else {
+                        // --- COLLAPSING ---
+                        if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                           content.style.maxHeight = '0px';
+                           console.log("Collapsing: Set maxHeight to 0px");
+                        }
+                    }
+                });
+            });
+            console.log("Accordion logic (Robust Measurement) with state indicators and MathJax applied.");
+
+
+            // --- Initial MathJax Typeset on Load ---
+             if (window.MathJax) {
+                 MathJax.startup.promise.then(() => {
+                     console.log("Queueing initial MathJax typeset after load");
+                     MathJax.typesetPromise([bodyEl]).catch((err) => console.error('MathJax initial typesetting error:', err));
+                 });
+             }
+
+        }); // End DOMContentLoaded
+    </script>
+
+</body>
+</html>

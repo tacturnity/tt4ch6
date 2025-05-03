@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="en" style="--base-font-size: 10px;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 3 Q&A</title> <!-- CHANGED TITLE -->
+
+    <!-- Google Fonts - Roboto Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+          tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true, tags: 'ams' },
+          options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'], ignoreHtmlClass: 'tex2jax_ignore', processHtmlClass: 'tex2jax_process' },
+          svg: { fontCache: 'global' },
+          startup: { ready: () => { console.log('MathJax ready.'); MathJax.startup.defaultReady(); MathJax.startup.promise.then(() => console.log('MathJax initial typeset complete.')); } }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        /* Basic Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* Keyframes */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Base Styles --- */
+        :root {
+            --accent-color: #F08080; /* Light Coral */
+            --bg-color: #1a1a1a;
+            --text-color: #e0e0e0;
+            --border-color: #555;
+            --header-bg: #2f2f2f;
+            --header-hover-bg: #3f3f3f;
+            --content-bg: #282828;
+            /* Indicator Colors */
+            --indicator-unvisited: transparent;
+            --indicator-answer: #f7dc6f;
+            --indicator-solution: #58d68d;
+            --indicator-visited-closed: var(--indicator-solution);
+            --anim-duration: 0.5s;
+            --anim-easing: cubic-bezier(0.65, 0, 0.35, 1);
+        }
+
+        body {
+            font-family: 'Roboto Mono', monospace; color: var(--text-color); line-height: 1.7;
+            padding: 25px; background-color: var(--bg-color); min-height: 100vh;
+            font-size: var(--base-font-size); transition: font-size 0.2s ease-in-out;
+            padding-bottom: 80px; overflow-x: hidden;
+        }
+        body.no-font-transition { transition: none !important; }
+
+        /* Headings */
+        h1 {
+            font-size: 2.4em; color: var(--accent-color); font-weight: 700; padding-bottom: 12px;
+            margin: 1.5em auto; border-bottom: 3px solid var(--accent-color);
+            animation: fadeIn 0.8s ease-out both 0.1s; letter-spacing: -0.5px; text-align: center; max-width: 800px;
+        }
+
+        /* --- Accordion Styles --- */
+        .accordion { max-width: 900px; margin: 20px auto; }
+        .accordion-item {
+            border: 1px solid var(--border-color); border-radius: 8px;
+            overflow: hidden; margin-bottom: 25px; background-color: var(--content-bg);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+        .accordion-item:hover { border-color: #777; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4); }
+        .accordion-header {
+            background-color: var(--header-bg); padding: 18px 25px; cursor: pointer;
+            display: flex; justify-content: space-between; align-items: center;
+            transition: background-color 0.3s ease, border-color var(--anim-duration) var(--anim-easing);
+            border-bottom: 1px solid var(--border-color); position: relative; z-index: 2;
+        }
+        .accordion-item[data-state="collapsed"] .accordion-header { border-bottom-color: transparent; }
+        .accordion-header:hover { background-color: var(--header-hover-bg); }
+        .accordion-header h2 { margin: 0; font-size: 1.2em; color: var(--text-color); text-align: left; }
+
+        /* --- State Indicator --- */
+        .state-indicator {
+            width: 12px; height: 12px; border-radius: 50%;
+            background-color: var(--indicator-unvisited); display: inline-block; margin-left: 15px;
+            flex-shrink: 0; transition: background-color 0.3s ease; border: 1px solid var(--header-bg);
+        }
+        .accordion-item[data-state="state1"] .state-indicator { background-color: var(--indicator-answer); border-color: transparent; }
+        .accordion-item[data-state="state2"] .state-indicator { background-color: var(--indicator-solution); border-color: transparent; }
+        .accordion-item.visited[data-state="collapsed"] .state-indicator { background-color: var(--indicator-visited-closed); border-color: transparent; }
+
+
+        /* Content Area & Animations */
+        .accordion-content {
+            padding: 0 25px; max-height: 0; overflow: hidden;
+            transition: max-height var(--anim-duration) var(--anim-easing),
+                        padding-top var(--anim-duration) var(--anim-easing),
+                        padding-bottom var(--anim-duration) var(--anim-easing);
+            box-sizing: border-box; position: relative; z-index: 1;
+        }
+        .accordion-item:not([data-state="collapsed"]) .accordion-content { padding-top: 20px; }
+        .content-inner {
+            padding-bottom: 25px; opacity: 0; transform: translateY(10px);
+            transition: opacity 0.4s ease-out 0.15s, transform 0.4s ease-out 0.15s;
+        }
+        .accordion-item:not([data-state="collapsed"]) .content-inner { opacity: 1; transform: translateY(0); }
+
+        /* Content Blocks Structure & Styling */
+        .question-block, .final-answer-block, .solution-block {
+            margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px dashed var(--border-color);
+        }
+        .content-inner > div:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .question-block strong, .final-answer-block strong, .solution-block strong {
+            color: var(--accent-color); display: block; margin-bottom: 8px; font-size: 1.1em;
+        }
+        p { margin-bottom: 1em; color: inherit; font-size: inherit; }
+        ul, ol { margin-left: 25px; margin-bottom: 1em; }
+        li { margin-bottom: 8px; font-size: inherit; }
+
+        /* Simplified Styling for MathJax containers */
+        mjx-container {
+            margin: 0.5em 0; /* Default vertical space around all rendered math */
+            text-align: left !important; /* Ensure left alignment */
+        }
+        mjx-container[display="true"] {
+             margin: 1em 0 !important; /* Slightly more vertical space for display math */
+        }
+
+
+        /* General Utility Styles */
+        .hidden { display: none !important; }
+
+        /* Footer & Font Control */
+        footer { text-align: center; margin-top: 70px; padding-bottom: 35px; font-size: 0.85em; color: #888888; animation: fadeIn 1s ease-out both 0.7s; }
+        .font-control { position: fixed; bottom: 0; left: 0; width: 100%; padding: 10px 25px; box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; pointer-events: none; z-index: 10; }
+        .font-control-icon { font-size: 28px; font-weight: bold; color: #777; cursor: pointer; padding: 8px; transition: color 0.3s ease; pointer-events: auto; user-select: none; line-height: 1; display: inline-block; }
+        .font-control-icon:hover { color: var(--accent-color); }
+        #fontSizeDisplay { position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); background-color: rgba(45, 45, 45, 0.9); color: #e0e0e0; padding: 6px 12px; border-radius: 5px; font-size: 13px; font-family: 'Roboto Mono', monospace; z-index: 11; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none; white-space: nowrap; }
+        #fontSizeDisplay.visible { opacity: 1; }
+
+        /* Simple Dark Theme Scrollbar for Page */
+        body::-webkit-scrollbar { width: 10px; }
+        body::-webkit-scrollbar-track { background: #2a2a2a; border-radius: 5px; }
+        body::-webkit-scrollbar-thumb { background-color: #777; border-radius: 5px; border: 2px solid #2a2a2a; background-clip: content-box; }
+        body::-webkit-scrollbar-thumb:hover { background-color: #999; }
+        html { scrollbar-width: thin; scrollbar-color: #777 #2a2a2a; }
+        @supports (scrollbar-gutter: stable) { html { scrollbar-gutter: stable; } }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Chapter 3 Q&A</h1> <!-- Updated -->
+    </header>
+
+    <div class="accordion">
+
+        <!-- Question 1 -->
+        <div class="accordion-item" data-state="collapsed">
+            <div class="accordion-header">
+                <h2>Question 1: Argon Expansion Work</h2>
+                <span class="state-indicator" title="Status Indicator"></span>
+            </div>
+            <div class="accordion-content">
+                <div class="content-inner">
+                    <div class="question-block">
+                        <strong>Question:</strong>
+                        <p>
+                            A rigid tank A with a volume of $400$ L ($0.4$ m³) contains argon gas at $250$ kPa and $30$°C. An initially empty cylinder B is fitted with a frictionless piston, whose mass requires a pressure of $150$ kPa to float (i.e., to begin moving). A valve connecting A and B is opened, allowing argon to flow into B until a final uniform state is reached where the pressure throughout both A and B is $150$ kPa and the temperature is $30$°C. Determine the work done by the argon gas during this process. Represent the process in a P-v diagram.
+                        </p>
+                    </div>
+                    <div class="final-answer-block hidden">
+                        <strong>Final Answer:</strong>
+                        <p>
+                            The work done by the argon is $W = 40.0$ kJ.
+                        </p>
+                    </div>
+                    <div class="solution-block hidden">
+                        <strong>Full Solution:</strong>
+                        <p><strong>1. System Definition:</strong> Argon gas, initially in A, finally in A+B.</p>
+                        <p><strong>2. States:</strong> Ideal gas (Argon).</p>
+                        <ul>
+                           <li>Initial (1): In A. $V_1 = V_A = 0.4$ m³. $P_1 = 250$ kPa. $T_1 = 30$°C $= 303.15$ K.</li>
+                           <li>Final (2): In A + B. $P_2 = 150$ kPa. $T_2 = T_1 = 303.15$ K.</li>
+                        </ul>
+                        <p><strong>3. Calculate Mass of Argon (m):</strong> Use Table A.5 for Argon: $R = 0.2081$ kJ/kg-K.</p>
+                        $$ m = \frac{P_1 V_1}{R T_1} = \frac{250 \text{ kPa} \times 0.4 \text{ m³}}{0.2081 \frac{\text{kJ}}{\text{kg-K}} \times 303.15 \text{ K}} = \frac{100}{63.085} = 1.5851 \text{ kg} $$
+                        <p><strong>4. Calculate Final Total Volume ($V_{2,total}$):</strong></p>
+                        $$ V_{2,total} = \frac{m R T_2}{P_2} = \frac{1.5851 \text{ kg} \times 0.2081 \frac{\text{kJ}}{\text{kg-K}} \times 303.15 \text{ K}}{150 \text{ kPa}} = \frac{99.998}{150} = 0.66665 \text{ m³} $$
+                        <p><strong>5. Calculate Volume Change in Cylinder B ($V_B$):</strong></p>
+                        <p>Final volume $V_{2,total} = V_A + V_B$.</p>
+                        $$ V_B = V_{2,total} - V_A = 0.66665 \text{ m³} - 0.4 \text{ m³} = 0.26665 \text{ m³} $$
+                        <p><strong>6. Calculate Work Done (W):</strong></p>
+                        <p>Work is done only by expansion into cylinder B against constant floating pressure $P_B = 150$ kPa.</p>
+                        $$ W = \int P dV = W_A + W_B = 0 + P_B V_B $$
+                        $$ W = 150 \text{ kPa} \times 0.26665 \text{ m³} = 40.0 \text{ kPa} \cdot \text{m³} = 40.0 \text{ kJ} $$
+                        <p><strong>7. P-v Diagram (for system):</strong></p>
+                        <p>A system-level P-v diagram shows the overall specific volume increase. State 1 is at $P_1=250$ kPa, $v_1 = V_1/m = 0.4/1.5851 = 0.2523$ m³/kg. State 2 is at $P_2=150$ kPa, $v_2 = V_{2,total}/m = 0.66665/1.5851 = 0.4206$ m³/kg. The path is complex. The work done corresponds to the expansion part in B at $P=150$ kPa.</p>
+                         <p><strong>Table Values Used Summary:</strong> A.5 (R for Argon).</p>
+                     </div>
+                 </div>
+             </div>
+         </div> <!-- End Question 1 -->
+
+        <!-- Question 2 -->
+        <div class="accordion-item" data-state="collapsed">
+             <div class="accordion-header">
+                 <h2>Question 2: Copper & Oil Thermal Equilibrium</h2>
+                 <span class="state-indicator" title="Status Indicator"></span>
+             </div>
+             <div class="accordion-content">
+                 <div class="content-inner">
+                     <div class="question-block">
+                         <strong>Question:</strong>
+                         <p>
+                            A $1$ L copper block is heat-treated to $500$°C and then cooled by placing it in a $200$ L oil bath initially at $20$°C. Assuming the combined copper-oil system is isolated (no heat transfer with the surroundings), find the final equilibrium temperature.
+                         </p>
+                     </div>
+                     <div class="final-answer-block hidden">
+                         <strong>Final Answer:</strong>
+                         <p>
+                             The final temperature is $T_f \approx 24.9$ °C.
+                         </p>
+                     </div>
+                     <div class="solution-block hidden">
+                         <strong>Full Solution:</strong>
+                         <p><strong>1. System:</strong> Copper block + Oil bath. Isolated ($Q = 0$), Work $W = 0$.</p>
+                         <p><strong>2. Energy Balance:</strong> $\Delta U_{copper} + \Delta U_{oil} = 0$.</p>
+                         <p>Assuming constant specific heats, $\Delta U \approx m C_p \Delta T$ for solids/liquids:</p>
+                         $$ m_{cu} C_{p,cu} (T_f - T_{cu1}) + m_{oil} C_{p,oil} (T_f - T_{oil1}) = 0 $$
+                         <p><strong>3. Calculate Masses & Get Properties (Tables A.3, A.4):</strong></p>
+                         <ul>
+                             <li>Copper: $V_{cu} = 1$ L $= 0.001$ m³. $\rho_{cu} \approx 8300$ kg/m³. $C_{p,cu} \approx 0.42$ kJ/kg-K.
+                                 <br>$m_{cu} = \rho_{cu} V_{cu} = 8300 \times 0.001 = 8.3$ kg.
+                             </li>
+                             <li>Oil (Engine): $V_{oil} = 200$ L $= 0.2$ m³. $\rho_{oil} \approx 885$ kg/m³. $C_{p,oil} \approx 1.9$ kJ/kg-K.
+                                 <br>$m_{oil} = \rho_{oil} V_{oil} = 885 \times 0.2 = 177$ kg.
+                             </li>
+                         </ul>
+                         <p><strong>4. Initial Temperatures:</strong></p>
+                         <ul>
+                             <li>$T_{cu1} = 500$°C $= 773.15$ K</li>
+                             <li>$T_{oil1} = 20$°C $= 293.15$ K</li>
+                         </ul>
+                         <p><strong>5. Solve for Final Temperature ($T_f$):</strong></p>
+                         $$ (8.3 \times 0.42) (T_f - 773.15) + (177 \times 1.9) (T_f - 293.15) = 0 $$
+                         $$ 3.486 (T_f - 773.15) + 336.3 (T_f - 293.15) = 0 $$
+                         $$ 3.486 T_f - 2695.1 + 336.3 T_f - 98581.6 = 0 $$
+                         $$ (3.486 + 336.3) T_f = 2695.1 + 98581.6 $$
+                         $$ 339.786 T_f = 101276.7 $$
+                         $$ T_f = \frac{101276.7}{339.786} = 298.06 \text{ K} $$
+                         $$ T_f \approx 298.1 \text{ K} \approx 24.9 \text{ °C} $$
+                         <p><strong>Table Values Used Summary:</strong> A.3 (Copper ρ, Cp), A.4 (Oil ρ, Cp).</p>
+                     </div>
+                 </div>
+             </div>
+         </div> <!-- End Question 2 -->
+
+         <!-- Question 3 -->
+         <div class="accordion-item" data-state="collapsed">
+              <div class="accordion-header">
+                  <h2>Question 3: Air in Divided Cylinder Equilibrium</h2>
+                  <span class="state-indicator" title="Status Indicator"></span>
+              </div>
+              <div class="accordion-content">
+                  <div class="content-inner">
+                      <div class="question-block">
+                          <strong>Question:</strong>
+                          <p>
+                              An insulated cylinder is divided by an initially locked, heat-conducting piston into two equal parts, A and B, each with a volume of $1$ m³. Side A initially contains air at $200$ kPa, $300$ K. Side B initially contains air at $1.0$ MPa ($1000$ kPa), $1000$ K. The piston is then unlocked and is free to move. Due to heat conduction through the piston, the air in both compartments eventually reaches a uniform final temperature ($T_2$). The cylinder is insulated. Find: <br>
+                              a) The mass of air in side A ($m_A$) and side B ($m_B$). <br>
+                              b) The final temperature ($T_2$) and pressure ($P_2$).
+                          </p>
+                      </div>
+                      <div class="final-answer-block hidden">
+                          <strong>Final Answer:</strong>
+                          <p>
+                              a) $m_A \approx 2.323$ kg, $m_B \approx 3.484$ kg. <br>
+                              b) Final Temperature $T_2 \approx 736$ K. Final Pressure $P_2 \approx 613$ kPa.
+                          </p>
+                      </div>
+                      <div class="solution-block hidden">
+                          <strong>Full Solution:</strong>
+                          <p><strong>1. System:</strong> Total air in A+B. Insulated ($Q=0$), Piston work is internal ($W_{total}=0$).</p>
+                          <p><strong>2. Initial States:</strong> Ideal gas (Air). $R=0.287$ kJ/kg-K.</p>
+                           <ul>
+                              <li>Side A: $P_{A1}=200$ kPa, $T_{A1}=300$ K, $V_{A1}=1$ m³.</li>
+                              <li>Side B: $P_{B1}=1000$ kPa, $T_{B1}=1000$ K, $V_{B1}=1$ m³.</li>
+                           </ul>
+                          <p><strong>3. Calculate Initial Masses (Part a):</strong></p>
+                          $$ m_A = \frac{P_{A1} V_{A1}}{R T_{A1}} = \frac{200 \times 1}{0.287 \times 300} = \frac{200}{86.1} = 2.3229 \text{ kg} \approx 2.323 \text{ kg} $$
+                          $$ m_B = \frac{P_{B1} V_{B1}}{R T_{B1}} = \frac{1000 \times 1}{0.287 \times 1000} = \frac{1000}{287} = 3.4843 \text{ kg} \approx 3.484 \text{ kg} $$
+                           <p>Total mass $m_{tot} = m_A + m_B = 2.3229 + 3.4843 = 5.8072$ kg.</p>
+                           <p><strong>4. Final State (State 2):</strong> Uniform $T_2$, uniform $P_2$. Total volume $V_{tot} = V_{A1} + V_{B1} = 2$ m³.</p>
+                           <p><strong>5. Energy Balance (System A+B):</strong> $\Delta U = Q - W = 0 \implies U_2 = U_1$.</p>
+                           $$ U_1 = U_{A1} + U_{B1} = m_A u(T_{A1}) + m_B u(T_{B1}) $$
+                           $$ U_2 = m_{tot} u(T_2) $$
+                           <p>Use Table A.7.1 for internal energies:</p>
+                           <ul>
+                              <li>$u(T_{A1}=300 \text{ K}) = 214.36$ kJ/kg</li>
+                              <li>$u(T_{B1}=1000 \text{ K}) = 759.19$ kJ/kg</li>
+                           </ul>
+                           $$ U_1 = (2.3229 \times 214.36) + (3.4843 \times 759.19) = 497.9 + 2644.9 = 3142.8 \text{ kJ} $$
+                           $$ m_{tot} u(T_2) = U_1 \implies 5.8072 \times u(T_2) = 3142.8 $$
+                           $$ u(T_2) = \frac{3142.8}{5.8072} = 541.18 \frac{\text{kJ}}{\text{kg}} $$
+                           <p><strong>6. Find Final Temperature ($T_2$):</strong> Interpolate in Table A.7.1 for $u = 541.18$.</p>
+                           <ul>
+                              <li>$T=720$ K, $u=528.44$</li>
+                              <li>$T=740$ K, $u=544.33$</li>
+                           </ul>
+                           $$ T_2 = 720 + \frac{541.18 - 528.44}{544.33 - 528.44} \times (740 - 720) $$
+                           $$ T_2 = 720 + \frac{12.74}{15.89} \times 20 = 720 + 16.035 = 736.0 \text{ K} $$
+                           <p><strong>7. Find Final Pressure ($P_2$):</strong> Ideal Gas Law for total system.</p>
+                           $$ P_2 = \frac{m_{tot} R T_2}{V_{tot}} = \frac{5.8072 \text{ kg} \times 0.287 \frac{\text{kJ}}{\text{kg-K}} \times 736.0 \text{ K}}{2 \text{ m³}} $$
+                           $$ P_2 = \frac{1226.1}{2} = 613.05 \text{ kPa} \approx 613 \text{ kPa} $$
+                           <p><strong>Table Values Used Summary:</strong> A.5 (R for Air), A.7.1 (u for Air).</p>
+                       </div>
+                   </div>
+               </div>
+           </div> <!-- End Question 3 -->
+
+           <!-- Question 4 -->
+           <div class="accordion-item" data-state="collapsed">
+                <div class="accordion-header">
+                    <h2>Question 4: Polytropic Air Compression</h2>
+                    <span class="state-indicator" title="Status Indicator"></span>
+                </div>
+                <div class="accordion-content">
+                    <div class="content-inner">
+                        <div class="question-block">
+                            <strong>Question:</strong>
+                            <p>
+                                A piston-cylinder assembly contains $0.2$ L of air initially at $90$ kPa and $20$°C. The air is compressed in a quasi-equilibrium polytropic process with exponent $n = 1.25$ to a final volume that is six times smaller ($V_2 = V_1/6$). Determine the final pressure ($P_2$), final temperature ($T_2$), and the heat transfer ($Q$) for the process.
+                            </p>
+                        </div>
+                        <div class="final-answer-block hidden">
+                            <strong>Final Answer:</strong>
+                            <p>
+                                * Final Pressure $P_2 \approx 845$ kPa. <br>
+                                * Final Temperature $T_2 \approx 459$ K ($186$ °C). <br>
+                                * Heat Transfer $Q \approx -0.015$ kJ (Heat removed).
+                            </p>
+                        </div>
+                        <div class="solution-block hidden">
+                            <strong>Full Solution:</strong>
+                            <p><strong>1. Process:</strong> Polytropic compression, $n=1.25$. Air = ideal gas, constant $C_v$.</p>
+                            <p><strong>2. States:</strong></p>
+                            <ul>
+                               <li>State 1: $P_1=90$ kPa, $T_1=20$°C$=293.15$ K, $V_1=0.2$ L $= 0.0002$ m³.</li>
+                               <li>State 2: $V_2 = V_1/6 = 0.00003333$ m³. $P_2=?, T_2=?$.</li>
+                            </ul>
+                             <p><strong>3. Calculate Mass (m):</strong> $R=0.287$ kJ/kg-K.</p>
+                             $$ m = \frac{P_1 V_1}{R T_1} = \frac{90 \times 0.0002}{0.287 \times 293.15} = \frac{0.018}{84.134} = 0.0002139 \text{ kg} $$
+                            <p><strong>4. Calculate Final Pressure ($P_2$):</strong> $P_1 V_1^n = P_2 V_2^n$.</p>
+                            $$ P_2 = P_1 \left(\frac{V_1}{V_2}\right)^n = 90 \text{ kPa} \times (6)^{1.25} $$
+                            $$ P_2 = 90 \times 9.362 = 842.6 \text{ kPa} \approx 843 \text{ kPa} $$
+                             <p><strong>5. Calculate Final Temperature ($T_2$):</strong> $T_2/T_1 = (V_1/V_2)^{n-1}$.</p>
+                             $$ T_2 = T_1 (6)^{n-1} = 293.15 \text{ K} \times (6)^{1.25-1} = 293.15 \times 6^{0.25} $$
+                             $$ T_2 = 293.15 \times 1.565 = 458.78 \text{ K} \approx 459 \text{ K} $$
+                            <p><strong>6. Calculate Work (W):</strong> $W = \frac{P_2 V_2 - P_1 V_1}{1 - n}$.</p>
+                            $$ W = \frac{(842.6 \times 0.00003333) - (90 \times 0.0002)}{1 - 1.25} \text{ kJ} $$
+                            $$ W = \frac{0.028086 - 0.018}{-0.25} = \frac{0.010086}{-0.25} = -0.04034 \text{ kJ} $$
+                            <p><strong>7. Calculate Heat Transfer (Q):</strong> $Q = \Delta U + W = m C_v (T_2 - T_1) + W$. Use $C_v=0.717$ kJ/kg-K (Table A.5).</p>
+                            $$ Q = (0.0002139 \times 0.717 \times (458.78 - 293.15)) - 0.04034 $$
+                            $$ Q = (0.0001534 \times 165.63) - 0.04034 = 0.02542 - 0.04034 = -0.01492 \text{ kJ} \approx -0.015 \text{ kJ} $$
+                            <p><strong>Table Values Used Summary:</strong> A.5 (R, Cv for Air).</p>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- End Question 4 -->
+
+            <!-- Question 5 -->
+            <div class="accordion-item" data-state="collapsed">
+                 <div class="accordion-header">
+                     <h2>Question 5: Nitrogen Polytropic Process Analysis</h2>
+                     <span class="state-indicator" title="Status Indicator"></span>
+                 </div>
+                 <div class="accordion-content">
+                     <div class="content-inner">
+                         <div class="question-block">
+                             <strong>Question:</strong>
+                             <p>
+                                 Nitrogen gas (N₂) undergoes a polytropic process with exponent $n = 1.3$ in a piston/cylinder arrangement. The initial state is $T_1 = 600$ K, $P_1 = 600$ kPa, and the final state is $T_2 = 800$ K. Assuming nitrogen behaves as an ideal gas, find: <br>
+                                 a) The final pressure ($P_2$). <br>
+                                 b) The specific work ($w$) done during the process. <br>
+                                 c) The specific heat transfer ($q$) during the process using Table A.8. <br>
+                                 d) Recalculate specific heat transfer assuming constant specific heats ($C_v$ from A.5) and compare.
+                             </p>
+                         </div>
+                         <div class="final-answer-block hidden">
+                             <strong>Final Answer:</strong>
+                             <p>
+                                 a) Final Pressure $P_2 \approx 2276$ kPa. <br>
+                                 b) Specific Work $w \approx -197.9$ kJ/kg (Work input). <br>
+                                 c) Specific Heat Transfer (Variable C) $q \approx -37.6$ kJ/kg (Heat removed). <br>
+                                 d) Specific Heat Transfer (Constant C) $q_{const} \approx -48.9$ kJ/kg. Results differ noticeably (~30%).
+                             </p>
+                         </div>
+                         <div class="solution-block hidden">
+                             <strong>Full Solution:</strong>
+                             <p><strong>1. Process:</strong> Polytropic, $n=1.3$. Ideal gas (N₂).</p>
+                             <p><strong>2. States:</strong></p>
+                             <ul>
+                                <li>State 1: $T_1=600$ K, $P_1=600$ kPa.</li>
+                                <li>State 2: $T_2=800$ K, $P_2=?$.</li>
+                             </ul>
+                             <p><strong>3. Calculate Final Pressure ($P_2$):</strong> Use polytropic relation $T_2/T_1 = (P_2/P_1)^{(n-1)/n}$.</p>
+                             <ul><li>$(n-1)/n = (1.3-1)/1.3 = 0.3/1.3 \approx 0.23077$.</li><li>$n/(n-1) = 1/0.23077 \approx 4.3333$.</li></ul>
+                             $$ \frac{P_2}{P_1} = \left(\frac{T_2}{T_1}\right)^{\frac{n}{n-1}} \implies P_2 = P_1 \left(\frac{T_2}{T_1}\right)^{4.3333} $$
+                             $$ P_2 = 600 \text{ kPa} \times (\frac{800}{600})^{4.3333} = 600 \times (1.3333)^{4.3333} $$
+                             $$ P_2 = 600 \times 3.7925 = 2275.5 \text{ kPa} \approx 2276 \text{ kPa} $$
+                             <p><strong>4. Calculate Specific Work (w):</strong> Use $w = \frac{R(T_2 - T_1)}{1 - n}$. $R_{N2}=0.2968$ kJ/kg-K (Table A.5 or A.8).</p>
+                             $$ w = \frac{0.2968 \frac{\text{kJ}}{\text{kg-K}} \times (800 - 600) \text{ K}}{1 - 1.3} = \frac{0.2968 \times 200}{-0.3} $$
+                             $$ w = \frac{59.36}{-0.3} = -197.87 \frac{\text{kJ}}{\text{kg}} \approx -197.9 \frac{\text{kJ}}{\text{kg}} $$
+                             <p><strong>5. Calculate Specific Heat Transfer (q) using Table A.8:</strong> $q = u_2 - u_1 + w$.</p>
+                             <ul>
+                                <li>$u_1(600 \text{ K}) = 449.16$ kJ/kg</li>
+                                <li>$u_2(800 \text{ K}) = 609.41$ kJ/kg</li>
+                             </ul>
+                             $$ q = (609.41 - 449.16) + (-197.87) = 160.25 - 197.87 = -37.62 \frac{\text{kJ}}{\text{kg}} $$
+                             <p><strong>6. Calculate Specific Heat Transfer ($q_{const}$) using Constant $C_v$:</strong> $q_{const} = C_v (T_2 - T_1) + w$. Use $C_v=0.745$ kJ/kg-K (Table A.5).</p>
+                             $$ q_{const} = 0.745 \frac{\text{kJ}}{\text{kg-K}} \times (800 - 600) \text{ K} + (-197.87 \frac{\text{kJ}}{\text{kg}}) $$
+                             $$ q_{const} = (0.745 \times 200) - 197.87 = 149.0 - 197.87 = -48.87 \frac{\text{kJ}}{\text{kg}} $$
+                             <p><strong>7. Compare Results:</strong> $q_{var} = -37.6$ kJ/kg vs $q_{const} = -48.9$ kJ/kg. The difference is noticeable, indicating specific heat variation is significant over this temperature range for nitrogen.</p>
+                             <p><strong>Table Values Used Summary:</strong> A.5 (R, Cv for N₂), A.8 (u for N₂).</p>
+                         </div>
+                     </div>
+                 </div>
+             </div> <!-- End Question 5 -->
+
+             <!-- Remainder of Questions 6-13 from original Chapter 3 source text formatted below -->
+
+             <!-- Question 6 -->
+             <div class="accordion-item" data-state="collapsed">
+                <div class="accordion-header">
+                    <h2>Question 6: Water Heating with Piston Stops</h2>
+                    <span class="state-indicator" title="Status Indicator"></span>
+                </div>
+                <div class="accordion-content">
+                    <div class="content-inner">
+                        <div class="question-block">
+                            <strong>Question:</strong>
+                             <p>
+                                 A piston-cylinder assembly contains $1$ kg of water, initially liquid at $20$°C and $300$ kPa. The piston floats, initially maintaining the pressure. There are stops that limit the maximum enclosed volume to $0.002$ m³. Heat is added, causing the water to expand. The process stops when a final pressure of $600$ kPa is reached. Find the final volume ($V_3$), work done ($W$), and heat transfer ($Q$) during the process. Represent the process on a P-v diagram.
+                             </p>
+                        </div>
+                        <div class="final-answer-block hidden">
+                            <strong>Final Answer:</strong>
+                             <p>
+                                 * Final Volume $V_3 = 0.002$ m³. <br>
+                                 * Work Done $W \approx 0.30$ kJ. <br>
+                                 * Heat Transfer $Q \approx 591.7$ kJ.
+                             </p>
+                        </div>
+                        <div class="solution-block hidden">
+                            <strong>Full Solution:</strong>
+                             <p><strong>1. Identify States and Process:</strong></p>
+                             <ul>
+                                 <li>System: $m = 1$ kg water.</li>
+                                 <li>State 1: $T_1=20$°C, $P_1=300$ kPa. Compressed liquid ($P_1 > P_{sat}(20°C)$). $v_1 \approx v_f(20°C) = 0.001002$ m³/kg, $u_1 \approx u_f(20°C) = 83.94$ kJ/kg (Table B.1.1). $V_1 = m v_1 = 0.001002$ m³.</li>
+                                 <li>Stops: $V_{stop} = 0.002$ m³. $v_{stop} = V_{stop}/m = 0.002$ m³/kg.</li>
+                                 <li>Process 1->2: Constant pressure heating at $P=P_1=300$ kPa until $V=V_{stop}$ (State 2).</li>
+                                 <li>Process 2->3: Constant volume heating at $V=V_{stop}$ until $P=P_3=600$ kPa (State 3).</li>
+                             </ul>
+                             <p><strong>2. Determine State 2 (at stops):</strong></p>
+                             <ul>
+                                 <li>$P_2 = 300$ kPa, $v_2 = v_{stop} = 0.002$ m³/kg.</li>
+                                 <li>At $P=300$ kPa (Table B.1.2): $v_f=0.001073$, $v_g=0.60582$. Since $v_f < v_2 < v_g$, State 2 is saturated mixture.</li>
+                                 <li>$T_2 = T_{sat}(300 \text{ kPa}) = 133.55$°C.</li>
+                                 <li>Quality $x_2 = (v_2-v_f)/(v_g-v_f) = (0.002 - 0.001073) / (0.60582 - 0.001073) = 0.000927 / 0.604747 = 0.001533$.</li>
+                                 <li>$u_2 = u_f + x_2 u_{fg} = 561.13 + 0.001533 \times (2543.55 - 561.13) = 561.13 + 3.04 = 564.17$ kJ/kg.</li>
+                             </ul>
+                              <p><strong>3. Determine Final State (State 3):</strong></p>
+                              <ul>
+                                  <li>$V_3 = V_2 = 0.002$ m³ (Final Volume). $v_3 = v_2 = 0.002$ m³/kg.</li>
+                                  <li>$P_3 = 600$ kPa.</li>
+                                  <li>At $P=600$ kPa (Table B.1.2): $v_f=0.001101$, $v_g=0.31567$. Since $v_f < v_3 < v_g$, State 3 is saturated mixture.</li>
+                                  <li>$T_3 = T_{sat}(600 \text{ kPa}) = 158.85$°C.</li>
+                                  <li>Quality $x_3 = (v_3-v_f)/(v_g-v_f) = (0.002 - 0.001101) / (0.31567 - 0.001101) = 0.000899 / 0.314569 = 0.002858$.</li>
+                                  <li>$u_3 = u_f + x_3 u_{fg} = 669.88 + 0.002858 \times (2567.4 - 669.88) = 669.88 + 5.42 = 675.3$ kJ/kg (Using $u_g$ directly or $u_f+u_{fg}$).</li>
+                              </ul>
+                             <p><strong>4. Calculate Work Done (W):</strong> Work only during 1->2 (constant P).</p>
+                             $$ W = W_{12} + W_{23} = P_1(V_2 - V_1) + 0 $$
+                             $$ W = 300 \text{ kPa} \times (0.002 - 0.001002) \text{ m³} = 300 \times 0.000998 = 0.2994 \text{ kJ} \approx 0.30 \text{ kJ} $$
+                             <p><strong>5. Calculate Heat Transfer (Q):</strong> First Law for overall process 1->3.</p>
+                             $$ Q = \Delta U + W = m(u_3 - u_1) + W $$
+                             $$ Q = 1 \text{ kg} \times (675.3 - 83.94) \frac{\text{kJ}}{\text{kg}} + 0.2994 \text{ kJ} $$
+                             $$ Q = 591.36 + 0.2994 = 591.66 \text{ kJ} \approx 591.7 \text{ kJ} $$
+                             <p><strong>6. P-v Diagram:</strong></p>
+                              <ul>
+                                  <li>Draw saturation dome.</li>
+                                  <li>State 1: ($v \approx 0.001$, $P=300$) on compressed liquid line.</li>
+                                  <li>Process 1->2: Horizontal line right at $P=300$ kPa to $v=0.002$ (inside dome).</li>
+                                  <li>Process 2->3: Vertical line up at $v=0.002$ to $P=600$ kPa (inside dome).</li>
+                              </ul>
+                             <p><strong>Table Values Used Summary:</strong> B.1.1, B.1.2, B.1.3 (Water).</p>
+                         </div>
+                     </div>
+                 </div>
+             </div> <!-- End Question 6 -->
+
+             <!-- Question 7 -->
+             <div class="accordion-item" data-state="collapsed">
+                 <div class="accordion-header">
+                     <h2>Question 7: Water Cooling with Piston Stops</h2>
+                     <span class="state-indicator" title="Status Indicator"></span>
+                 </div>
+                 <div class="accordion-content">
+                     <div class="content-inner">
+                         <div class="question-block">
+                             <strong>Question:</strong>
+                             <p>
+                                 The piston/cylinder device shown contains $0.1$ kg of water initially at $500$°C and $1000$ kPa. The setup includes a stop that restricts the piston's movement when the volume is half of the initial volume. The water is cooled, eventually reaching a room temperature of $25$°C. Determine: <br>
+                                 a. The final pressure and final volume. <br>
+                                 b. The heat transfer and work involved in the process. <br>
+                                 c. Represent the process on a P-v diagram.
+                             </p>
+                         </div>
+                         <div class="final-answer-block hidden">
+                             <strong>Final Answer:</strong>
+                             <p>
+                                 a. Final Volume $V_3 \approx 0.0177$ m³. Final Pressure $P_3 \approx 3.17$ kPa. <br>
+                                 b. Work $W = -17.7$ kJ. Heat Transfer $Q = -318.7$ kJ.
+                             </p>
+                         </div>
+                         <div class="solution-block hidden">
+                             <strong>Full Solution:</strong>
+                             <p><strong>1. Identify States & Process:</strong></p>
+                             <ul>
+                                 <li>System: $m = 0.1$ kg water.</li>
+                                 <li>State 1: $P_1=1000$ kPa, $T_1=500$°C. Superheated. From B.1.3: $v_1 = 0.35411$ m³/kg, $u_1 = 3124.34$ kJ/kg. $V_1 = m v_1 = 0.03541$ m³.</li>
+                                 <li>Stop: $V_{stop} = V_1 / 2 = 0.017705$ m³. $v_{stop} = V_{stop}/m = 0.17705$ m³/kg.</li>
+                                 <li>Process: Cooling. Piston maintains $P_1=1000$ kPa until $V=V_{stop}$ (State 2). Then constant volume cooling until $T_3=25$°C (State 3).</li>
+                                 <li>State 2: $P_2=1000$ kPa, $V_2=V_{stop}=0.017705$ m³, $v_2=0.17705$ m³/kg.</li>
+                                 <li>State 3: $V_3=V_2=0.017705$ m³, $v_3=v_2=0.17705$ m³/kg. $T_3=25$°C.</li>
+                             </ul>
+                             <p><strong>2. Determine State 2 Phase & Properties:</strong></p>
+                             <ul>
+                                 <li>At $P_2=1000$ kPa (Table B.1.2): $v_f=0.001127$, $v_g=0.19444$. Since $v_f < v_2 < v_g$, State 2 is sat. mixture. $T_2 = T_{sat} = 179.91$°C.</li>
+                                 <li>Quality $x_2 = (v_2-v_f)/v_{fg} = (0.17705 - 0.001127)/(0.19444-0.001127) = 0.175923 / 0.193313 = 0.9099$.</li>
+                                 <li>$u_2 = u_f + x_2 u_{fg} = 761.67 + 0.9099 (2583.64 - 761.67) = 761.67 + 1657.81 = 2419.48$ kJ/kg.</li>
+                             </ul>
+                              <p><strong>3. Determine Final State 3 Properties (Part a):</strong></p>
+                              <ul>
+                                 <li>$T_3=25$°C, $v_3=0.17705$ m³/kg.</li>
+                                 <li>At $T_3=25$°C (Table B.1.1): $v_f = 0.001003$, $v_g = 43.3593$. Since $v_f < v_3 < v_g$, State 3 is sat. mixture.</li>
+                                 <li>Final Pressure $P_3 = P_{sat}(25°C) \approx 3.169$ kPa.</li>
+                                 <li>Final Volume $V_3 = V_{stop} = 0.017705$ m³.</li>
+                                 <li>Quality $x_3 = (v_3-v_f)/v_{fg} = (0.17705 - 0.001003)/(43.3593-0.001003) = 0.176047 / 43.3583 = 0.00406$.</li>
+                                 <li>$u_3 = u_f + x_3 u_{fg} = 104.86 + 0.00406 \times 2304.90 = 104.86 + 9.36 = 114.22$ kJ/kg.</li>
+                             </ul>
+                             <p><strong>4. Calculate Work (W) (Part b):</strong> Work only during 1->2 (constant P).</p>
+                             $$ W = W_{12} + W_{23} = P_1 (V_2 - V_1) + 0 $$
+                             $$ W = 1000 \text{ kPa} \times (0.017705 - 0.03541) \text{ m³} = 1000 \times (-0.017705) = -17.705 \text{ kJ} $$
+                             <p>(Work done *on* the system).</p>
+                             <p><strong>5. Calculate Heat Transfer (Q) (Part b):</strong> $Q = \Delta U + W = m(u_3 - u_1) + W$.</p>
+                             $$ Q = 0.1 \text{ kg} \times (114.22 - 3124.34) \frac{\text{kJ}}{\text{kg}} + (-17.705 \text{ kJ}) $$
+                             $$ Q = 0.1 \times (-3010.12) - 17.705 = -301.01 - 17.705 = -318.72 \text{ kJ} $$
+                             <p>(Heat removed).</p>
+                             <p><strong>6. P-v Diagram (Part c):</strong></p>
+                              <ul>
+                                  <li>Draw saturation dome.</li>
+                                  <li>Plot State 1 (superheated, $P=1000$, $v=0.35411$).</li>
+                                  <li>Draw horizontal line left from State 1 to State 2 (inside dome, $P=1000$, $v=0.17705$).</li>
+                                  <li>Draw vertical line down from State 2 to State 3 (inside dome, $P \approx 3.17$, $v=0.17705$).</li>
+                              </ul>
+                             <p><strong>Table Values Used Summary:</strong> B.1.1, B.1.2, B.1.3 (Water).</p>
+                         </div>
+                     </div>
+                 </div>
+             </div> <!-- End Question 7 -->
+
+            <!-- Question 8 -->
+            <div class="accordion-item" data-state="collapsed">
+                 <div class="accordion-header">
+                     <h2>Question 8: Water Heating (Const V then Const P)</h2>
+                     <span class="state-indicator" title="Status Indicator"></span>
+                 </div>
+                 <div class="accordion-content">
+                     <div class="content-inner">
+                         <div class="question-block">
+                             <strong>Question:</strong>
+                             <p>
+                                 A piston-cylinder arrangement contains $10$ kg of water initially as a saturated liquid/vapor mixture at $100$ kPa with a quality of $50\%$. The system is heated, causing the volume to triple ($V_3 = 3V_1$). The piston mass is such that it floats only when the cylinder pressure reaches $200$ kPa. Find the final temperature ($T_3$), work done ($W$), and heat transfer ($Q$) for the entire process. Plot the P-v diagram.
+                             </p>
+                         </div>
+                         <div class="final-answer-block hidden">
+                             <strong>Final Answer:</strong>
+                             <p>
+                                 * Final Temperature $T_3 \approx 829$ °C. <br>
+                                 * Work Done $W = 3390$ kJ. <br>
+                                 * Heat Transfer $Q = 25961$ kJ.
+                             </p>
+                         </div>
+                         <div class="solution-block hidden">
+                             <strong>Full Solution:</strong>
+                              <p><strong>1. Identify States and Process:</strong></p>
+                              <ul>
+                                  <li>System: $m = 10$ kg water.</li>
+                                  <li>State 1: $P_1=100$ kPa, $x_1=0.5$. From B.1.2: $v_f=0.001043, v_g=1.69400, u_f=417.33, u_{fg}=2088.72$.
+                                      <br>$v_1 = v_f + x_1 v_{fg} = 0.001043 + 0.5(1.69400-0.001043) = 0.8475$ m³/kg.
+                                      <br>$u_1 = u_f + x_1 u_{fg} = 417.33 + 0.5(2088.72) = 1461.69$ kJ/kg.
+                                      <br>$V_1 = m v_1 = 10 \times 0.8475 = 8.475$ m³.
+                                  </li>
+                                  <li>Piston floats at $P_{float} = 200$ kPa. Since $P_1 < P_{float}$, initial heating is constant volume until $P=200$ kPa (State 2).</li>
+                                  <li>Process 1->2: Constant Volume $V_2=V_1$. $P_2=200$ kPa. $v_2=v_1=0.8475$ m³/kg.</li>
+                                  <li>Process 2->3: Constant Pressure $P_3=P_2=200$ kPa until $V_3 = 3V_1 = 3 \times 8.475 = 25.425$ m³ (State 3). $v_3 = V_3/m = 2.5425$ m³/kg.</li>
+                              </ul>
+                              <p><strong>2. Determine State 2:</strong></p>
+                              <ul>
+                                  <li>$P_2=200$ kPa, $v_2=0.8475$ m³/kg. From B.1.2 at 200 kPa: $v_f=0.001061, v_g=0.88573$. Since $v_f < v_2 < v_g$, State 2 is saturated mixture.</li>
+                                  <li>$T_2 = T_{sat}(200 \text{ kPa}) = 120.23$°C.</li>
+                                  <li>$x_2 = (v_2-v_f)/v_{fg} = (0.8475 - 0.001061) / (0.88573 - 0.001061) = 0.84644 / 0.88467 = 0.9568$.</li>
+                                  <li>$u_2 = u_f + x_2 u_{fg} = 504.47 + 0.9568(2529.49 - 504.47) = 504.47 + 1937.5 = 2442.0$ kJ/kg.</li>
+                              </ul>
+                               <p><strong>3. Determine State 3:</strong></p>
+                               <ul>
+                                  <li>$P_3 = 200$ kPa, $v_3 = 2.5425$ m³/kg.</li>
+                                  <li>At $P=200$ kPa, $v_g=0.88573$. Since $v_3 > v_g$, State 3 is superheated vapor.</li>
+                                  <li>Find $T_3$ and $u_3$ by interpolating in Table B.1.3 at $P=200$ kPa for $v_3=2.5425$.
+                                     <br>Values: T=800°C(v=2.47539), T=900°C(v=2.70643).
+                                     $$ T_3 = 800 + \frac{2.5425 - 2.47539}{2.70643 - 2.47539} \times (900 - 800) = 800 + \frac{0.06711}{0.23104} \times 100 $$
+                                     $$ T_3 = 800 + 0.29047 \times 100 = 829.0 \text{ °C} $$
+                                     Interpolate $u_3$: T=800°C(u=3663.19), T=900°C(u=3854.49).
+                                     $$ u_3 = 3663.19 + 0.29047 \times (3854.49 - 3663.19) = 3663.19 + 55.57 = 3718.8 \text{ kJ/kg} $$
+                               </ul>
+                              <p><strong>4. Calculate Work Done (W):</strong> Work only during 2->3 (constant P).</p>
+                              $$ W = W_{12} + W_{23} = 0 + P_2(V_3 - V_2) $$
+                              $$ W = 200 \text{ kPa} \times (25.425 - 8.475) \text{ m³} = 200 \times 16.95 = 3390 \text{ kJ} $$
+                              <p><strong>5. Calculate Heat Transfer (Q):</strong> $Q = \Delta U + W = m(u_3 - u_1) + W$.</p>
+                              $$ Q = 10 \text{ kg} \times (3718.8 - 1461.69) \frac{\text{kJ}}{\text{kg}} + 3390 \text{ kJ} $$
+                              $$ Q = 10 \times 2257.11 + 3390 = 22571.1 + 3390 = 25961 \text{ kJ} $$
+                              <p><strong>6. P-v Diagram:</strong></p>
+                               <ul>
+                                   <li>Draw saturation dome.</li>
+                                   <li>State 1: Inside dome (P=100, v=0.8475).</li>
+                                   <li>Process 1->2: Vertical line up to P=200 kPa (State 2, v=0.8475, inside dome).</li>
+                                   <li>Process 2->3: Horizontal line right at P=200 kPa to v=2.5425 (State 3, superheated).</li>
+                               </ul>
+                              <p><strong>Table Values Used Summary:</strong> B.1.2, B.1.3 (Water).</p>
+                          </div>
+                      </div>
+                  </div>
+              </div> <!-- End Question 8 -->
+
+            <!-- Question 9 -->
+            <div class="accordion-item" data-state="collapsed">
+                 <div class="accordion-header">
+                     <h2>Question 9: R-410a Cooling Process</h2>
+                     <span class="state-indicator" title="Status Indicator"></span>
+                 </div>
+                 <div class="accordion-content">
+                     <div class="content-inner">
+                         <div class="question-block">
+                             <strong>Question:</strong>
+                             <p>
+                                 A piston-cylinder contains $0.1$ kg of R-410a initially at $600$ kPa, $60$°C. It is cooled, causing the volume to reduce to half its initial value ($V_2 = V_1/2$). The piston rests against upper stops, and the piston's weight/atmospheric pressure result in a floating pressure of $400$ kPa. Find: <br>
+                                 a. The final temperature ($T_2$). <br>
+                                 b. The work involved ($W$). <br>
+                                 c. The heat transfer ($Q$). <br>
+                                 d. Show the process path on a P-v diagram.
+                             </p>
+                         </div>
+                         <div class="final-answer-block hidden">
+                             <strong>Final Answer:</strong>
+                             <p>
+                                 a) Final Temperature $T_2 \approx -2.0$ °C. <br>
+                                 b) Work $W = -1.20$ kJ. <br>
+                                 c) Heat Transfer $Q \approx -19.9$ kJ.
+                             </p>
+                         </div>
+                         <div class="solution-block hidden">
+                             <strong>Full Solution:</strong>
+                              <p><strong>1. Identify States & Process:</strong></p>
+                              <ul>
+                                 <li>System: $m = 0.1$ kg R-410a.</li>
+                                 <li>State 1: $P_1=600$ kPa, $T_1=60$°C. Superheated. From B.4.2: $v_1=0.06023$ m³/kg, $u_1=304.91$ kJ/kg. $V_1 = m v_1 = 0.006023$ m³.</li>
+                                 <li>Process: Cooling. Since $P_1 > P_{float}=400$ kPa, cooling is constant volume until $P=400$ kPa (State 'a'). Then cooling is constant pressure at $P=400$ kPa until $V_2=V_1/2$ (State 2).</li>
+                                 <li>$V_2 = V_1/2 = 0.0030115$ m³. $v_2 = v_1/2 = 0.030115$ m³/kg.</li>
+                             </ul>
+                             <p><strong>2. Determine State 'a':</strong></p>
+                             <ul>
+                                 <li>$P_a=400$ kPa, $v_a=v_1=0.06023$ m³/kg.</li>
+                                 <li>At $P=400$ kPa (Table B.4.1): $v_g=0.06475$. Since $v_a < v_g$, state 'a' is saturated mixture. $T_a = T_{sat}(400 \text{ kPa}) \approx -2.0$°C.</li>
+                                 <li>$x_a = (v_a-v_f)/v_{fg} = (0.06023 - 0.000771) / (0.06475 - 0.000771) = 0.059459 / 0.063979 = 0.92935$.</li>
+                                 <li>$u_a = u_f + x_a u_{fg} = 13.78 + 0.92935 (242.01 - 13.78) = 13.78 + 212.09 = 225.87$ kJ/kg.</li>
+                             </ul>
+                             <p><strong>3. Determine Final State (State 2):</strong></p>
+                             <ul>
+                                 <li>Process a->2 is constant pressure $P_2=P_a=400$ kPa. $v_2=0.030115$ m³/kg.</li>
+                                 <li>At $P=400$ kPa: $v_f=0.000771, v_g=0.06475$. Since $v_f < v_2 < v_g$, state 2 is saturated mixture.</li>
+                                 <li>Final Temperature $T_2 = T_a = T_{sat}(400 \text{ kPa}) \approx -2.0$ °C.</li>
+                                 <li>$x_2 = (v_2-v_f)/v_{fg} = (0.030115 - 0.000771) / 0.063979 = 0.029344 / 0.063979 = 0.45865$.</li>
+                                 <li>$u_2 = u_f + x_2 u_{fg} = 13.78 + 0.45865 \times 228.23 = 13.78 + 104.68 = 118.46$ kJ/kg.</li>
+                             </ul>
+                             <p><strong>4. Calculate Work (W):</strong> Work only during const P process a->2.</p>
+                             $$ W = W_{1a} + W_{a2} = 0 + P_2 (V_2 - V_a) = P_2 (V_1/2 - V_1) = P_2 (-V_1/2) $$
+                             $$ W = 400 \text{ kPa} \times (-\frac{0.006023 \text{ m³}}{2}) = 400 \times (-0.0030115) = -1.2046 \text{ kJ} \approx -1.20 \text{ kJ} $$
+                             <p><strong>5. Calculate Heat Transfer (Q):</strong> $Q = \Delta U + W = m(u_2 - u_1) + W$.</p>
+                             $$ Q = 0.1 \text{ kg} \times (118.46 - 304.91) \frac{\text{kJ}}{\text{kg}} + (-1.2046 \text{ kJ}) $$
+                             $$ Q = 0.1 \times (-186.45) - 1.2046 = -18.645 - 1.2046 = -19.85 \text{ kJ} \approx -19.9 \text{ kJ} $$
+                             <p><strong>6. P-v Diagram:</strong></p>
+                               <ul>
+                                   <li>Draw saturation dome.</li>
+                                   <li>Plot State 1 (superheated, P=600, v=0.06023).</li>
+                                   <li>Draw vertical line down from State 1 to State 'a' (P=400, v=0.06023, inside dome).</li>
+                                   <li>Draw horizontal line left from State 'a' to State 2 (P=400, v=0.030115, inside dome).</li>
+                               </ul>
+                             <p><strong>Table Values Used Summary:</strong> B.4.1, B.4.2 (R-410A).</p>
+                         </div>
+                     </div>
+                 </div>
+             </div> <!-- End Question 9 -->
+
+             <!-- Question 10 -->
+             <div class="accordion-item" data-state="collapsed">
+                  <div class="accordion-header">
+                      <h2>Question 10: Ammonia Piston-Cylinder Heating</h2>
+                      <span class="state-indicator" title="Status Indicator"></span>
+                  </div>
+                  <div class="accordion-content">
+                      <div class="content-inner">
+                          <div class="question-block">
+                              <strong>Question:</strong>
+                              <p>
+                                  A piston-cylinder device contains $10$ g ($0.01$ kg) of ammonia initially at $20$°C with a volume of $1$ L ($0.001$ m³). The cylinder has stops limiting the maximum volume to $1.4$ L ($0.0014$ m³). The ammonia is heated until it reaches a final temperature of $200$°C. The piston and cylinder are made of $0.5$ kg of aluminum and are assumed to always be at the same temperature as the ammonia. Find the final volume, the work done, and the total heat transfer required. Plot the P-v diagram for the ammonia.
+                              </p>
+                          </div>
+                          <div class="final-answer-block hidden">
+                              <strong>Final Answer:</strong>
+                              <p>
+                                  * Final Volume $V_3 = 0.0014$ m³. <br>
+                                  * Work Done $W = 0.343$ kJ. <br>
+                                  * Total Heat Transfer $Q_{total} \approx 88.0$ kJ.
+                              </p>
+                          </div>
+                          <div class="solution-block hidden">
+                              <strong>Full Solution:</strong>
+                              <p><strong>1. Identify States & Materials:</strong></p>
+                              <ul>
+                                 <li>Ammonia: $m_{am} = 0.01$ kg. State 1: $T_1=20$°C, $V_1=0.001$ m³. State 3: $T_3=200$°C.</li>
+                                 <li>Aluminum: $m_{Al} = 0.5$ kg. $T_{Al1}=T_1, T_{Al3}=T_3$. $C_{Al} = 0.90$ kJ/kg-K (Table A.3).</li>
+                                 <li>Stops: $V_{stop} = 0.0014$ m³.</li>
+                              </ul>
+                              <p><strong>2. Determine Ammonia State 1:</strong></p>
+                              <ul>
+                                  <li>$v_1 = V_1/m_{am} = 0.001 / 0.01 = 0.1$ m³/kg.</li>
+                                  <li>At $T_1=20$°C (Table B.2.1): $v_f=0.001638, v_g=0.14922$. Since $v_f < v_1 < v_g$, State 1 is sat. mixture.</li>
+                                  <li>$P_1 = P_{sat}(20°C) = 857.5$ kPa (Floating pressure).</li>
+                                  <li>$x_1 = (v_1-v_f)/v_{fg} = (0.1 - 0.001638) / (0.14922 - 0.001638) = 0.098362 / 0.147582 = 0.6665$.</li>
+                                  <li>$u_1 = u_f + x_1 u_{fg} = 272.89 + 0.6665(1332.2 - 272.89) = 272.89 + 705.91 = 978.8$ kJ/kg.</li>
+                              </ul>
+                              <p><strong>3. Process Path:</strong> Heat added at const $P=P_1=857.5$ kPa until $V=V_{stop}=0.0014$ m³ (State 2). Then heat added at const $V=V_{stop}$ until $T_3=200$°C (State 3).</p>
+                              <p><strong>4. Determine State 2 (at stops):</strong></p>
+                              <ul>
+                                 <li>$P_2=857.5$ kPa. $V_2=0.0014$ m³. $v_2=V_2/m_{am}=0.14$ m³/kg.</li>
+                                 <li>At $P_2=857.5$ kPa, $v_g=0.14922$. Since $v_f < v_2 < v_g$, State 2 is sat. mixture at $T_2=T_{sat}=20$°C.</li>
+                                 <li>$x_2 = (v_2-v_f)/v_{fg} = (0.14 - 0.001638) / 0.147582 = 0.138362 / 0.147582 = 0.9375$.</li>
+                                 <li>$u_2 = u_f + x_2 u_{fg} = 272.89 + 0.9375(1059.31) = 272.89 + 993.1 = 1266.0$ kJ/kg.</li>
+                              </ul>
+                              <p><strong>5. Determine State 3 (Final):</strong></p>
+                              <ul>
+                                 <li>$V_3=V_2=0.0014$ m³ (Final Volume). $v_3=v_2=0.14$ m³/kg. $T_3=200$°C.</li>
+                                 <li>Find $P_3$ and $u_3$ at $T=200$°C, $v=0.14$ m³/kg (Superheated). Interpolate in B.2.2 between $P=1400$ (v=0.1655) and $P=1600$ (v=0.1432).
+                                    <br>$P_3 \approx 1600 + \frac{0.14 - 0.1432}{0.1655 - 0.1432} \times (1400 - 1600) = 1600 + \frac{-0.0032}{-0.0223} \times (-200) = 1600 - 28.7 = 1571.3$ kPa.
+                                 </li>
+                                 <li>Interpolate $u_3$: u(1400)=1656.7, u(1600)=1646.8.
+                                    <br>$u_3 \approx 1656.7 + \frac{1571.3 - 1400}{1600 - 1400} \times (1646.8 - 1656.7) = 1656.7 + 0.8565 \times (-9.9) = 1656.7 - 8.48 = 1648.2$ kJ/kg.
+                                 </li>
+                              </ul>
+                              <p><strong>6. Calculate Work (W):</strong> Work only during const P process 1->2.</p>
+                              $$ W = W_{12} + W_{23} = P_1(V_2 - V_1) + 0 $$
+                              $$ W = 857.5 \text{ kPa} \times (0.0014 - 0.001) \text{ m³} = 857.5 \times 0.0004 = 0.343 \text{ kJ} $$
+                              <p><strong>7. Calculate Total Heat Transfer ($Q_{total}$):</strong></p>
+                              $$ Q_{total} = \Delta U_{total} + W = (\Delta U_{am} + \Delta U_{Al}) + W $$
+                              $$ \Delta U_{am} = m_{am}(u_3 - u_1) = 0.01 \text{ kg} \times (1648.2 - 978.8) \frac{\text{kJ}}{\text{kg}} = 0.01 \times 669.4 = 6.694 \text{ kJ} $$
+                              $$ \Delta U_{Al} = m_{Al} C_{Al} (T_3 - T_1) = 0.5 \text{ kg} \times 0.90 \frac{\text{kJ}}{\text{kg-K}} \times (200 - 20) \text{ K} $$
+                              $$ \Delta U_{Al} = 0.45 \times 180 = 81.0 \text{ kJ} $$
+                              $$ Q_{total} = (6.694 + 81.0) + 0.343 = 87.694 + 0.343 = 88.037 \text{ kJ} \approx 88.0 \text{ kJ} $$
+                              <p><strong>8. P-v Diagram (Ammonia):</strong></p>
+                              <ul>
+                                 <li>Draw saturation dome.</li>
+                                 <li>Plot State 1 (inside dome, P=857.5, v=0.1).</li>
+                                 <li>Draw horizontal line right from State 1 to State 2 (inside dome, P=857.5, v=0.14).</li>
+                                 <li>Draw vertical line up from State 2 to State 3 (superheated, P≈1571, v=0.14).</li>
+                              </ul>
+                             <p><strong>Table Values Used Summary:</strong> A.3 (Al Cp), B.2.1, B.2.2 (Ammonia).</p>
+                         </div>
+                     </div>
+                 </div>
+             </div> <!-- End Question 10 -->
+
+             <!-- Question 11 -->
+             <div class="accordion-item" data-state="collapsed">
+                  <div class="accordion-header">
+                      <h2>Question 11: Mixing Water Tanks via Piston</h2>
+                      <span class="state-indicator" title="Status Indicator"></span>
+                  </div>
+                  <div class="accordion-content">
+                      <div class="content-inner">
+                          <div class="question-block">
+                              <strong>Question:</strong>
+                              <p>
+                                  Rigid tank A ($V_A=0.6$ m³) contains $3$ kg of water at $T_{A1}=120$°C. Rigid tank B ($V_B=0.4$ m³) contains water at $P_{B1}=600$ kPa, $T_{B1}=200$°C. The tanks are connected via valves to an initially empty piston-cylinder (C). The piston floats when $P_{cyl} = 800$ kPa. Valves are opened, and heat is transferred so the entire system (water in A, B, and C) reaches a uniform final state at $T_{final}=250$°C. Find the final volume ($V_{final}$), final pressure ($P_{final}$), work ($W$), and heat transfer ($Q$).
+                              </p>
+                          </div>
+                          <div class="final-answer-block hidden">
+                              <strong>Final Answer:</strong>
+                              <p>
+                                  * Final Pressure $P_{final} = 800$ kPa. <br>
+                                  * Final Volume $V_{final} \approx 1.212$ m³. <br>
+                                  * Work $W \approx 170$ kJ. <br>
+                                  * Heat Transfer $Q \approx 5535$ kJ.
+                              </p>
+                          </div>
+                          <div class="solution-block hidden">
+                              <strong>Full Solution:</strong>
+                               <p><strong>1. Initial States:</strong></p>
+                               <ul>
+                                   <li>Tank A: $V_A=0.6$m³, $m_A=3$kg, $T_{A1}=120$°C. $v_{A1}=0.6/3=0.2$ m³/kg. From B.1.1 @ 120°C: $v_f=0.001060, v_g=0.89186$. State is sat. mixture.
+                                        <br>$x_{A1} = (0.2-0.001060)/(0.89186-0.001060) = 0.2233$.
+                                        <br>$u_{A1} = u_f + x_{A1}u_{fg} = 503.48 + 0.2233(2529.24-503.48) = 955.8$ kJ/kg.
+                                   </li>
+                                   <li>Tank B: $V_B=0.4$m³, $P_{B1}=600$ kPa, $T_{B1}=200$°C. Superheated. From B.1.3: $v_{B1}=0.35202$ m³/kg, $u_{B1}=2638.91$ kJ/kg.
+                                        <br>$m_B = V_B/v_{B1} = 0.4/0.35202 = 1.1363$ kg.
+                                   </li>
+                                   <li>Total initial mass $m_1 = m_A + m_B = 3 + 1.1363 = 4.1363$ kg.</li>
+                                   <li>Total initial internal energy $U_1 = m_A u_{A1} + m_B u_{B1} = (3 \times 955.8) + (1.1363 \times 2638.91) = 2867.4 + 3000.0 = 5867.4$ kJ.</li>
+                               </ul>
+                               <p><strong>2. Final State (State 2):</strong></p>
+                               <ul>
+                                  <li>Uniform state $T_2=250$°C. Total mass $m_2 = m_1 = 4.1363$ kg.</li>
+                                  <li>Check pressure if confined to $V_A+V_B=1.0$ m³: $v_{check} = 1.0 / 4.1363 = 0.2417$ m³/kg. At $T=250$°C, this $v$ corresponds to $P$ between 800 kPa ($v=0.293$) and 1000 kPa ($v=0.233$). Since $P_{check} > P_{float}=800$ kPa, the piston moves.</li>
+                                  <li>Final pressure $P_2 = P_{float} = 800$ kPa.</li>
+                                  <li>Final state is $T_2=250$°C, $P_2=800$ kPa. Superheated. From B.1.3: $v_2 = 0.29314$ m³/kg, $u_2 = 2715.46$ kJ/kg.</li>
+                               </ul>
+                               <p><strong>3. Final Volume & Work:</strong></p>
+                               <ul>
+                                  <li>Final Volume $V_{final} = m_2 v_2 = 4.1363 \times 0.29314 = 1.2124$ m³ $\approx 1.212$ m³.</li>
+                                  <li>Work is done only by moving piston at constant $P=800$ kPa.
+                                      <br>Volume change in cylinder $V_{cyl} = V_{final} - (V_A + V_B) = 1.2124 - (0.6 + 0.4) = 0.2124$ m³.
+                                  </li>
+                                  <li>$W = P_{float} \times V_{cyl} = 800 \text{ kPa} \times 0.2124 \text{ m³} = 169.92 \text{ kJ} \approx 170 \text{ kJ}$.</li>
+                              </ul>
+                              <p><strong>4. Heat Transfer (Q):</strong> $Q = \Delta U + W = (U_2 - U_1) + W$.</p>
+                              <ul>
+                                  <li>$U_2 = m_2 u_2 = 4.1363 \times 2715.46 = 11232.2$ kJ.</li>
+                                  <li>$U_1 = 5867.4$ kJ (from step 1).</li>
+                              </ul>
+                              $$ Q = (11232.2 - 5867.4) + 169.92 = 5364.8 + 169.92 = 5534.7 \text{ kJ} \approx 5535 \text{ kJ} $$
+                              <p><strong>Table Values Used Summary:</strong> B.1.1, B.1.2, B.1.3 (Water).</p>
+                          </div>
+                      </div>
+                  </div>
+              </div> <!-- End Question 11 -->
+
+             <!-- Question 12 -->
+             <div class="accordion-item" data-state="collapsed">
+                   <div class="accordion-header">
+                       <h2>Question 12: Water Cooling with Linear Spring</h2>
+                       <span class="state-indicator" title="Status Indicator"></span>
+                   </div>
+                   <div class="accordion-content">
+                       <div class="content-inner">
+                           <div class="question-block">
+                               <strong>Question:</strong>
+                               <p>
+                                   A piston-cylinder contains water initially at $3$ MPa and $400$°C, with a volume of $0.1$ m³. The piston is loaded by a linear spring and the outside atmosphere. When the piston is at the bottom, the spring exerts no force, and a pressure of $200$ kPa is required to balance the piston weight and atmosphere. The system cools until the pressure reaches $1$ MPa. Find the work done and heat transfer for this process.
+                               </p>
+                           </div>
+                           <div class="final-answer-block hidden">
+                               <strong>Final Answer:</strong>
+                               <p>
+                                   * Work Done $W \approx -142.9$ kJ. <br>
+                                   * Heat Transfer $Q \approx -2069$ kJ.
+                               </p>
+                           </div>
+                           <div class="solution-block hidden">
+                               <strong>Full Solution:</strong>
+                                <p><strong>1. Identify States and Process:</strong></p>
+                                <ul>
+                                    <li>System: Water.</li>
+                                    <li>State 1: $P_1=3000$ kPa, $T_1=400$°C, $V_1=0.1$ m³. Superheated. From B.1.3: $v_1=0.09936$ m³/kg, $u_1=2932.75$ kJ/kg.
+                                        <br>Mass $m = V_1/v_1 = 0.1 / 0.09936 = 1.0064$ kg.</li>
+                                    <li>State 2: $P_2=1000$ kPa. Final state determined by process path.</li>
+                                    <li>Process: Cooling with linear spring load. $P = A + BV$.
+                                        <br>At $V \approx 0$, $P_{bal}=200$ kPa $= A$.
+                                        <br>$P = 200 + BV$. Use State 1: $3000 = 200 + B(0.1) \implies B = 2800 / 0.1 = 28000$ kPa/m³.
+                                        <br>Process Eq: $P = 200 + 28000 V$.
+                                    </li>
+                                </ul>
+                                <p><strong>2. Determine State 2:</strong></p>
+                                <ul>
+                                   <li>$P_2 = 1000$ kPa. Find $V_2$ from process eq: $1000 = 200 + 28000 V_2 \implies V_2 = 800 / 28000 = 0.02857$ m³.</li>
+                                   <li>$v_2 = V_2 / m = 0.02857 / 1.0064 = 0.02839$ m³/kg.</li>
+                                   <li>Find phase at $P_2=1000$ kPa, $v_2=0.02839$. From B.1.2: $v_f=0.001127, v_g=0.19444$. Since $v_f < v_2 < v_g$, State 2 is saturated mixture.</li>
+                                   <li>$T_2 = T_{sat}(1000 \text{ kPa}) = 179.91$°C.</li>
+                                   <li>$x_2 = (v_2-v_f)/v_{fg} = (0.02839 - 0.001127) / (0.19444 - 0.001127) = 0.027263 / 0.193313 = 0.14103$.</li>
+                                   <li>$u_2 = u_f + x_2 u_{fg} = 761.67 + 0.14103 (2583.64 - 761.67) = 761.67 + 256.9 = 1018.6$ kJ/kg.</li>
+                               </ul>
+                               <p><strong>3. Calculate Work (W):</strong> Area under linear P-V path.</p>
+                               $$ W = \int P dV = \frac{1}{2} (P_1 + P_2) (V_2 - V_1) $$
+                               $$ W = 0.5 \times (3000 + 1000) \text{ kPa} \times (0.02857 - 0.1) \text{ m³} $$
+                               $$ W = 0.5 \times 4000 \times (-0.07143) = 2000 \times (-0.07143) = -142.86 \text{ kJ} $$
+                               <p><strong>4. Calculate Heat Transfer (Q):</strong> $Q = \Delta U + W = m(u_2 - u_1) + W$.</p>
+                               $$ Q = 1.0064 \text{ kg} \times (1018.6 - 2932.75) \frac{\text{kJ}}{\text{kg}} + (-142.86 \text{ kJ}) $$
+                               $$ Q = 1.0064 \times (-1914.15) - 142.86 = -1926.3 - 142.86 = -2069.2 \text{ kJ} $$
+                               <p><strong>Table Values Used Summary:</strong> B.1.2, B.1.3 (Water).</p>
+                           </div>
+                       </div>
+                   </div>
+               </div> <!-- End Question 12 -->
+
+              <!-- Question 13 -->
+              <div class="accordion-item" data-state="collapsed">
+                   <div class="accordion-header">
+                       <h2>Question 13: Air Expanding Against Water/Piston</h2>
+                       <span class="state-indicator" title="Status Indicator"></span>
+                   </div>
+                   <div class="accordion-content">
+                       <div class="content-inner">
+                           <div class="question-block">
+                               <strong>Question:</strong>
+                               <p>
+                                   A $10$ m high cylinder with $A=0.1$ m² contains liquid water ($25$°C) on top of a $50$ kg insulated piston. Below the piston is $2$ kg of air at $25$°C with an initial volume $V_{air1} = 0.3$ m³. Heat is supplied to the air, causing it to expand and push the water out over the top edge. Assuming atmospheric pressure is $1$ atm ($101.325$ kPa) and neglecting piston thickness, find the total work done by the air to push all the water out. Plot the P-v diagram for the air.
+                               </p>
+                           </div>
+                           <div class="final-answer-block hidden">
+                               <strong>Final Answer:</strong>
+                               <p>
+                                   Work Done $W \approx 122.3$ kJ.
+                               </p>
+                           </div>
+                           <div class="solution-block hidden">
+                               <strong>Full Solution:</strong>
+                                <p><strong>1. System:</strong> Air below the piston.</p>
+                                <p><strong>2. Process:</strong> Heat addition causing expansion against constant load until water is gone.</p>
+                                <p><strong>3. Initial State (Air):</strong> $m_{air} = 2$ kg, $T_{air1} = 25$°C $= 298.15$ K, $V_{air1} = 0.3$ m³.</p>
+                                <p><strong>4. Calculate Constant Pressure ($P_{air}$):</strong> Balances atmosphere + water weight + piston weight.</p>
+                                <ul>
+                                    <li>Piston Height $H_{piston} = V_{air1} / A = 0.3 / 0.1 = 3$ m.</li>
+                                    <li>Water Height $H_{water} = H_{cyl} - H_{piston} = 10 - 3 = 7$ m.</li>
+                                    <li>Water Density $\rho_{water} \approx 997$ kg/m³ (at 25°C).</li>
+                                    <li>$P_{water\_head} = \rho_{water} g H_{water} = 997 \times 9.80665 \times 7 = 68440$ Pa $= 68.44$ kPa.</li>
+                                    <li>$P_{piston} = m_p g / A = (50 \times 9.80665) / 0.1 = 4903$ Pa $= 4.90$ kPa.</li>
+                                    <li>$P_{atm} = 101.325$ kPa.</li>
+                                    <li>$P_{air} = P_{atm} + P_{water\_head} + P_{piston} = 101.325 + 68.44 + 4.90 = 174.67$ kPa.</li>
+                                </ul>
+                                <p><strong>5. Final State (Air):</strong> Water is just pushed out. Piston is at top $H=10$ m.</p>
+                                <ul>
+                                   <li>$V_{air2} = A \times H_{cyl} = 0.1 \times 10 = 1.0$ m³.</li>
+                                   <li>$P_{air2} = P_{air1} = 174.67$ kPa (Constant pressure process).</li>
+                                </ul>
+                                <p><strong>6. Calculate Work Done (W):</strong> Work during constant pressure expansion.</p>
+                                $$ W = \int P dV = P_{air} (V_{air2} - V_{air1}) $$
+                                $$ W = 174.67 \text{ kPa} \times (1.0 - 0.3) \text{ m³} = 174.67 \times 0.7 = 122.27 \text{ kJ} \approx 122.3 \text{ kJ} $$
+                                <p><strong>7. P-v Diagram (Air):</strong></p>
+                                <ul>
+                                    <li>State 1: $P_1=174.67$ kPa, $v_1 = V_{air1}/m = 0.3/2 = 0.15$ m³/kg.</li>
+                                    <li>State 2: $P_2=174.67$ kPa, $v_2 = V_{air2}/m = 1.0/2 = 0.5$ m³/kg.</li>
+                                    <li>Draw a horizontal line segment from (v₁, P₁) to (v₂, P₂).</li>
+                                </ul>
+                                <p><strong>Table Values Used Summary:</strong> B.1.1 (Water density), A.0a (g), A.1 (atm pressure).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- End Question 13 -->
+
+
+    </div> <!-- End Accordion Container -->
+
+
+    <footer> <!-- Optional Footer --> </footer>
+
+     <!-- Font Size Control Icons HTML -->
+     <div class="font-control">
+         <span class="font-control-icon" id="fontMinusBtn" title="Decrease font size">-</span>
+         <span class="font-control-icon" id="fontPlusBtn" title="Increase font size">+</span>
+     </div>
+     <div id="fontSizeDisplay">10px</div>
+
+    <script>
+        // --- Debounce Function ---
+        function debounce(func, wait) { let timeout; return function(...args) { const later = () => { clearTimeout(timeout); func.apply(this, args); }; clearTimeout(timeout); timeout = setTimeout(later, wait); }; }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const htmlEl = document.documentElement;
+            const bodyEl = document.body;
+
+            // --- Font Size Control & Hold ---
+            const minusBtn = document.getElementById('fontMinusBtn');
+            const plusBtn = document.getElementById('fontPlusBtn');
+            const display = document.getElementById('fontSizeDisplay');
+            let currentSize = 10; const minSize = 10; const maxSize = 28; const step = 1;
+            let displayTimeout = null; let holdTimeout = null; let holdInterval = null;
+            const initialHoldDelay = 400; const repeatInterval = 100;
+            const mathJaxDebounceDelay = 350;
+
+            const queueMathJaxTypeset = debounce(() => {
+                if (window.MathJax && MathJax.typesetPromise) {
+                    console.log("Debounced: Typesetting MathJax for body");
+                    MathJax.typesetPromise([bodyEl]).catch((err) => console.error('MathJax typesetting error:', err));
+                 }
+            }, mathJaxDebounceDelay);
+
+            const handleFontResizeEnd = debounce(() => {
+                console.log("Font resize finished.");
+                queueMathJaxTypeset();
+            }, mathJaxDebounceDelay);
+
+            function updateFontSize(newSize) {
+                const oldSize = currentSize;
+                currentSize = Math.max(minSize, Math.min(maxSize, newSize));
+                if (currentSize !== oldSize) {
+                    htmlEl.style.setProperty('--base-font-size', currentSize + 'px');
+                    display.textContent = currentSize + 'px'; display.classList.add('visible');
+                    if (displayTimeout) { clearTimeout(displayTimeout); }
+                    displayTimeout = setTimeout(() => { display.classList.remove('visible'); displayTimeout = null; }, 1500);
+                    handleFontResizeEnd(); return true;
+                } return false;
+            }
+            function stopHolding() {
+                bodyEl.classList.remove('no-font-transition');
+                if (holdTimeout) { clearTimeout(holdTimeout); holdTimeout = null; }
+                if (holdInterval) { clearInterval(holdInterval); holdInterval = null; }
+                handleFontResizeEnd();
+            }
+            function startHolding(direction) {
+                bodyEl.classList.add('no-font-transition'); updateFontSize(currentSize + direction * step);
+                if (holdTimeout) clearTimeout(holdTimeout); if (holdInterval) clearInterval(holdInterval);
+                holdTimeout = setTimeout(() => { holdInterval = setInterval(() => { if (!updateFontSize(currentSize + direction * step)) { stopHolding(); } }, repeatInterval); }, initialHoldDelay);
+            }
+            if (minusBtn && plusBtn && display) {
+                minusBtn.addEventListener('mousedown', (e) => { e.preventDefault(); startHolding(-1); });
+                plusBtn.addEventListener('mousedown', (e) => { e.preventDefault(); startHolding(1); });
+                window.addEventListener('mouseup', stopHolding);
+                minusBtn.addEventListener('mouseleave', stopHolding); plusBtn.addEventListener('mouseleave', stopHolding);
+                htmlEl.style.setProperty('--base-font-size', currentSize + 'px'); display.textContent = currentSize + 'px';
+                console.log("Font control initialized. Current size:", currentSize);
+            } else { console.error("Font control elements not found!"); }
+
+
+            // --- Accordion Logic (with State Indicator & MathJax Trigger - Robust Measurement) ---
+            const accordionItems = document.querySelectorAll('.accordion-item');
+            accordionItems.forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                const content = item.querySelector('.accordion-content');
+                const innerContent = content.querySelector('.content-inner');
+                const finalAnswerBlock = innerContent.querySelector('.final-answer-block');
+                const solutionBlock = innerContent.querySelector('.solution-block');
+
+
+                header.addEventListener('click', () => {
+                    const currentState = item.getAttribute('data-state');
+                    let nextState;
+
+                    if (currentState === 'collapsed') {
+                        if (!item.classList.contains('visited')) { item.classList.add('visited'); }
+                        nextState = 'state1';
+                    } else if (currentState === 'state1') {
+                        nextState = 'state2';
+                    } else { // state2
+                        nextState = 'collapsed';
+                    }
+
+                    item.setAttribute('data-state', nextState);
+                    console.log(`Item state changed to: ${nextState}`);
+
+                    const isCollapsed = nextState === 'collapsed';
+                    const showAnswer = nextState === 'state1';
+                    const showSolution = nextState === 'state2';
+
+                    // Toggle visibility of answer/solution blocks
+                    if (finalAnswerBlock) finalAnswerBlock.classList.toggle('hidden', !showAnswer);
+                    if (solutionBlock) solutionBlock.classList.toggle('hidden', !showSolution);
+
+
+                    // --- Expansion/Collapse Logic ---
+                    if (!isCollapsed) {
+                        // --- EXPANDING ---
+                        content.style.maxHeight = 'none'; // Allow natural height measurement
+                        let mathJaxPromise = Promise.resolve();
+                        if (window.MathJax && MathJax.typesetPromise) {
+                            console.log(`Queueing MathJax for item: ${header.querySelector('h2').textContent.trim()}`);
+                            mathJaxPromise = MathJax.typesetPromise([innerContent]).catch(err => {
+                                console.error('MathJax typesetting error during expand:', err);
+                            });
+                        } else { console.warn("MathJax not available for typesetting during expand."); }
+
+                        mathJaxPromise.then(() => {
+                            console.log("MathJax finished for item. Preparing height calculation.");
+                            requestAnimationFrame(() => {
+                                requestAnimationFrame(() => { // Double rAF waits for layout calculation
+                                    const style = window.getComputedStyle(content);
+                                    const paddingTop = parseFloat(style.paddingTop) || 0;
+                                    const paddingBottom = parseFloat(style.paddingBottom) || 0;
+                                    const innerHeight = innerContent.offsetHeight;
+                                    const totalHeight = innerHeight + paddingTop + paddingBottom;
+                                    console.log(`Calculated totalHeight after MathJax & rAF: ${totalHeight}px`);
+                                    if (totalHeight <= (paddingTop + paddingBottom)) {
+                                         console.warn("Calculated height is zero or only padding! Check content visibility/rendering.");
+                                     }
+                                     content.style.maxHeight = '0px'; // Prepare for transition
+                                     requestAnimationFrame(() => { // Apply final height in next frame
+                                         content.style.maxHeight = totalHeight + 'px';
+                                         console.log(`Applied maxHeight: ${totalHeight}px`);
+                                     });
+                                 });
+                             });
+                         });
+
+                    } else {
+                        // --- COLLAPSING ---
+                        if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+                           content.style.maxHeight = '0px';
+                           console.log("Collapsing: Set maxHeight to 0px");
+                        }
+                    }
+                });
+            });
+            console.log("Accordion logic (Robust Measurement) with state indicators and MathJax applied.");
+
+
+            // --- Initial MathJax Typeset on Load ---
+             if (window.MathJax) {
+                 MathJax.startup.promise.then(() => {
+                     console.log("Queueing initial MathJax typeset after load");
+                     MathJax.typesetPromise([bodyEl]).catch((err) => console.error('MathJax initial typesetting error:', err));
+                 });
+             }
+
+        }); // End DOMContentLoaded
+    </script>
+
+</body>
+</html>
